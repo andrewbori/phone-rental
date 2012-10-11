@@ -12,7 +12,7 @@
         <header>
             <div class="content-wrapper">
                 <div class="float-left">
-                    <p class="site-title">@Html.ActionLink("your logo here", "Index", "Home")</p>
+                    <p class="site-title">@Html.ActionLink("Telefonkölcsönző", "Index", "Home")</p>
                 </div>
                 <div class="float-right">
                     <section id="login">
@@ -29,6 +29,9 @@
             </div>
         </header>
         <div id="body">
+            <div id="image_canvas" onclick="hideImage();">
+                <img onclick="hideImage();" />
+            </div>
             @RenderSection("featured", required: false)
             <section class="content-wrapper main-content clear-fix">
                 @RenderBody()
@@ -44,5 +47,16 @@
 
         @Scripts.Render("~/bundles/jquery")
         @RenderSection("scripts", required: false)
+        <script type="text/javascript">
+            function showImage(name) {
+                $("#image_canvas img").attr("src", "/Images/Devices/" + name);
+                $("#image_canvas").show(200);
+            }
+
+            function hideImage() {
+                $("#image_canvas").hide(100);
+                $("#image_canvas img").attr("src", "");
+            }
+        </script>
     </body>
 </html>
