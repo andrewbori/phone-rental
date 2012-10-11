@@ -25,11 +25,11 @@ namespace PhoneRental.Filters
         {
             public SimpleMembershipInitializer()
             {
-                Database.SetInitializer<UsersContext>(null);
+                Database.SetInitializer<PhoneRentalContext>(null);
 
                 try
                 {
-                    using (var context = new UsersContext())
+                    using (var context = new PhoneRentalContext())
                     {
                         if (!context.Database.Exists())
                         {

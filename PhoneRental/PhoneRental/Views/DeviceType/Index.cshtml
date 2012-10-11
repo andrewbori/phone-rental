@@ -1,0 +1,43 @@
+﻿@model IEnumerable<PhoneRental.Models.DeviceType>
+
+@{
+    ViewBag.Title = "Készülék típusok";
+}
+
+<h2>Készülék típusok</h2>
+
+<p>
+    @Html.ActionLink("Új létrehozása", "Create")
+</p>
+<table>
+    <tr>
+        <th>Márka</th>
+        <th>Típus</th>
+        <th>AAIT azonosító</th>
+        <th>Kép</th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Brand)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Type)
+        </td>
+        <td>
+            AAIT_@Html.DisplayFor(modelItem => item.AaitIdPattern)_XXX
+        </td>
+        <td>
+            <a href="javascript:showImage('@Html.ValueFor(modelItem => item.ImageUrl)')">
+                <img src="/Images/Devices/thumb_@Html.ValueFor(modelItem => item.ImageUrl)" />
+            </a>
+        </td>
+        <td>
+            @Html.ActionLink("Szerkesztés", "Edit", new { id=item.Id })
+        </td>
+    </tr>
+}
+
+</table>

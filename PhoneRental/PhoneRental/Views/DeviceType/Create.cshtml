@@ -1,0 +1,110 @@
+﻿@model PhoneRental.Models.DeviceType
+
+@{
+    ViewBag.Title = "Új készülék típus";
+}
+
+<h2>Új készülék típus</h2>
+
+@using (Html.BeginForm()) {
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>DeviceType</legend>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Brand, "Márka")
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Brand)
+            @Html.ValidationMessageFor(model => model.Brand)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Type, "Típus")
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Type)
+            @Html.ValidationMessageFor(model => model.Type)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.AaitIdPattern, "AAIT azonosító mintája")
+        </div>
+        <div class="editor-field editor-field-aait">
+            AAIT_@Html.EditorFor(model => model.AaitIdPattern)_XXX
+            @Html.ValidationMessageFor(model => model.AaitIdPattern)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ImageUrl, "Kép a készülékről")
+        </div>
+        <div class="editor-field">
+            @Html.HiddenFor(model => model.ImageUrl)
+
+            <div id="show_image"></div>
+
+            <div id="progress">
+                <div id="bar"></div>
+            </div>
+
+            <div id="fileinput-button">
+			    <a href="javascript:void(0)" class="upload-image">Kép kiválasztása</a>
+			    <input id="file_upload" type="file" name="files[]" multiple>
+		    </div>
+
+            <br />
+
+            @Html.ValidationMessageFor(model => model.ImageUrl)
+        </div>
+
+        <p>
+            <input type="submit" value="Mentés" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Vissza a készülék típusok listájára", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/bundles/jqueryfileupload")
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#progress #bar').css('width', '0%');
+            $('#progress').hide();
+            $('#show_image').hide();
+
+            $('#file_upload').fileupload({
+                dataType: 'json',
+                url: '/Image/Upload',
+                add: function (e, data) {
+                    $('#show_image').hide("fast");
+                    $('#progress').show("fast");
+                    data.submit();
+                },
+                progressall: function (e, data) {
+                    var progress = parseInt(data.loaded / data.total * 100, 10);
+                    $('#progress #bar').css('width', progress + '%');
+                },
+                done: function (e, data) {
+                    if (data.result["result"] == "Successful") {
+                        $('#progress').hide("fast");
+                        $('#show_image').html('<a href="javascript:showImage(\'' + data.result.name + '\')">' +
+                                                '<img src="/Images/Devices/thumb_' + data.result.name + '\" />' +
+                                              '</a>');
+                        $('#ImageUrl').val(data.result.name);
+                        $('#show_image').show("fast");
+                    } else {
+                        $('#progress').hide("fast");
+                        $('#show_image').html(data.result["result"]);
+                        $('#show_image').show("fast");
+                    }
+                }
+            });
+        });
+    </script>
+}
