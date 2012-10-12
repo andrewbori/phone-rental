@@ -18,7 +18,8 @@ namespace PhoneRental.Controllers
 
         public ActionResult Index()
         {
-            return View(db.DeviceTypes.ToList());
+            var devicetypes = db.DeviceTypes.Include(d => d.Brand);
+            return View(devicetypes.ToList());
         }
 
         //
@@ -26,6 +27,7 @@ namespace PhoneRental.Controllers
 
         public ActionResult Create()
         {
+            //ViewBag.BrandId = new SelectList(db.Brands, "Id", "Name");
             return View();
         }
 
@@ -37,11 +39,21 @@ namespace PhoneRental.Controllers
         {
             if (ModelState.IsValid)
             {
+                try
+                {
+                    var brand = db.Brands.First(b => b.Name.Equals(devicetype.Brand.Name));
+
+                    if (brand != null)
+                    {
+                        devicetype.Brand = brand;
+                    }
+                }
+                catch (Exception) { }
+
                 db.DeviceTypes.Add(devicetype);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-
             return View(devicetype);
         }
 
@@ -66,6 +78,28 @@ namespace PhoneRental.Controllers
         {
             if (ModelState.IsValid)
             {
+                try
+                {
+                    var brand = db.Brands.First(b => b.Name.Equals(devicetype.Brand.Name));
+
+                    if (brand != null)
+                    {
+                        devicetype.Brand = brand;
+                        devicetype.BrandId = brand.Id;
+                    }
+                    else
+                    {
+                        db.Brands.Add(devicetype.Brand);
+                        devicetype.BrandId = devicetype.Brand.Id;
+                    }
+
+                }
+                catch (Exception)
+                {
+                    db.Brands.Add(devicetype.Brand);
+                    devicetype.BrandId = devicetype.Brand.Id;
+                }
+
                 db.Entry(devicetype).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
