@@ -1,0 +1,36 @@
+﻿@model PhoneRental.Models.Device
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>Device</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.DeviceType.Type)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.DeviceType.Type)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Imei)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Imei)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.AaitIdNumber)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.AaitIdNumber)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

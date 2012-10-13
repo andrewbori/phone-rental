@@ -1,0 +1,136 @@
+﻿@model IEnumerable<PhoneRental.Models.Device>
+
+@{
+    ViewBag.Title = "Készülékek felvétele";
+    var devices = Model.ToArray();
+}
+
+<h2>Készülékek felvétele</h2>
+
+@using (Html.BeginForm()) {
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>DeviceType</legend>
+        <div class="editor-label">
+            <label for="DeviceTypeId">Készülék típusa</label>
+        </div>
+        <div class="editor-field">
+            @Html.DropDownList("DeviceTypeId")
+            @Html.DropDownList("AaitIdPattern")
+            <span class="field-validation-valid" data-valmsg-for="DeviceTypeId" data-valmsg-replace="true"></span>
+        </div>
+    </fieldset>
+    
+    <fieldset>
+        <legend>Devices</legend>
+        <table id="Devices">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Imei)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.AaitIdNumber)
+                </th>
+            <tr>
+            @for (int i = 0; i < devices.Length; i++)
+            {        
+                <tr>
+                    <td>
+                        <div class="editor-field">
+                            @Html.EditorFor(modelItem => devices[i].Imei)
+                        </div>
+                    </td>
+                    <td>
+                        <div class="editor-field editor-field-aait-nr">
+                            AAIT_<span class="AaitIdPattern"></span>_@Html.EditorFor(modelItem => devices[i].AaitIdNumber)
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.ValidationMessageFor(modelItem => devices[i].Imei)
+                    </td>
+                    <td>
+                        @Html.ValidationMessageFor(modelItem => devices[i].AaitIdNumber)
+                    </td>
+                </tr>
+            }
+        </table>
+    </fieldset>
+    <p>
+        <input type="submit" value="Mentés" />
+        <input type="button" value="+" onclick="addDevice()" />
+        <input type="button" value="-" onclick="removeDevice()" id="RemoveButton" style="display: none;" />
+    </p>
+    
+}
+
+<div>
+    @Html.ActionLink("Vissza a készülékek listájára", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript">
+        var pattern = "";
+        var i = @devices.Length
+        
+        $(document).ready(function () {
+            $('#AaitIdPattern').hide();
+            $('select#DeviceTypeId').change(function () {
+                deviceTypeChanged();
+            });
+
+            deviceTypeChanged();
+        });
+
+        function deviceTypeChanged () {
+            var selectedVal = $("#DeviceTypeId option:selected").val();
+            pattern = $('#AaitIdPattern option:[value=' + selectedVal + ']').text();
+            $('.AaitIdPattern').text(pattern);
+        }
+
+        function addDevice() {
+            var newDevice =
+                '<tr style="display: none;">' +
+                    '<td><div class="editor-field">' +
+                        '<input class="text-box single-line" data-val="true" data-val-required="A következő mező megadása kötelező: IMEI." id="devices_' + i + '__Imei" name="devices[' + i + '].Imei" type="text" value="" />' +
+                    '</div></td>' +
+                    '<td><div class="editor-field editor-field-aait-nr">' +
+                        'AAIT_<span class="AaitIdPattern">' + pattern + '</span>_<input class="text-box single-line" data-val="true" data-val-number="The field AAIT azonosító must be a number." data-val-required="A következő mező megadása kötelező: AAIT azonosító." id="devices_' + i + '__AaitIdNumber" name="devices[' + i + '].AaitIdNumber" type="number" value="" />' +
+                    '</div></td>' +
+                '</tr>' +
+                '<tr style="display: none;">' +
+                    '<td>' +
+                        '<span class="field-validation-valid" data-valmsg-for="devices[' + i + '].Imei" data-valmsg-replace="true"></span>' +
+                    '</td>' +
+                    '<td>' +
+                        '<span class="field-validation-valid" data-valmsg-for="devices[' + i + '].AaitIdNumber" data-valmsg-replace="true"></span>' +
+                    '</td>' +
+                '</tr>';
+
+            $('#Devices').append(newDevice);
+            $('#Devices tr').show(500);
+
+            i++;
+
+            if (i > 1) {
+                $('#RemoveButton').show();
+            }
+        }
+
+        function removeDevice() {
+            if (i > 1) {
+               $('#Devices tr').last().remove();
+               $('#Devices tr').last().remove();
+                i--;
+
+                if (i <= 1) {
+                    $('#RemoveButton').hide();
+                }
+            }
+        }
+    </script>
+
+}
