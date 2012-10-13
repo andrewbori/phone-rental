@@ -162,6 +162,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\DeviceController.cs" />
     <Compile Include="Controllers\DeviceTypeController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ImageController.cs" />
@@ -290,6 +291,11 @@
     <Content Include="Views\DeviceType\Index.cshtml" />
     <Content Include="Views\DeviceType\Create.cshtml" />
     <Content Include="Views\DeviceType\Edit.cshtml" />
+    <Content Include="Views\Device\Index.cshtml" />
+    <Content Include="Views\Device\Details.cshtml" />
+    <Content Include="Views\Device\Create.cshtml" />
+    <Content Include="Views\Device\Edit.cshtml" />
+    <Content Include="Views\Device\Delete.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

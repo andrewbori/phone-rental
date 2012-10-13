@@ -1,0 +1,43 @@
+﻿@model IEnumerable<PhoneRental.Models.Device>
+
+@{
+    ViewBag.Title = "Készülékek";
+}
+
+<h2>Készülékek</h2>
+
+<p>
+    @Html.ActionLink("Új készülék(ek) felvétele", "Create")
+</p>
+<table>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.DeviceType.Type)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Imei)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AaitIdNumber)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.DeviceType.Brand.Name) @Html.DisplayFor(modelItem => item.DeviceType.Type)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Imei)
+        </td>
+        <td>
+            AAIT_@Html.DisplayFor(modelItem => item.DeviceType.AaitIdPattern)_@Html.DisplayFor(modelItem => item.AaitIdNumber)
+        </td>
+        <td>
+            @Html.ActionLink("Szerkesztés", "Edit", new { id=item.Id })
+        </td>
+    </tr>
+}
+
+</table>

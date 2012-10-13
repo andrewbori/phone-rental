@@ -1,0 +1,47 @@
+﻿@model PhoneRental.Models.Device
+
+@{
+    ViewBag.Title = "Készülék szerkesztése";
+}
+
+<h2>@Html.ValueFor(model => model.DeviceType.Brand.Name) @Html.ValueFor(model => model.DeviceType.Type)</h2>
+
+@using (Html.BeginForm()) {
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>Edit</legend>
+
+        @Html.HiddenFor(model => model.Id)
+
+        @Html.HiddenFor(model => model.DeviceTypeId)
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Imei)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Imei)
+            @Html.ValidationMessageFor(model => model.Imei)
+        </div>
+
+        <div class="editor-field">
+            @Html.LabelFor(model => model.AaitIdNumber)
+        </div>
+        <div class="editor-field editor-field-aait-nr">
+            AAIT_@Html.ValueFor(model => model.DeviceType.AaitIdPattern)_@Html.EditorFor(model => model.AaitIdNumber)
+            @Html.ValidationMessageFor(model => model.AaitIdNumber)
+        </div>
+
+        <p>
+            <input type="submit" value="Mentés" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Vissza a készülékek listájára", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

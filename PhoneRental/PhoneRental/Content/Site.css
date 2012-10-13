@@ -303,6 +303,8 @@ ol.round {
             background: url("../Images/orderedList9.png") no-repeat;
         }
 
+
+
 /* Edit/New Phone Type */
 .editor-field-aait {
     width: 310px;
@@ -310,6 +312,10 @@ ol.round {
 
 .editor-field-aait input {
     width: auto;
+}
+
+.editor-field-aait-nr input {
+    width: 50px;
 }
 
 
@@ -497,7 +503,7 @@ label.checkbox {
     display: inline;
 }
 
-input, textarea {
+input, textarea, select {
     border: 1px solid #e2e2e2;
     background: #fff;
     color: #333;
