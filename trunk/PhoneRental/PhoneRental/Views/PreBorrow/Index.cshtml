@@ -1,0 +1,54 @@
+﻿@model IEnumerable<PhoneRental.Models.DeviceType>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Kölcsönözhető telefonok</h2>
+
+<table>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Brand.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Type)
+        </th>
+        <th>
+            Darab
+        </th>
+        <th>
+            Elérhetőség
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ImageUrl)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Brand.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Type)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Devices.Count)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Availability)
+        </td>
+        <td>
+            <a href="javascript:showImage('@Html.ValueFor(modelItem => item.ImageUrl)')">
+                <img src="/Images/Devices/thumb_@Html.ValueFor(modelItem => item.ImageUrl)" />
+            </a>
+        </td>
+        <td>
+            @Html.ActionLink("Lefoglal", "New", new { id=item.Id })
+        </td>
+    </tr>
+}
+
+</table>

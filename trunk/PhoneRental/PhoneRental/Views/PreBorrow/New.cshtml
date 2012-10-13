@@ -1,0 +1,55 @@
+﻿@model PhoneRental.Models.DeviceType
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>Telefon előfoglalása</h2>
+
+@using (Html.BeginForm()) {
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>PreBorrow</legend>
+
+        @Html.HiddenFor(model => model.Id)
+        @Html.HiddenFor(model => model.ImageUrl)
+
+        <div class="editor-label">
+            @Html.DisplayNameFor(model => model.Brand.Name)
+        </div>
+        <div class="editor-field">
+            @Html.DisplayFor(model => model.Brand.Name)
+        </div>
+
+        <div class="editor-label">
+            @Html.DisplayNameFor(model => model.Type)
+        </div>
+        <div class="editor-field">
+            @Html.DisplayFor(model => model.Type)
+        </div>
+
+        <div class="editor-label">
+            @Html.DisplayNameFor(model => model.Availability)
+        </div>
+        <div class="editor-field">
+            @Html.DisplayFor(model => model.Availability)
+        </div>
+
+        <p>
+            A kölcsönzés feltételeit elolvastam és elfogadom.
+        </p>
+
+        <p>
+            <input type="submit" value="Lefoglalás véglegesítése" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Vissza a telefonokhoz", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

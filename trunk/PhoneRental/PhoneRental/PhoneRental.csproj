@@ -166,6 +166,7 @@
     <Compile Include="Controllers\DeviceTypeController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ImageController.cs" />
+    <Compile Include="Controllers\PreBorrowController.cs" />
     <Compile Include="Filters\InitializeSimpleMembershipAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -291,6 +292,8 @@
     <Content Include="Views\DeviceType\Index.cshtml" />
     <Content Include="Views\DeviceType\Create.cshtml" />
     <Content Include="Views\DeviceType\Edit.cshtml" />
+    <Content Include="Views\PreBorrow\Index.cshtml" />
+    <Content Include="Views\PreBorrow\New.cshtml" />
     <Content Include="Views\Device\Index.cshtml" />
     <Content Include="Views\Device\Details.cshtml" />
     <Content Include="Views\Device\Create.cshtml" />

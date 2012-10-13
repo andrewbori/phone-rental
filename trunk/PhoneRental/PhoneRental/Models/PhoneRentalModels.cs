@@ -58,6 +58,61 @@ namespace PhoneRental.Models
         [Display(Name = "Kép a készülékről")]
         public string ImageUrl { get; set; }
 
+        [NotMapped]
+        [Display(Name = "Elérhetősége")]
+        public string Availability
+        {
+            get
+            {
+                int borrowed;
+                int preBorrowed;
+                string retval;
+                DateTime end;
+                if (Devices.Count > 0)
+                {
+                    using (var db = new PhoneRentalContext())
+                    {
+                        borrowed = (from borrow in db.Borrows
+                                    where (borrow.Device.DeviceTypeId == Id) &
+                                    (borrow.EndDate == null)
+                                    select borrow.DeviceId).Count();
+                        preBorrowed = (from preb in db.PreBorrows
+                                       where (preb.DeviceTypeId == Id)
+                                       select preb.DeviceTypeId).Count();
+
+                        if (Devices.Count - (borrowed + preBorrowed) > 0)
+                        {
+                            retval = "Azonnal elvihető";
+                        }
+                        else if (preBorrowed < Devices.Count)
+                        {
+                            var x = preBorrowed - (Devices.Count - borrowed);
+                            end = (from borrow in db.Borrows
+                                        where (borrow.Device.DeviceTypeId == Id)
+                                        orderby borrow.Deadline
+                                        select borrow.Deadline).ToList().ElementAt(x);
+
+                            retval = end.ToString();
+                           // retval = "Mi van?";
+
+                        }
+                        else
+                        {
+                            retval = "Jelenleg minden készülékre van előfoglalás";
+                        }
+                    }
+                }
+                else
+                {
+                    retval = "Ebből a készülékből nincs raktárkészlet";
+                }
+                return retval;
+            }
+            set
+            {
+            }
+        }
+
         public virtual ICollection<Device> Devices { get; set; }
     }
 
@@ -108,7 +163,7 @@ namespace PhoneRental.Models
         public DateTime Deadline { get; set; }
 
         [Display(Name = "Kölcsönzés vége")]
-        public DateTime EndDate { get; set; }
+        public System.Nullable<DateTime> EndDate { get; set; }
     }
 
     [Table("PreBorrow")]
