@@ -306,14 +306,6 @@ ol.round {
 
 
 /* Edit/New Phone Type */
-.editor-field-aait {
-    width: 310px;
-}
-
-.editor-field-aait input {
-    width: auto;
-}
-
 .editor-field-aait-nr input {
     width: 50px;
 }
