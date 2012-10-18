@@ -43,7 +43,7 @@
                     </td>
                     <td>
                         <div class="editor-field editor-field-aait-nr">
-                            AAIT_<span class="AaitIdPattern"></span>_@Html.EditorFor(modelItem => devices[i].AaitIdNumber)
+                            <span class="AaitIdPattern"></span>@Html.EditorFor(modelItem => devices[i].AaitIdNumber)
                         </div>
                     </td>
                 </tr>
@@ -98,7 +98,7 @@
                         '<input class="text-box single-line" data-val="true" data-val-required="A következő mező megadása kötelező: IMEI." id="devices_' + i + '__Imei" name="devices[' + i + '].Imei" type="text" value="" />' +
                     '</div></td>' +
                     '<td><div class="editor-field editor-field-aait-nr">' +
-                        'AAIT_<span class="AaitIdPattern">' + pattern + '</span>_<input class="text-box single-line" data-val="true" data-val-number="The field AAIT azonosító must be a number." data-val-required="A következő mező megadása kötelező: AAIT azonosító." id="devices_' + i + '__AaitIdNumber" name="devices[' + i + '].AaitIdNumber" type="number" value="" />' +
+                        '<span class="AaitIdPattern">' + pattern + '</span><input class="text-box single-line" data-val="true" data-val-number="The field AAIT azonosító must be a number." data-val-required="A következő mező megadása kötelező: AAIT azonosító." id="devices_' + i + '__AaitIdNumber" name="devices[' + i + '].AaitIdNumber" type="number" value="" />' +
                     '</div></td>' +
                 '</tr>' +
                 '<tr style="display: none;">' +
@@ -113,6 +113,8 @@
             $('#Devices').append(newDevice);
             $('#Devices tr').show(500);
 
+            reinitValidation();
+
             i++;
 
             if (i > 1) {
@@ -120,11 +122,21 @@
             }
         }
 
+        function reinitValidation() {
+            $("form").removeData("validator");
+            $("form").removeData("unobtrusiveValidation");
+            $.validator.unobtrusive.parse("form");
+        }
+
         function removeDevice() {
             if (i > 1) {
                $('#Devices tr').last().remove();
                $('#Devices tr').last().remove();
-                i--;
+
+               reinitValidation();
+
+               i--;
+
 
                 if (i <= 1) {
                     $('#RemoveButton').hide();

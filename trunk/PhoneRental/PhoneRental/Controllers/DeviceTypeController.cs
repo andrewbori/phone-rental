@@ -18,7 +18,7 @@ namespace PhoneRental.Controllers
 
         public ActionResult Index()
         {
-            var devicetypes = db.DeviceTypes.Include(d => d.Brand);
+            var devicetypes = db.DeviceTypes.OrderBy(d => d.Brand.Name).Include(d => d.Brand);
             return View(devicetypes.ToList());
         }
 
@@ -27,7 +27,7 @@ namespace PhoneRental.Controllers
 
         public ActionResult Create()
         {
-            //ViewBag.BrandId = new SelectList(db.Brands, "Id", "Name");
+            ViewBag.Brands = db.Brands.OrderBy(b => b.Name).Select(b => b.Name);
             return View();
         }
 
@@ -54,6 +54,7 @@ namespace PhoneRental.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
+            ViewBag.Brands = db.Brands.OrderBy(b => b.Name).Select(b => b.Name);
             return View(devicetype);
         }
 

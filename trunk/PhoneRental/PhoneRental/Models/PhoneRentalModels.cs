@@ -134,6 +134,7 @@ namespace PhoneRental.Models
 
         [Required]
         [Display(Name = "AAIT azonosító")]
+        [DisplayFormat(DataFormatString = "{0:D3}", ApplyFormatInEditMode = true)]
         public int AaitIdNumber { get; set; }
     }
 

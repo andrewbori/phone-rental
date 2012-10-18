@@ -29,6 +29,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -295,10 +296,8 @@
     <Content Include="Views\PreBorrow\Index.cshtml" />
     <Content Include="Views\PreBorrow\New.cshtml" />
     <Content Include="Views\Device\Index.cshtml" />
-    <Content Include="Views\Device\Details.cshtml" />
     <Content Include="Views\Device\Create.cshtml" />
     <Content Include="Views\Device\Edit.cshtml" />
-    <Content Include="Views\Device\Delete.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

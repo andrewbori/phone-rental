@@ -18,7 +18,7 @@ namespace PhoneRental.Controllers
 
         public ActionResult Index()
         {
-            var devices = db.Devices.Include(d => d.DeviceType);
+            var devices = db.Devices.OrderBy(d => d.DeviceType.Brand.Name).ThenBy(d => d.DeviceType.Type).ThenBy(d => d.AaitIdNumber).Include(d => d.DeviceType);
             return View(devices.ToList());
         }
 
@@ -27,7 +27,8 @@ namespace PhoneRental.Controllers
 
         public ActionResult Create()
         {
-            ViewBag.DeviceTypeId = new SelectList(db.DeviceTypes, "Id", "Type");
+            var deviceTypes = db.DeviceTypes.Select(d => new { Id = d.Id, Type = d.Brand.Name + " " + d.Type }).OrderBy(d => d.Type);
+            ViewBag.DeviceTypeId = new SelectList(deviceTypes, "Id", "Type");
             ViewBag.AaitIdPattern = new SelectList(db.DeviceTypes, "Id", "AaitIdPattern");
             var devices = new[] { new Device() };
             return View(devices);
@@ -51,7 +52,8 @@ namespace PhoneRental.Controllers
                 return RedirectToAction("Index");
             }
 
-            ViewBag.DeviceTypeId = new SelectList(db.DeviceTypes, "Id", "Type");
+            var deviceTypes = db.DeviceTypes.Select(d => new { Id = d.Id, Type = d.Brand.Name + " " + d.Type }).OrderBy(d => d.Type);
+            ViewBag.DeviceTypeId = new SelectList(deviceTypes, "Id", "Type");
             ViewBag.AaitIdPattern = new SelectList(db.DeviceTypes, "Id", "AaitIdPattern");
             return View(devices);
         }
@@ -66,8 +68,6 @@ namespace PhoneRental.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.DeviceTypeId = new SelectList(db.DeviceTypes, "Id", "Type", device.DeviceTypeId);
-            ViewBag.AaitIdPattern = new SelectList(db.DeviceTypes, "Id", "AaitIdPattern");
             return View(device);
         }
 
@@ -83,8 +83,6 @@ namespace PhoneRental.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewBag.DeviceTypeId = new SelectList(db.DeviceTypes, "Id", "Type", device.DeviceTypeId);
-            ViewBag.AaitIdPattern = new SelectList(db.DeviceTypes, "Id", "AaitIdPattern");
             return View(device);
         }
 
