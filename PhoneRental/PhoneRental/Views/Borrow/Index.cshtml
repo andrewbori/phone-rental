@@ -1,0 +1,96 @@
+﻿@model IEnumerable<PhoneRental.Models.PreBorrow>
+
+@{
+    ViewBag.Title = "Index";
+}
+<link href="@Url.Content("/Content/themes/base/jquery.ui.all.css")" rel="stylesheet" type="text/css" />
+
+<h2>Készülék átadása</h2>
+
+
+<div id="tabs">
+    <ul>
+        <li><a href="#tabs-1">Előrendeléssel</a></li>
+        <li><a href="#tabs-2">Regisztrált felhasználó</a></li>
+        <li><a href="#tabs-3">Új felhasználó</a></li>
+    </ul>
+    <div id ="tabs-1">
+        @using (Html.BeginForm()) {
+            @Html.ValidationSummary(true)
+
+            <h3>Válasszon a leadott előrendelések közül!</h3>
+            <fieldset>
+                <legend>Borrow</legend>
+
+                <div class="editor-field">
+                    @Html.DropDownList("Id",(SelectList)ViewBag.PreBorrows,string.Empty)
+                </div>
+
+                <p>
+                    <input type="submit" value="Tovább" />
+                </p>
+            </fieldset>
+        }
+    </div>
+
+    <div id="tabs-2">
+        @using (Html.BeginForm()) {
+            @Html.ValidationSummary(true)
+
+        <h3>
+            Válasszon a felhasználók közül
+        </h3>
+            <fieldset>
+                <legend>Borrow</legend>
+
+                <div class="editor-field">
+                    @Html.DropDownList("UserId",(SelectList)ViewBag.Users,string.Empty)
+                </div>
+
+                <div class="editor-field">
+                    @Html.DropDownList("Id",(SelectList)ViewBag.Devices,string.Empty)
+                </div>
+
+                <p>
+                    <input type="submit" value="Tovább" />
+                </p>
+            </fieldset>
+        }
+
+    </div>
+
+    <div id="tabs-3">
+        @using (Html.BeginForm()) {
+            @Html.ValidationSummary(true)
+
+        <h3>
+            Adja meg a felhasználó adatait
+        </h3>
+            <fieldset>
+                <legend>Borrow</legend>
+
+                <div class="editor-field">
+                    @Html.DropDownList("Id",(SelectList)ViewBag.Devices,string.Empty)
+                </div>
+
+                <p>
+                    <input type="submit" value="Tovább" />
+                </p>
+            </fieldset>
+        }
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript" src="@Url.Content("/Scripts/jquery-ui-1.8.20.js")"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("#tabs").tabs();
+        });
+    </script>
+
+        
+}

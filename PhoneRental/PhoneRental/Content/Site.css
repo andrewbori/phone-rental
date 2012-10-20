@@ -310,8 +310,6 @@ ol.round {
     width: 50px;
 }
 
-
-
 /* Image upload */
 #fileinput-button {
   position: relative;
@@ -824,4 +822,15 @@ tr.pager td {
         footer p {
             margin: 0;
         }
+}
+
+
+.editor-label
+{
+    font-size: 18px;
+    font-weight: bold;
+}
+.editor-field {
+    font-size: 14px;
+    font-style:italic;
 }

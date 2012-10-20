@@ -58,6 +58,37 @@ namespace PhoneRental.Models
         [Display(Name = "Kép a készülékről")]
         public string ImageUrl { get; set; }
 
+        #region NotMapped
+        [NotMapped]
+        public string DeviceBrandAndType
+        {
+            get
+            {
+                return Brand.Name + " " + Type;
+            }
+        }
+
+        [NotMapped]
+        public bool HasPreBorrowedByUser
+        {
+            get
+            {
+                int count;
+                using (var db = new PhoneRentalContext())
+                {
+                    int uid = db.UserProfiles.Single(
+                    p => p.UserName == HttpContext.Current.User.Identity.Name).UserId;
+
+                    count = (from preBorrow in db.PreBorrows
+                                  where ((preBorrow.UserId == uid) && (preBorrow.DeviceTypeId == Id))
+                                  select preBorrow.Id).Count();
+
+                }
+                if (count > 0) return true;
+                else return false;
+            }
+        }
+
         [NotMapped]
         [Display(Name = "Elérhetősége")]
         public string Availability
@@ -93,8 +124,6 @@ namespace PhoneRental.Models
                                         select borrow.Deadline).ToList().ElementAt(x);
 
                             retval = end.ToString();
-                           // retval = "Mi van?";
-
                         }
                         else
                         {
@@ -112,6 +141,8 @@ namespace PhoneRental.Models
             {
             }
         }
+
+        #endregion
 
         public virtual ICollection<Device> Devices { get; set; }
     }
@@ -187,5 +218,24 @@ namespace PhoneRental.Models
         [Required]
         [Display(Name = "Előfoglalás időpontja")]
         public DateTime Date { get; set; }
+
+        [NotMapped]
+        public string UserAndDeviceName
+        {
+            get
+            {
+                string s;
+                s = User.LastName;
+                s += " ";
+                s += User.FirstName;
+                s += " (";
+                s += User.UserName;
+                s += ") - ";
+                s += DeviceType.Brand.Name;
+                s += " ";
+                s += DeviceType.Type;
+                return s;
+            }
+        }
     }
 }
