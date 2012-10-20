@@ -46,7 +46,12 @@
             </a>
         </td>
         <td>
+            @if (!item.HasPreBorrowedByUser) {
             @Html.ActionLink("Lefoglal", "New", new { id=item.Id })
+            } else
+            {
+                <p>Erre a készülékre már adott le előfoglalást!</p>
+            }
         </td>
     </tr>
 }
