@@ -59,14 +59,6 @@ namespace PhoneRental.Models
         public string ImageUrl { get; set; }
 
         #region NotMapped
-        [NotMapped]
-        public string DeviceBrandAndType
-        {
-            get
-            {
-                return Brand.Name + " " + Type;
-            }
-        }
 
         [NotMapped]
         public bool HasPreBorrowedByUser
@@ -218,24 +210,5 @@ namespace PhoneRental.Models
         [Required]
         [Display(Name = "Előfoglalás időpontja")]
         public DateTime Date { get; set; }
-
-        [NotMapped]
-        public string UserAndDeviceName
-        {
-            get
-            {
-                string s;
-                s = User.LastName;
-                s += " ";
-                s += User.FirstName;
-                s += " (";
-                s += User.UserName;
-                s += ") - ";
-                s += DeviceType.Brand.Name;
-                s += " ";
-                s += DeviceType.Type;
-                return s;
-            }
-        }
     }
 }

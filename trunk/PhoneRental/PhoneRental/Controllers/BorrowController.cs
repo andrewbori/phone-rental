@@ -18,10 +18,88 @@ namespace PhoneRental.Controllers
 
         public ActionResult Index()
         {
-            ViewBag.PreBorrows = new SelectList(db.PreBorrows.ToList(), "Id", "UserAndDeviceName");
-            ViewBag.Users = new SelectList(db.UserProfiles.ToList(), "UserId", "FullUserName");
-            ViewBag.Devices = new SelectList(db.DeviceTypes.ToList(), "Id", "DeviceBrandAndType");
+            var preBorrows = db.PreBorrows.Select(d => new
+            {
+                Id = d.Id,
+                Name = d.User.LastName + " " + d.User.FirstName + " (" + d.User.UserName + ") - " +
+                    d.DeviceType.Brand.Name + " " + d.DeviceType.Type
+            }).OrderBy(d => d.Name);
+
+            ViewBag.PreBorrows = new SelectList(preBorrows, "Id", "Name");
+
+            var users = db.UserProfiles.Select(d => new { UserId = d.UserId, FullName = d.LastName + " " + d.FirstName + " (" + d.UserName + ")" }).OrderBy(d => d.FullName); 
+            ViewBag.Users = new SelectList(users, "UserId", "FullName");
+
+            var deviceTypes = db.DeviceTypes.Select(d => new { Id = d.Id, Type = d.Brand.Name + " " + d.Type }).OrderBy(d => d.Type);
+            ViewBag.Devices = new SelectList(deviceTypes, "Id", "Type");
+            
             return View(db.PreBorrows.ToList());
+        }
+
+
+        public ActionResult WithPreBorrow(int id = 0)
+        {
+            PreBorrow preBorrow = db.PreBorrows.Find(id);
+            if (preBorrow == null)
+            {
+                return HttpNotFound();
+            }
+
+            var devices = db.Devices.Select(d => new
+            {
+                Id = d.Id,
+                DeviceTypeId = d.DeviceTypeId,
+                AaitIdNumber = d.AaitIdNumber,
+                Imei = d.Imei,
+                AAIT = d.DeviceType.AaitIdPattern
+            }).Where(d => d.DeviceTypeId == preBorrow.DeviceTypeId).OrderBy(d => d.AAIT).ToList().Select( d => new
+            {
+                Id = d.Id,
+                AAIT = d.AAIT + d.AaitIdNumber.ToString() + " (" + d.Imei + ")" 
+            });
+            ViewBag.Devices = new SelectList(devices, "Id", "AAIT");
+            ViewBag.PreBorrow = preBorrow;
+
+            var borrow = new Borrow()
+            {
+                UserId = preBorrow.UserId,
+                StartDate = DateTime.Now
+            };
+
+            return View(borrow);
+        }
+
+
+        //
+        // POST: /Borrow/Create
+
+        [HttpPost]
+        public ActionResult SaveBorrow(Borrow borrow)
+        {
+            if (ModelState.IsValid)
+            {
+                db.Borrows.Add(borrow);
+                var device = db.Devices.Single(p => p.Id == borrow.DeviceId);
+                var pBorrow = db.PreBorrows.Single(p => p.UserId == borrow.UserId && p.DeviceTypeId == device.DeviceTypeId);
+                db.PreBorrows.Remove(pBorrow);
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            return View(borrow);
+        }
+
+        public ActionResult DeviceList(int DeviceTypeId = 0)
+        {
+            var devices = db.Devices.Select(p => new { Id = p.Id, DeviceTypeId = p.DeviceTypeId, Name = p.DeviceType.Brand.Name + " " + p.DeviceType.Type}).Where(p => p.DeviceTypeId == DeviceTypeId);
+
+            if (HttpContext.Request.IsAjaxRequest())
+            {
+                return this.Json(new SelectList(
+                    devices,
+                    "Id",
+                    "Name"), JsonRequestBehavior.AllowGet);
+            }
+            return View(devices);
         }
 
         //

@@ -27,15 +27,6 @@ namespace PhoneRental.Models
         [Required]
         [Display(Name = "Vezetéknév")]
         public string LastName { get; set; }
-
-        [NotMapped]
-        public string FullUserName
-        {
-            get
-            {
-                return FirstName + " " + LastName + " (" + UserName + ")";
-            }
-        }
     }
 
     public class RegisterExternalLoginModel

@@ -15,7 +15,7 @@
         <li><a href="#tabs-3">Új felhasználó</a></li>
     </ul>
     <div id ="tabs-1">
-        @using (Html.BeginForm()) {
+        @using (Html.BeginForm("WithPreBorrow","Borrow")) {
             @Html.ValidationSummary(true)
 
             <h3>Válasszon a leadott előrendelések közül!</h3>
@@ -76,7 +76,15 @@
                 <p>
                     <input type="submit" value="Tovább" />
                 </p>
-            </fieldset>
+                <input type="button" id="btnFillList">
+                
+                <select id="stateList" name="stateList"></select>
+                <div id="DevicesDIV">
+                    <label for="Device">Devices</label>
+                    <select id="DeviceId2" name="Devices"></select>
+                </div>
+
+            </fieldset><select id="DeviceId2" name="Devices"></select>
         }
     </div>
 </div>
@@ -85,11 +93,21 @@
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
-    <script type="text/javascript" src="@Url.Content("/Scripts/jquery-ui-1.8.20.js")"></script>
+    @Scripts.Render("~/bundles/jqueryui")
     <script type="text/javascript">
         $(function () {
             $("#tabs").tabs();
         });
+
+
+        $(function() {
+                 $('#btnFillList').click(function() {
+                          $.getJSON("/Borrow/DeviceList?DeviceTypeId=1", null, function(data) {
+                              $("#stateList").fillSelect(data);
+                              });
+                    });
+        });
+
     </script>
 
         
