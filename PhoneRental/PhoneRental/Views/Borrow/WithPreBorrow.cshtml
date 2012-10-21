@@ -1,0 +1,81 @@
+﻿@model PhoneRental.Models.Borrow
+
+@{
+    ViewBag.Title = "WithPreBorrow";
+}
+
+<link href="@Url.Content("/Content/themes/base/jquery.ui.all.css")" rel="stylesheet" type="text/css" />
+
+<h2>Készülék kiadása előrendeléssel</h2>
+
+@using (Html.BeginForm("SaveBorrow", "Borrow")) {
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>Edit</legend>
+
+        @Html.HiddenFor(model => model.UserId);
+        @Html.HiddenFor(model => model.StartDate);
+
+        <div class="editor-label">
+            Felhasználó neve
+        </div>
+        <div class="editor-field">
+            @ViewBag.PreBorrow.User.LastName @ViewBag.PreBorrow.User.FirstName
+        </div>
+
+        <div class="editor-label">
+            Felhasználó név
+        </div>
+        <div class="editor-field">
+            @ViewBag.PreBorrow.User.UserName
+        </div>
+
+        <div class="editor-label">
+            Telefon gyártója / típusa
+        </div>
+        <div class="editor-field">
+            @ViewBag.PreBorrow.DeviceType.Brand.Name - @ViewBag.PreBorrow.DeviceType.Type
+        </div>
+
+        <div class="editor-label">
+            Válassza ki a konkrét készülék példányt!
+        </div>
+
+        <div class="editor-field">
+            @Html.DropDownList("DeviceId",(SelectList)ViewBag.Devices,string.Empty)
+            @Html.ValidationMessageFor(model => model.DeviceId)
+        </div>
+
+        <div class="editor-label">
+            Adja meg a visszahozatal határidejét!
+        </div>
+
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Deadline)
+            @Html.ValidationMessageFor(model => model.Deadline)
+        </div>
+
+        <p>
+            <input type="submit" value="Mentés" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Vissza a készülékek listájára", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/jqueryui")
+    <script type="text/javascript">
+        $(function () {
+            $("#Deadline").datepicker();
+            $("#Deadline").datepicker("option", "dateFormat", "mm/dd/yy");
+
+        });
+    </script>
+
+        
+}
