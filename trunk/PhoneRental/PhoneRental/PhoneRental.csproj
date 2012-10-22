@@ -300,7 +300,9 @@
     <Content Include="Views\Device\Create.cshtml" />
     <Content Include="Views\Device\Edit.cshtml" />
     <Content Include="Views\Borrow\Index.cshtml" />
-    <Content Include="Views\Borrow\WithPreBorrow.cshtml" />
+    <Content Include="Views\Borrow\New.cshtml" />
+    <Content Include="Views\Borrow\NewForUser.cshtml" />
+    <Content Include="Views\Borrow\NewForPreBorrow.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

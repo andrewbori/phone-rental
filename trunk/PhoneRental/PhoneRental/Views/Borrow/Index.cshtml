@@ -1,4 +1,4 @@
-﻿@model IEnumerable<PhoneRental.Models.PreBorrow>
+﻿@model PhoneRental.Models.Borrow
 
 @{
     ViewBag.Title = "Index";
@@ -15,7 +15,8 @@
         <li><a href="#tabs-3">Új felhasználó</a></li>
     </ul>
     <div id ="tabs-1">
-        @using (Html.BeginForm("WithPreBorrow","Borrow")) {
+        @using (Html.BeginForm("NewForPreBorrow", "Borrow", FormMethod.Post, new { Id = "form1" }))
+        {
             @Html.ValidationSummary(true)
 
             <h3>Válasszon a leadott előrendelések közül!</h3>
@@ -23,7 +24,22 @@
                 <legend>Borrow</legend>
 
                 <div class="editor-field">
-                    @Html.DropDownList("Id",(SelectList)ViewBag.PreBorrows,string.Empty)
+                    @Html.DropDownList("PreBorrowId", (SelectList)ViewBag.PreBorrows, string.Empty)
+                </div>
+                
+                <div class="editor-label">
+                     Válassza ki a konkrét készülék példányt!
+                </div>
+
+                <select id="DeviceList1" name="DeviceId"></select>
+
+                <div class="editor-label">
+                    Adja meg a visszahozatal határidejét!
+                </div>
+
+                <div class="editor-field">
+                    @Html.TextBoxFor(model => model.Deadline, new { Id = "Deadline1", Name = "Deadline" })
+                    @Html.ValidationMessageFor(model => model.Deadline)
                 </div>
 
                 <p>
@@ -34,21 +50,41 @@
     </div>
 
     <div id="tabs-2">
-        @using (Html.BeginForm()) {
+        @using (Html.BeginForm("NewForUser", "Borrow", FormMethod.Post, new { Id="form2"}))
+        {
             @Html.ValidationSummary(true)
 
-        <h3>
-            Válasszon a felhasználók közül
-        </h3>
             <fieldset>
                 <legend>Borrow</legend>
 
-                <div class="editor-field">
-                    @Html.DropDownList("UserId",(SelectList)ViewBag.Users,string.Empty)
+                 <div class="editor-label">
+                    Válasszon a felhasználók közül
                 </div>
 
                 <div class="editor-field">
-                    @Html.DropDownList("Id",(SelectList)ViewBag.Devices,string.Empty)
+                    @Html.DropDownList("UserId", (SelectList)ViewBag.Users, string.Empty)
+                </div>
+
+                <div class="editor-label">
+                    Válasszon eszköz típust!
+                </div>
+
+                <div class="editor-field">
+                    @Html.DropDownList("DeviceTypeId2", (SelectList)ViewBag.Devices, string.Empty)
+                </div>
+
+                <div class="editor-label">
+                     Válassza ki a konkrét készülék példányt!
+                </div>
+
+                <select id="DeviceList2" name="DeviceId"></select>
+
+                <div class="editor-label">
+                     Adja meg a visszahozatal határidejét!
+                </div>
+                <div class="editor-field">
+                    @Html.TextBoxFor(model => model.Deadline, new { Id = "Deadline2", Name = "Deadline" })
+                    @Html.ValidationMessageFor(model => model.Deadline)
                 </div>
 
                 <p>
@@ -60,7 +96,8 @@
     </div>
 
     <div id="tabs-3">
-        @using (Html.BeginForm()) {
+        @using (Html.BeginForm("New", "Borrow", FormMethod.Post, new { Id = "form3" }))
+        {
             @Html.ValidationSummary(true)
 
         <h3>
@@ -68,23 +105,62 @@
         </h3>
             <fieldset>
                 <legend>Borrow</legend>
+                
+                <div class="editor-label">
+                     Család név
+                </div>
+                                
+                <div class="editor-field">
+                    @Html.TextBoxFor(model => model.User.LastName)
+                    @Html.ValidationMessageFor(model => model.User.LastName)
+                </div>
+
+                <div class="editor-label">
+                     Kereszt név
+                </div>
 
                 <div class="editor-field">
-                    @Html.DropDownList("Id",(SelectList)ViewBag.Devices,string.Empty)
+                    @Html.TextBoxFor(model => model.User.FirstName)
+                    @Html.ValidationMessageFor(model => model.User.FirstName)
+                </div>
+
+                <div class="editor-label">
+                     Felhasználó név (e-mail cím)
+                </div>
+
+                <div class="editor-field">
+                    @Html.TextBoxFor(model => model.User.UserName)
+                    @Html.ValidationMessageFor(model => model.User.UserName)
+                </div>
+
+                <div class="editor-label">
+                    Válasszon eszköz típust!
+                </div>
+
+                <div class="editor-field">
+                    @Html.DropDownList("DeviceTypeId3", (SelectList)ViewBag.Devices, string.Empty)
+                </div>
+
+                <div class="editor-label">
+                     Válassza ki a konkrét készülék példányt!
+                </div>
+
+                <select id="DeviceList3" name="DeviceId"></select>
+
+                <div class="editor-label">
+                     Adja meg a visszahozatal határidejét!
+                </div>
+                <div class="editor-field">
+                    @Html.TextBoxFor(model => model.Deadline, new { Id = "Deadline3", Name = "Deadline" })
+                    @Html.ValidationMessageFor(model => model.Deadline)
                 </div>
 
                 <p>
                     <input type="submit" value="Tovább" />
                 </p>
-                <input type="button" id="btnFillList">
                 
-                <select id="stateList" name="stateList"></select>
-                <div id="DevicesDIV">
-                    <label for="Device">Devices</label>
-                    <select id="DeviceId2" name="Devices"></select>
-                </div>
-
-            </fieldset><select id="DeviceId2" name="Devices"></select>
+                <select id="DeviceList" name="DeviceList"></select>
+           </fieldset>
         }
     </div>
 </div>
@@ -97,16 +173,88 @@
     <script type="text/javascript">
         $(function () {
             $("#tabs").tabs();
+            $("#tabs").tabs({
+                select: function(event, ui) {
+                    $('#form1').each(function () {
+                        this.reset();
+                    });
+                    $('#form2').each(function () {
+                        this.reset();
+                    });
+                    $('#form3').each(function () {
+                        this.reset();
+                    });
+                }
+            })
         });
 
+        $(function () {
+            $("#Deadline1").datepicker();
+            $("#Deadline1").datepicker("option", "dateFormat", "mm/dd/yy");
+
+        });
+
+        $(function () {
+            $("#Deadline2").datepicker();
+            $("#Deadline2").datepicker("option", "dateFormat", "mm/dd/yy");
+
+        });
+
+        $(function () {
+            $("#Deadline3").datepicker();
+            $("#Deadline3").datepicker("option", "dateFormat", "mm/dd/yy");
+
+        });
 
         $(function() {
-                 $('#btnFillList').click(function() {
-                          $.getJSON("/Borrow/DeviceList?DeviceTypeId=1", null, function(data) {
-                              $("#stateList").fillSelect(data);
+                 $('#DeviceTypeId2').change(function() {
+                     $.getJSON("/Borrow/DeviceListForDeviceType?DeviceTypeId=" + $('#DeviceTypeId2').val(), null, function (data) {
+                         $("#DeviceList2").fillSelect(data);
                               });
                     });
         });
+
+        $(function () {
+            $('#DeviceTypeId3').change(function () {
+                $.getJSON("/Borrow/DeviceListForDeviceType?DeviceTypeId=" + $('#DeviceTypeId3').val(), null, function (data) {
+                    $("#DeviceList3").fillSelect(data);
+                });
+            });
+        });
+
+        $(function () {
+            $('#PreBorrowId').change(function () {
+                $.getJSON("/Borrow/DeviceListForPreBorrow?PreBorrowId=" + $('#PreBorrowId').val(), null, function (data) {
+                    $("#DeviceList1").fillSelect(data);
+                });
+            });
+        });
+
+         $.fn.clearSelect = function() {
+                  return this.each(function() {
+                      if (this.tagName == 'SELECT')
+                          this.options.length = 0;
+                });
+           } 
+
+     
+
+      $.fn.fillSelect = function(data) {
+             return this.clearSelect().each(function() {
+                     if (this.tagName == 'SELECT') {
+                            var dropdownList = this;
+                              $.each(data, function(index, optionData) {
+                                      var option = new Option(optionData.Text, optionData.Value);
+                                   if ($.browser.msie) {
+                                            dropdownList.add(option);
+                                         }
+                                    else {
+                                             dropdownList.add(option, null);
+                                        }
+                                   });
+                          }
+                    });
+         }
 
     </script>
 
