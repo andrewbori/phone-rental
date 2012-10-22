@@ -6,6 +6,10 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using PhoneRental.Models;
+using System.Web.Security;
+using WebMatrix.WebData;
+using System.Diagnostics;
+using System.Configuration;
 
 namespace PhoneRental.Controllers
 {
@@ -32,8 +36,10 @@ namespace PhoneRental.Controllers
 
             var deviceTypes = db.DeviceTypes.Select(d => new { Id = d.Id, Type = d.Brand.Name + " " + d.Type }).OrderBy(d => d.Type);
             ViewBag.Devices = new SelectList(deviceTypes, "Id", "Type");
-            
-            return View(db.PreBorrows.ToList());
+
+            var borrow = new Borrow();
+            borrow.User = new UserProfile();
+            return View(borrow);
         }
 
 
@@ -69,28 +75,106 @@ namespace PhoneRental.Controllers
             return View(borrow);
         }
 
-
-        //
-        // POST: /Borrow/Create
-
         [HttpPost]
-        public ActionResult SaveBorrow(Borrow borrow)
+        public ActionResult NewForPreBorrow(DateTime Deadline, int DeviceId, int PreBorrowId)
         {
+            // Előfoglalás kikeresése
+            PreBorrow preBorrow = db.PreBorrows.Find(PreBorrowId);
+            if (preBorrow == null)
+            {
+                return HttpNotFound();
+            }
+            var borrow = new Borrow()
+            {
+                StartDate = DateTime.Now,
+                Deadline = Deadline,
+                UserId = preBorrow.User.UserId,
+                DeviceId = DeviceId
+            };
             if (ModelState.IsValid)
             {
                 db.Borrows.Add(borrow);
-                var device = db.Devices.Single(p => p.Id == borrow.DeviceId);
-                var pBorrow = db.PreBorrows.Single(p => p.UserId == borrow.UserId && p.DeviceTypeId == device.DeviceTypeId);
-                db.PreBorrows.Remove(pBorrow);
+                db.PreBorrows.Remove(preBorrow);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return View();
             }
-            return View(borrow);
+            
+            
+            return HttpNotFound();
         }
 
-        public ActionResult DeviceList(int DeviceTypeId = 0)
+        [HttpPost]
+        public ActionResult NewForUser(int UserId, int DeviceId, DateTime Deadline)
         {
-            var devices = db.Devices.Select(p => new { Id = p.Id, DeviceTypeId = p.DeviceTypeId, Name = p.DeviceType.Brand.Name + " " + p.DeviceType.Type}).Where(p => p.DeviceTypeId == DeviceTypeId);
+            // Előfoglalás kikeresése
+            UserProfile user = db.UserProfiles.Find(UserId);
+            if (user == null)
+            {
+                return HttpNotFound();
+            }
+
+            var borrow = new Borrow()
+            {
+                StartDate = DateTime.Now,
+                Deadline = Deadline,
+                UserId = user.UserId,
+                DeviceId = DeviceId
+            };
+            if (ModelState.IsValid)
+            {
+                db.Borrows.Add(borrow);
+                db.SaveChanges();
+                return View();
+            }
+
+
+            return HttpNotFound();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public ActionResult New(UserProfile user, int DeviceId, DateTime Deadline)
+        {
+            if (ModelState.IsValid)
+            {
+                // Attempt to register the user
+                try
+                {
+                    var connection = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+                    WebSecurity.InitializeDatabaseConnection("DefaultConnection", "UserProfile", "UserId", "UserName", true);
+                    WebSecurity.CreateUserAndAccount(user.UserName, "", new { FirstName = user.FirstName, LastName = user.LastName });
+                }
+                catch (MembershipCreateUserException e)
+                {
+                    Debug.WriteLine(e.Data);
+                }
+            }
+
+            var userid = db.UserProfiles.Where(d => d.UserName == user.UserName).Select(d => d.UserId).Single();
+
+            var borrow = new Borrow()
+            {
+                StartDate = DateTime.Now,
+                Deadline = Deadline,
+                DeviceId = DeviceId,
+                UserId = userid
+            };
+            if (ModelState.IsValid)
+            {
+                db.Borrows.Add(borrow);
+                db.SaveChanges();
+                return View();
+            }
+
+
+            return HttpNotFound();
+        }
+
+        public ActionResult DeviceListForDeviceType(int DeviceTypeId = 0)
+        {
+            var devices = db.Devices.Select(p => new { Id = p.Id, DeviceTypeId = p.DeviceTypeId, Name = p.DeviceType.AaitIdPattern + " " + p.Imei}).Where(p => p.DeviceTypeId == DeviceTypeId).ToList();
+
+            devices.Insert(0, new { Id = 0, DeviceTypeId = 0, Name = "Kérem válasszon!" });
 
             if (HttpContext.Request.IsAjaxRequest())
             {
@@ -102,102 +186,19 @@ namespace PhoneRental.Controllers
             return View(devices);
         }
 
-        //
-        // GET: /Borrow/Details/5
-
-        public ActionResult Details(int id = 0)
+        public ActionResult DeviceListForPreBorrow(int PreBorrowId = 0)
         {
-            Borrow borrow = db.Borrows.Find(id);
-            if (borrow == null)
+            PreBorrow preBorrow = db.PreBorrows.Find(PreBorrowId);
+            int deviceTypeId;
+            if (preBorrow == null)
             {
-                return HttpNotFound();
+                deviceTypeId = 0;
             }
-            return View(borrow);
-        }
-
-        //
-        // GET: /Borrow/Create
-
-        public ActionResult Create()
-        {
-            ViewBag.UserId = new SelectList(db.UserProfiles, "UserId", "UserName");
-            ViewBag.DeviceId = new SelectList(db.Devices, "Id", "Imei");
-            return View();
-        }
-
-        //
-        // POST: /Borrow/Create
-
-        [HttpPost]
-        public ActionResult Create(Borrow borrow)
-        {
-            if (ModelState.IsValid)
+            else
             {
-                db.Borrows.Add(borrow);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                deviceTypeId = preBorrow.DeviceTypeId;
             }
-
-            ViewBag.UserId = new SelectList(db.UserProfiles, "UserId", "UserName", borrow.UserId);
-            ViewBag.DeviceId = new SelectList(db.Devices, "Id", "Imei", borrow.DeviceId);
-            return View(borrow);
-        }
-
-        //
-        // GET: /Borrow/Edit/5
-
-        public ActionResult Edit(int id = 0)
-        {
-            Borrow borrow = db.Borrows.Find(id);
-            if (borrow == null)
-            {
-                return HttpNotFound();
-            }
-            ViewBag.UserId = new SelectList(db.UserProfiles, "UserId", "UserName", borrow.UserId);
-            ViewBag.DeviceId = new SelectList(db.Devices, "Id", "Imei", borrow.DeviceId);
-            return View(borrow);
-        }
-
-        //
-        // POST: /Borrow/Edit/5
-
-        [HttpPost]
-        public ActionResult Edit(Borrow borrow)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Entry(borrow).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            ViewBag.UserId = new SelectList(db.UserProfiles, "UserId", "UserName", borrow.UserId);
-            ViewBag.DeviceId = new SelectList(db.Devices, "Id", "Imei", borrow.DeviceId);
-            return View(borrow);
-        }
-
-        //
-        // GET: /Borrow/Delete/5
-
-        public ActionResult Delete(int id = 0)
-        {
-            Borrow borrow = db.Borrows.Find(id);
-            if (borrow == null)
-            {
-                return HttpNotFound();
-            }
-            return View(borrow);
-        }
-
-        //
-        // POST: /Borrow/Delete/5
-
-        [HttpPost, ActionName("Delete")]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            Borrow borrow = db.Borrows.Find(id);
-            db.Borrows.Remove(borrow);
-            db.SaveChanges();
-            return RedirectToAction("Index");
+            return DeviceListForDeviceType(deviceTypeId);
         }
 
         protected override void Dispose(bool disposing)
