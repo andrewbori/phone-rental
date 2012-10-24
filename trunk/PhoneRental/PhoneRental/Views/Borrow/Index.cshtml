@@ -10,7 +10,7 @@
 
 <div id="tabs">
     <ul>
-        <li><a href="#tabs-1">Előrendeléssel</a></li>
+        <li><a href="#tabs-1">Előfoglalással</a></li>
         <li><a href="#tabs-2">Regisztrált felhasználó</a></li>
         <li><a href="#tabs-3">Új felhasználó</a></li>
     </ul>
@@ -19,7 +19,7 @@
         {
             @Html.ValidationSummary(true)
 
-            <h3>Válasszon a leadott előrendelések közül!</h3>
+            <h3>Válasszon a leadott előfoglalások közül!</h3>
             <fieldset>
                 <legend>Borrow</legend>
 
@@ -107,7 +107,7 @@
                 <legend>Borrow</legend>
                 
                 <div class="editor-label">
-                     Család név
+                     Vezetéknév
                 </div>
                                 
                 <div class="editor-field">
@@ -116,7 +116,7 @@
                 </div>
 
                 <div class="editor-label">
-                     Kereszt név
+                     Keresztnév
                 </div>
 
                 <div class="editor-field">
@@ -125,7 +125,7 @@
                 </div>
 
                 <div class="editor-label">
-                     Felhasználó név (e-mail cím)
+                     E-mail cím
                 </div>
 
                 <div class="editor-field">
@@ -134,7 +134,7 @@
                 </div>
 
                 <div class="editor-label">
-                    Válasszon eszköz típust!
+                    Készülék típusa
                 </div>
 
                 <div class="editor-field">
@@ -142,13 +142,13 @@
                 </div>
 
                 <div class="editor-label">
-                     Válassza ki a konkrét készülék példányt!
+                     Konkrét készülék
                 </div>
 
                 <select id="DeviceList3" name="DeviceId"></select>
 
                 <div class="editor-label">
-                     Adja meg a visszahozatal határidejét!
+                     Visszahozatal határideje
                 </div>
                 <div class="editor-field">
                     @Html.TextBoxFor(model => model.Deadline, new { Id = "Deadline3", Name = "Deadline" })
@@ -165,7 +165,9 @@
     </div>
 </div>
 
-
+@section Styles {
+    @Styles.Render("~/Content/themes/base/jquery.ui.all")
+}
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")

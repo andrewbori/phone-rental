@@ -18,6 +18,7 @@
         <div class="editor-field">
             @Html.DropDownList("DeviceTypeId")
             @Html.DropDownList("AaitIdPattern")
+            @Html.DropDownList("LargestId")
             <span class="field-validation-valid" data-valmsg-for="DeviceTypeId" data-valmsg-replace="true"></span>
         </div>
     </fieldset>
@@ -43,7 +44,7 @@
                     </td>
                     <td>
                         <div class="editor-field editor-field-aait-nr">
-                            <span class="AaitIdPattern"></span>@Html.EditorFor(modelItem => devices[i].AaitIdNumber)
+                            <span class="AaitIdPattern"></span>_<span class="AaitIdNumber">@Html.EditorFor(modelItem => devices[i].AaitIdNumber) </span>
                         </div>
                     </td>
                 </tr>
@@ -74,10 +75,12 @@
     @Scripts.Render("~/bundles/jqueryval")
     <script type="text/javascript">
         var pattern = "";
+        var largestId = 1;
         var i = @devices.Length
         
         $(document).ready(function () {
             $('#AaitIdPattern').hide();
+            $('#LargestId').hide();
             $('select#DeviceTypeId').change(function () {
                 deviceTypeChanged();
             });
@@ -89,6 +92,11 @@
             var selectedVal = $("#DeviceTypeId option:selected").val();
             pattern = $('#AaitIdPattern option:[value=' + selectedVal + ']').text();
             $('.AaitIdPattern').text(pattern);
+
+            largestId = parseInt($('#LargestId option:[value=' + selectedVal + ']').text()) || 0;
+            $('.AaitIdNumber').each(function (index) {
+                $(this).find('input').val(addPaddingToInt(largestId + index + 1, 3));
+            });
         }
 
         function addDevice() {
@@ -98,7 +106,7 @@
                         '<input class="text-box single-line" data-val="true" data-val-required="A következő mező megadása kötelező: IMEI." id="devices_' + i + '__Imei" name="devices[' + i + '].Imei" type="text" value="" />' +
                     '</div></td>' +
                     '<td><div class="editor-field editor-field-aait-nr">' +
-                        '<span class="AaitIdPattern">' + pattern + '</span><input class="text-box single-line" data-val="true" data-val-number="The field AAIT azonosító must be a number." data-val-required="A következő mező megadása kötelező: AAIT azonosító." id="devices_' + i + '__AaitIdNumber" name="devices[' + i + '].AaitIdNumber" type="number" value="" />' +
+                        '<span class="AaitIdPattern">' + pattern + '</span>_<span class="AaitIdNumber"><input class="text-box single-line" data-val="true" data-val-number="The field AAIT azonosító must be a number." data-val-required="A következő mező megadása kötelező: AAIT azonosító." id="devices_' + i + '__AaitIdNumber" name="devices[' + i + '].AaitIdNumber" type="number" value="' + addPaddingToInt(largestId + i + 1, 3) + '" /></span>' +
                     '</div></td>' +
                 '</tr>' +
                 '<tr style="display: none;">' +
@@ -143,6 +151,20 @@
                 }
             }
         }
+
+        function addPaddingToInt(number, digit) {
+            var retval = number;
+            if (number < 0) return retval;
+            if (digit < 1) return retval;
+
+            for (var i = Math.pow(10, digit-1); i > 1; i /= 10) {
+                if (number < i) retval = '0' + retval;
+                else return retval;
+            }
+
+            return retval;
+        }
+
     </script>
 
 }

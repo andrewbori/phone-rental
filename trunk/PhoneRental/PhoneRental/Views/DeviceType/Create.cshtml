@@ -86,7 +86,7 @@
             $('#Type').change(function () {
                 var type = $(this).val();
                 type = replaceAll(type, " ", "_");
-                $('#AaitIdPattern').val("AAIT_" + type + "_");
+                $('#AaitIdPattern').val("AAIT_" + type);
             });
 
             $('#progress #bar').css('width', '0%');
