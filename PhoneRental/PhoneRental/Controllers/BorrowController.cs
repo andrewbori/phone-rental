@@ -61,7 +61,7 @@ namespace PhoneRental.Controllers
             }).Where(d => d.DeviceTypeId == preBorrow.DeviceTypeId).OrderBy(d => d.AAIT).ToList().Select( d => new
             {
                 Id = d.Id,
-                AAIT = d.AAIT + d.AaitIdNumber.ToString() + " (" + d.Imei + ")" 
+                AAIT = d.AAIT + "_" + d.AaitIdNumber.ToString() + " (" + d.Imei + ")" 
             });
             ViewBag.Devices = new SelectList(devices, "Id", "AAIT");
             ViewBag.PreBorrow = preBorrow;
@@ -172,7 +172,7 @@ namespace PhoneRental.Controllers
 
         public ActionResult DeviceListForDeviceType(int DeviceTypeId = 0)
         {
-            var devices = db.Devices.Select(p => new { Id = p.Id, DeviceTypeId = p.DeviceTypeId, Name = p.DeviceType.AaitIdPattern + " " + p.Imei}).Where(p => p.DeviceTypeId == DeviceTypeId).ToList();
+            var devices = db.Devices.Select(p => new { Id = p.Id, DeviceTypeId = p.DeviceTypeId, Name = p.DeviceType.AaitIdPattern + "_" + p.Imei}).Where(p => p.DeviceTypeId == DeviceTypeId).ToList();
 
             devices.Insert(0, new { Id = 0, DeviceTypeId = 0, Name = "Kérem válasszon!" });
 

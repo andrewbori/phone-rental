@@ -4,7 +4,7 @@
     ViewBag.Title = "Create";
 }
 
-<h2>Telefon előfoglalása</h2>
+<h2>Készülék előfoglalása</h2>
 
 @using (Html.BeginForm()) {
     @Html.ValidationSummary(true)
@@ -41,13 +41,13 @@
         </p>
 
         <p>
-            <input type="submit" value="Lefoglalás véglegesítése" />
+            <input type="submit" value="Előfoglalás véglegesítése" />
         </p>
     </fieldset>
 }
 
 <div>
-    @Html.ActionLink("Vissza a telefonokhoz", "Index")
+    @Html.ActionLink("Vissza a készülékekhez", "Index")
 </div>
 
 @section Scripts {

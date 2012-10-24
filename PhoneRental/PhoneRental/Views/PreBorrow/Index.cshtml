@@ -4,7 +4,7 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Kölcsönözhető telefonok</h2>
+<h2>Kölcsönözhető Készülékek</h2>
 
 <table>
     <tr>
@@ -47,7 +47,7 @@
         </td>
         <td>
             @if (!item.HasPreBorrowedByUser) {
-            @Html.ActionLink("Lefoglal", "New", new { id=item.Id })
+            @Html.ActionLink("Előfoglalás", "New", new { id=item.Id })
             } else
             {
                 <p>Erre a készülékre már adott le előfoglalást!</p>
