@@ -71,8 +71,28 @@
     @Html.ActionLink("Vissza a készülékek listájára", "Index")
 </div>
 
+<script id="deviceTemplate" type="text/x-jquery-tmpl">
+    <tr style="display: none;">
+        <td><div class="editor-field">
+            <input class="text-box single-line" data-val="true" data-val-required="A következő mező megadása kötelező: IMEI." id="devices_${Index}__Imei" name="devices[${Index}].Imei" type="text" value="" />
+        </div></td>
+        <td><div class="editor-field editor-field-aait-nr">
+            <span class="AaitIdPattern">${Pattern}</span>_<span class="AaitIdNumber"><input class="text-box single-line" data-val="true" data-val-number="The field AAIT azonosító must be a number." data-val-required="A következő mező megadása kötelező: AAIT azonosító." id="devices_${Index}__AaitIdNumber" name="devices[${Index}].AaitIdNumber" type="number" value="${Number}" /></span>
+        </div></td>
+    </tr>
+    <tr style="display: none;">
+        <td>
+            <span class="field-validation-valid" data-valmsg-for="devices[${Index}].Imei" data-valmsg-replace="true"></span>
+        </td>
+        <td>
+            <span class="field-validation-valid" data-valmsg-for="devices[${Index}].AaitIdNumber" data-valmsg-replace="true"></span>
+        </td>
+    </tr>
+</script>
+
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/jquerytmpl")
     <script type="text/javascript">
         var pattern = "";
         var largestId = 1;
@@ -100,23 +120,8 @@
         }
 
         function addDevice() {
-            var newDevice =
-                '<tr style="display: none;">' +
-                    '<td><div class="editor-field">' +
-                        '<input class="text-box single-line" data-val="true" data-val-required="A következő mező megadása kötelező: IMEI." id="devices_' + i + '__Imei" name="devices[' + i + '].Imei" type="text" value="" />' +
-                    '</div></td>' +
-                    '<td><div class="editor-field editor-field-aait-nr">' +
-                        '<span class="AaitIdPattern">' + pattern + '</span>_<span class="AaitIdNumber"><input class="text-box single-line" data-val="true" data-val-number="The field AAIT azonosító must be a number." data-val-required="A következő mező megadása kötelező: AAIT azonosító." id="devices_' + i + '__AaitIdNumber" name="devices[' + i + '].AaitIdNumber" type="number" value="' + addPaddingToInt(largestId + i + 1, 3) + '" /></span>' +
-                    '</div></td>' +
-                '</tr>' +
-                '<tr style="display: none;">' +
-                    '<td>' +
-                        '<span class="field-validation-valid" data-valmsg-for="devices[' + i + '].Imei" data-valmsg-replace="true"></span>' +
-                    '</td>' +
-                    '<td>' +
-                        '<span class="field-validation-valid" data-valmsg-for="devices[' + i + '].AaitIdNumber" data-valmsg-replace="true"></span>' +
-                    '</td>' +
-                '</tr>';
+            var device = { 'Index': i, 'Pattern': pattern, 'Number': addPaddingToInt(largestId + i + 1, 3) };
+            var newDevice = $("#deviceTemplate").tmpl(device);
 
             $('#Devices').append(newDevice);
             $('#Devices tr').show(500);
