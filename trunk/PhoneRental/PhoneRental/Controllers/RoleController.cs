@@ -21,8 +21,7 @@ namespace PhoneRental.Controllers
 
         public ActionResult Index()
         {
-            var profiles = db.UserProfiles.Include("Roles");
-            var users = db.UserProfiles.ToList();
+            var users = db.UserProfiles.OrderBy(u => u.LastName).ThenBy(u => u.FirstName).ThenBy(u => u.UserName).ToList();
             List<string> roles = new List<string>();
             List<string> avatars = new List<string>();
             foreach (var user in users) {

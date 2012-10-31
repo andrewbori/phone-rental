@@ -17,22 +17,29 @@ namespace PhoneRental.Controllers
         //
         // GET: /Device/
 
-        public ActionResult Index()
+        public ActionResult Index(int type=0)
         {
-            var devices = db.Devices.OrderBy(d => d.DeviceType.Brand.Name).ThenBy(d => d.DeviceType.Type).ThenBy(d => d.AaitIdNumber).Include(d => d.DeviceType);
+            var deviceTypes = db.DeviceTypes.Select(d => new { Id = d.Id, Type = d.Brand.Name + " " + d.Type }).OrderBy(d => d.Type);
+            if (type == 0) type = deviceTypes.First().Id;
+            
+            ViewBag.type = new SelectList(deviceTypes, "Id", "Type", type);
+            ViewBag.typeId = type;
+
+            var devices = db.Devices.OrderBy(d => d.DeviceType.Brand.Name).ThenBy(d => d.DeviceType.Type).ThenBy(d => d.AaitIdNumber).Include(d => d.DeviceType).Where(d => d.DeviceType.Id == type);
             return View(devices.ToList());
         }
 
         //
         // GET: /Device/Create
 
-        public ActionResult Create()
+        public ActionResult Create(int type = 0)
         {
             var deviceTypes = db.DeviceTypes.Select(d => new { Id = d.Id, Type = d.Brand.Name + " " + d.Type }).OrderBy(d => d.Type);
+            if (type == 0) type = deviceTypes.First().Id;if (type == 0) type = deviceTypes.First().Id;
 
             var largestIds = db.DeviceTypes.Select(dt => new { Id = dt.Id, LargestId = dt.Devices.Max(d => (int?) d.AaitIdNumber) });
 
-            ViewBag.DeviceTypeId = new SelectList(deviceTypes, "Id", "Type");
+            ViewBag.DeviceTypeId = new SelectList(deviceTypes, "Id", "Type", type);
             ViewBag.AaitIdPattern = new SelectList(db.DeviceTypes, "Id", "AaitIdPattern");
             ViewBag.LargestId = new SelectList(largestIds, "Id", "LargestId");
             

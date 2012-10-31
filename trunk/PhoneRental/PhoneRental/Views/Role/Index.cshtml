@@ -10,10 +10,10 @@
     <tr>
         <th><th>
         <th>
-            @Html.DisplayNameFor(model => model.UserName)
+            Név
         </th>
         <th>
-            Név
+            E-mail cím
         </th>
         <th>
             Szerepkör
@@ -33,10 +33,10 @@
             </a>
         <td>
         <td>
-            @Html.DisplayFor(modelItem => item.UserName)
+            @Html.DisplayFor(modelItem => item.LastName) @Html.DisplayFor(modelItem => item.FirstName)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.LastName) @Html.DisplayFor(modelItem => item.FirstName)
+            @Html.DisplayFor(modelItem => item.UserName)
         </td>
         <td>
             @roles.ElementAt(i)
