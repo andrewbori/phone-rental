@@ -29,7 +29,7 @@
                             @if (Request.IsAuthenticated && HttpContext.Current.User.IsInRole("Admin")) {
                                 <li>@Html.ActionLink("Készülékek", "Index", "Device")</li>
                             }
-                            @if (Request.IsAuthenticated && (HttpContext.Current.User.IsInRole("Admin") || HttpContext.Current.User.IsInRole("Customer"))) {
+                            @if (Request.IsAuthenticated && HttpContext.Current.User.IsInRole("Customer")) {
                                 <li>@Html.ActionLink("Előfoglalás", "Index", "PreBorrow")</li>
                             }
                             @if (Request.IsAuthenticated && HttpContext.Current.User.IsInRole("Admin")) {

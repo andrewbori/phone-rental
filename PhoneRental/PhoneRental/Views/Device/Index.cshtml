@@ -7,8 +7,12 @@
 <h2>Készülékek</h2>
 
 <p>
-    @Html.ActionLink("Új készülék(ek)", "Create")
+    @Html.ActionLink("Új készülék(ek)", "Create", "Device", new { type = ViewBag.typeId }, null)
 </p>
+@using (Html.BeginForm("Index", "Device", FormMethod.Get))
+{
+    @Html.DropDownList("type", null, new { onchange = "$(this).parents('form').submit();" })
+}
 <table>
     <tr>
         <th>
