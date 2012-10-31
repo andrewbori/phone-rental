@@ -10,6 +10,8 @@ using Microsoft.Web.WebPages.OAuth;
 using WebMatrix.WebData;
 using PhoneRental.Filters;
 using PhoneRental.Models;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace PhoneRental.Controllers
 {
@@ -80,6 +82,9 @@ namespace PhoneRental.Controllers
                 try
                 {
                     WebSecurity.CreateUserAndAccount(model.UserName, model.Password, new { FirstName = model.FirstName, LastName = model.LastName });
+                    
+                    Roles.AddUserToRole(model.UserName, "Customer");
+
                     WebSecurity.Login(model.UserName, model.Password);
                     return RedirectToAction("Index", "Home");
                 }
@@ -127,6 +132,7 @@ namespace PhoneRental.Controllers
 
         public ActionResult Manage(ManageMessageId? message)
         {
+            ViewBag.AvatarHash = GetMD5HashData(User.Identity.Name);
             ViewBag.StatusMessage =
                 message == ManageMessageId.ChangePasswordSuccess ? "Your password has been changed."
                 : message == ManageMessageId.SetPasswordSuccess ? "Your password has been set."
@@ -326,6 +332,28 @@ namespace PhoneRental.Controllers
 
             ViewBag.ShowRemoveButton = externalLogins.Count > 1 || OAuthWebSecurity.HasLocalAccount(WebSecurity.GetUserId(User.Identity.Name));
             return PartialView("_RemoveExternalLoginsPartial", externalLogins);
+        }
+
+        [NonAction]
+        public static string GetMD5HashData(string data)
+        {
+            //create new instance of md5
+            MD5 md5 = MD5.Create();
+
+            //convert the input text to array of bytes
+            byte[] hashData = md5.ComputeHash(Encoding.Default.GetBytes(data));
+
+            //create new instance of StringBuilder to save hashed data
+            StringBuilder returnValue = new StringBuilder();
+
+            //loop for each byte and add it to StringBuilder
+            for (int i = 0; i < hashData.Length; i++)
+            {
+                returnValue.Append(hashData[i].ToString("x2"));
+            }
+
+            // return hexadecimal string
+            return returnValue.ToString();
         }
 
         #region Helpers

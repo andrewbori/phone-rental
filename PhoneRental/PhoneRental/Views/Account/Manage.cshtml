@@ -1,6 +1,6 @@
 ﻿@model PhoneRental.Models.LocalPasswordModel
 @{
-    ViewBag.Title = "Manage Account";
+    ViewBag.Title = "Felhasználói profil";
 }
 
 <hgroup class="title">
@@ -9,7 +9,13 @@
 
 <p class="message-success">@ViewBag.StatusMessage</p>
 
-<p>You're logged in as <strong>@User.Identity.Name</strong>.</p>
+<p>A következő felhasználóként vagy bejelentkezve: <strong>@User.Identity.Name</strong>.</p>
+
+<p>
+    <a href="javascript:showAvatar('@ViewBag.AvatarHash')">
+        <img id="imgGravatar" style="height:80px;width:80px;" alt="" src="http://www.gravatar.com/avatar/@ViewBag.AvatarHash?s=80&d=mm">
+    </a>
+</p>
 
 @if (ViewBag.HasLocalPassword)
 {
@@ -19,13 +25,6 @@ else
 { 
     @Html.Partial("_SetPasswordPartial")
 }
-
-<section id="externalLogins">
-    @Html.Action("RemoveExternalLogins")
-
-    <h3>Add an external login</h3>
-    @Html.Action("ExternalLoginsList", new { ReturnUrl = ViewBag.ReturnUrl })
-</section>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")

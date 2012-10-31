@@ -5,6 +5,7 @@ using System.Threading;
 using System.Web.Mvc;
 using WebMatrix.WebData;
 using PhoneRental.Models;
+using System.Web.Security;
 
 namespace PhoneRental.Filters
 {
@@ -39,6 +40,17 @@ namespace PhoneRental.Filters
                     }
 
                     WebSecurity.InitializeDatabaseConnection("DefaultConnection", "UserProfile", "UserId", "UserName", autoCreateTables: true);
+
+                    var roles = (SimpleRoleProvider) Roles.Provider;
+
+                    if (!roles.RoleExists("Admin"))
+                    {
+                        roles.CreateRole("Admin");
+                    }
+                    if (!roles.RoleExists("Customer"))
+                    {
+                        roles.CreateRole("Customer");
+                    }
                 }
                 catch (Exception ex)
                 {

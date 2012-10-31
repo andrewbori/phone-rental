@@ -1,0 +1,49 @@
+﻿@model PhoneRental.Models.UserProfile
+
+@{
+    ViewBag.Title = "Felhasználó szerepkörének szerkesztése";
+}
+
+<h2>Felhasználó szerepkörének szerkesztése</h2>
+
+@using (Html.BeginForm()) {
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>UserProfile</legend>
+
+        @Html.HiddenFor(model => model.UserId)
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.UserName)
+        </div>
+        <div class="editor-field">
+            @Html.DisplayFor(model => model.UserName)
+        </div>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.LastName, "Név")
+        </div>
+        <div class="editor-field">
+            @Html.DisplayFor(model => model.LastName) @Html.DisplayFor(model => model.FirstName)
+        </div>
+
+        <div class="editor-label">
+            Rendelkezik adminisztrátori jogosultsággal
+        </div>
+        <div class="editor-field">
+            @Html.CheckBox("IsAdmin", (Boolean) ViewBag.IsAdmin)
+        </div>
+
+        <p>
+            <input type="submit" value="Mentés" />
+        </p>
+    </fieldset>
+}
+
+<div>
+    @Html.ActionLink("Vissza a felhasználók listájára", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

@@ -19,7 +19,7 @@
         {
             @Html.ValidationSummary(true)
 
-            <h3>Válasszon a leadott előfoglalások közül!</h3>
+            <h3>Előfoglalás</h3>
             <fieldset>
                 <legend>Borrow</legend>
 
@@ -28,13 +28,13 @@
                 </div>
                 
                 <div class="editor-label">
-                     Válassza ki a konkrét készülék példányt!
+                     Készülék
                 </div>
 
                 <select id="DeviceList1" name="DeviceId"></select>
 
                 <div class="editor-label">
-                    Adja meg a visszahozatal határidejét!
+                    Határidő
                 </div>
 
                 <div class="editor-field">
@@ -58,7 +58,7 @@
                 <legend>Borrow</legend>
 
                  <div class="editor-label">
-                    Válasszon a felhasználók közül
+                    Felhasználó
                 </div>
 
                 <div class="editor-field">
@@ -66,7 +66,7 @@
                 </div>
 
                 <div class="editor-label">
-                    Válasszon eszköz típust!
+                    Készülék típus
                 </div>
 
                 <div class="editor-field">
@@ -74,13 +74,13 @@
                 </div>
 
                 <div class="editor-label">
-                     Válassza ki a konkrét készülék példányt!
+                     Készülék
                 </div>
 
                 <select id="DeviceList2" name="DeviceId"></select>
 
                 <div class="editor-label">
-                     Adja meg a visszahozatal határidejét!
+                     Határidő
                 </div>
                 <div class="editor-field">
                     @Html.TextBoxFor(model => model.Deadline, new { Id = "Deadline2", Name = "Deadline" })
@@ -100,9 +100,6 @@
         {
             @Html.ValidationSummary(true)
 
-        <h3>
-            Adja meg a felhasználó adatait
-        </h3>
             <fieldset>
                 <legend>Borrow</legend>
                 
@@ -142,13 +139,13 @@
                 </div>
 
                 <div class="editor-label">
-                     Konkrét készülék
+                     Készülék
                 </div>
 
                 <select id="DeviceList3" name="DeviceId"></select>
 
                 <div class="editor-label">
-                     Visszahozatal határideje
+                     Határidő
                 </div>
                 <div class="editor-field">
                     @Html.TextBoxFor(model => model.Deadline, new { Id = "Deadline3", Name = "Deadline" })
