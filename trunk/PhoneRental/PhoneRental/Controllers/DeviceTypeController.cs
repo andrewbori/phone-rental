@@ -24,7 +24,7 @@ namespace PhoneRental.Controllers
 
         //
         // GET: /DeviceType/Create
-
+        [Authorize(Roles = "Admin")]
         public ActionResult Create()
         {
             ViewBag.Brands = db.Brands.OrderBy(b => b.Name).Select(b => b.Name);
@@ -33,8 +33,8 @@ namespace PhoneRental.Controllers
 
         //
         // POST: /DeviceType/Create
-
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public ActionResult Create(DeviceType devicetype)
         {
             if (ModelState.IsValid)
@@ -60,7 +60,7 @@ namespace PhoneRental.Controllers
 
         //
         // GET: /DeviceType/Edit/5
-
+        [Authorize(Roles = "Admin")]
         public ActionResult Edit(int id = 0)
         {
             DeviceType devicetype = db.DeviceTypes.Find(id);
@@ -73,8 +73,8 @@ namespace PhoneRental.Controllers
 
         //
         // POST: /DeviceType/Edit/5
-
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public ActionResult Edit(DeviceType devicetype)
         {
             if (ModelState.IsValid)
@@ -110,7 +110,7 @@ namespace PhoneRental.Controllers
 
         //
         // GET: /DeviceType/Delete/5
-
+        [Authorize(Roles = "Admin")]
         public ActionResult Delete(int id = 0)
         {
             DeviceType devicetype = db.DeviceTypes.Find(id);
@@ -123,8 +123,8 @@ namespace PhoneRental.Controllers
 
         //
         // POST: /DeviceType/Delete/5
-
         [HttpPost, ActionName("Delete")]
+        [Authorize(Roles = "Admin")]
         public ActionResult DeleteConfirmed(int id)
         {
             DeviceType devicetype = db.DeviceTypes.Find(id);

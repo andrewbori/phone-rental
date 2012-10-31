@@ -9,6 +9,7 @@ using PhoneRental.Models;
 
 namespace PhoneRental.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class DeviceController : Controller
     {
         private PhoneRentalContext db = new PhoneRentalContext();

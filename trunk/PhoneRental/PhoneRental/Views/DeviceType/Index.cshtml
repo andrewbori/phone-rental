@@ -7,10 +7,11 @@
 <h2>Készülék típusok</h2>
 
 <p>
-    @Html.ActionLink("Új felvétele", "Create")
+    @Html.ActionLink("Új készülék típus", "Create")
 </p>
 <table>
     <tr>
+        <th></th>
         <th>
             @Html.DisplayNameFor(model => model.Brand.Name)
         </th>
@@ -20,14 +21,16 @@
         <th>
             @Html.DisplayNameFor(model => model.AaitIdPattern)
         </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ImageUrl)
-        </th>
         <th></th>
     </tr>
 
 @foreach (var item in Model) {
     <tr>
+        <td>
+            <a href="javascript:showImage('@Html.ValueFor(modelItem => item.ImageUrl)')">
+                <img src="/Images/Devices/thumb_@Html.ValueFor(modelItem => item.ImageUrl)" />
+            </a>
+        </td>
         <td>
             @Html.DisplayFor(modelItem => item.Brand.Name)
         </td>
@@ -36,11 +39,6 @@
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.AaitIdPattern)_XXX
-        </td>
-        <td>
-            <a href="javascript:showImage('@Html.ValueFor(modelItem => item.ImageUrl)')">
-                <img src="/Images/Devices/thumb_@Html.ValueFor(modelItem => item.ImageUrl)" />
-            </a>
         </td>
         <td>
             @Html.ActionLink("Szerkesztés", "Edit", new { id=item.Id })

@@ -10,6 +10,7 @@ using System.Web.UI;
 
 namespace PhoneRental.Controllers
 {
+    [Authorize(Roles = "Admin, Customer")]
     public class PreBorrowController : Controller
     {
         private PhoneRentalContext db = new PhoneRentalContext();

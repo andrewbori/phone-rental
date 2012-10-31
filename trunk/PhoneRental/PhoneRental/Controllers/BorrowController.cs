@@ -13,6 +13,7 @@ using System.Configuration;
 
 namespace PhoneRental.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class BorrowController : Controller
     {
         private PhoneRentalContext db = new PhoneRentalContext();
@@ -140,9 +141,8 @@ namespace PhoneRental.Controllers
                 // Attempt to register the user
                 try
                 {
-                    var connection = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
-                    WebSecurity.InitializeDatabaseConnection("DefaultConnection", "UserProfile", "UserId", "UserName", true);
-                    WebSecurity.CreateUserAndAccount(user.UserName, "", new { FirstName = user.FirstName, LastName = user.LastName });
+                    WebSecurity.CreateUserAndAccount(user.UserName, user.UserName, new { FirstName = user.FirstName, LastName = user.LastName });
+                    Roles.AddUserToRole(user.UserName, "Customer");
                 }
                 catch (MembershipCreateUserException e)
                 {

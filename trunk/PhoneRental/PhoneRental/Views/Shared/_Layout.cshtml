@@ -26,9 +26,16 @@
                             <li>@Html.ActionLink("Contact", "Contact", "Home")</li> -->
 
                             <li>@Html.ActionLink("Készülék típusok", "Index", "DeviceType")</li>
-                            <li>@Html.ActionLink("Készülékek", "Index", "Device")</li>
-                            <li>@Html.ActionLink("Előfoglalás", "Index", "PreBorrow")</li>
-                            <li>@Html.ActionLink("Készülék kiadása", "Index", "Borrow")</li>
+                            @if (Request.IsAuthenticated && HttpContext.Current.User.IsInRole("Admin")) {
+                                <li>@Html.ActionLink("Készülékek", "Index", "Device")</li>
+                            }
+                            @if (Request.IsAuthenticated && (HttpContext.Current.User.IsInRole("Admin") || HttpContext.Current.User.IsInRole("Customer"))) {
+                                <li>@Html.ActionLink("Előfoglalás", "Index", "PreBorrow")</li>
+                            }
+                            @if (Request.IsAuthenticated && HttpContext.Current.User.IsInRole("Admin")) {
+                                <li>@Html.ActionLink("Készülék kiadása", "Index", "Borrow")</li>
+                                <li>@Html.ActionLink("Felhasználók", "Index", "Role")</li>
+                            }
                         </ul>
                     </nav>
                 </div>
@@ -56,6 +63,16 @@
         <script type="text/javascript">
             function showImage(name) {
                 $("#image_canvas img").attr("src", "/Images/Devices/" + name);
+                $("#image_canvas").show(200);
+            }
+
+            function showImage(name) {
+                $("#image_canvas img").attr("src", "/Images/Devices/" + name);
+                $("#image_canvas").show(200);
+            }
+
+            function showAvatar(name) {
+                $("#image_canvas img").attr("src", "http://www.gravatar.com/avatar/" + name + "?s=600&d=mm");
                 $("#image_canvas").show(200);
             }
 
