@@ -82,7 +82,7 @@ namespace PhoneRental.Models
         }
 
         [NotMapped]
-        [Display(Name = "Elérhetősége")]
+        [Display(Name = "Elérhetőség")]
         public string Availability
         {
             get
@@ -115,7 +115,7 @@ namespace PhoneRental.Models
                                         orderby borrow.Deadline
                                         select borrow.Deadline).ToList().ElementAt(x);
 
-                            retval = end.ToString();
+                            retval = "Várhatóan: " + end.ToString();
                         }
                         else
                         {
@@ -125,7 +125,7 @@ namespace PhoneRental.Models
                 }
                 else
                 {
-                    retval = "Ebből a készülékből nincs raktárkészlet";
+                    retval = "Nincs raktárkészlet";
                 }
                 return retval;
             }
@@ -159,6 +159,20 @@ namespace PhoneRental.Models
         [Display(Name = "AAIT azonosító")]
         [DisplayFormat(DataFormatString = "{0:D3}", ApplyFormatInEditMode = true)]
         public int AaitIdNumber { get; set; }
+
+        [NotMapped]
+        public Borrow Borrow
+        {
+            get {
+                using (var db = new PhoneRentalContext())
+                {
+                    var borrow = db.Borrows.Where(b => b.DeviceId == Id).Where(b => b.EndDate == null).Include(b => b.User).SingleOrDefault();
+                    return borrow;
+                }
+            }
+
+            set { }
+        }
     }
 
     [Table("Borrow")]
