@@ -119,6 +119,7 @@ namespace PhoneRental.Controllers
                 StartDate = DateTime.Now,
                 Deadline = Deadline,
                 UserId = user.UserId,
+                User = user,
                 DeviceId = DeviceId
             };
             if (ModelState.IsValid)

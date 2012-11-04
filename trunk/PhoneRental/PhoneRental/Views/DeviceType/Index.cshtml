@@ -35,7 +35,7 @@
             @Html.DisplayFor(modelItem => item.Brand.Name)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Type)
+            @Html.ActionLink(item.Type, "Index", "Device", new { type = item.Id }, null)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.AaitIdPattern)_XXX

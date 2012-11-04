@@ -38,7 +38,7 @@
                 </div>
 
                 <div class="editor-field">
-                    @Html.TextBoxFor(model => model.Deadline, new { Id = "Deadline1", Name = "Deadline" })
+                    @Html.TextBoxFor(model => model.Deadline, new { Id = "Deadline1", Class = "calendar", Name = "Deadline" })
                     @Html.ValidationMessageFor(model => model.Deadline)
                 </div>
 
@@ -83,7 +83,7 @@
                      Határidő
                 </div>
                 <div class="editor-field">
-                    @Html.TextBoxFor(model => model.Deadline, new { Id = "Deadline2", Name = "Deadline" })
+                    @Html.TextBoxFor(model => model.Deadline, new { Id = "Deadline2", Class = "calendar", Name = "Deadline" })
                     @Html.ValidationMessageFor(model => model.Deadline)
                 </div>
 
@@ -148,15 +148,13 @@
                      Határidő
                 </div>
                 <div class="editor-field">
-                    @Html.TextBoxFor(model => model.Deadline, new { Id = "Deadline3", Name = "Deadline" })
+                    @Html.TextBoxFor(model => model.Deadline, new { Id = "Deadline3", Class = "calendar", Name = "Deadline" })
                     @Html.ValidationMessageFor(model => model.Deadline)
                 </div>
 
                 <p>
                     <input type="submit" value="Tovább" />
                 </p>
-                
-                <select id="DeviceList" name="DeviceList"></select>
            </fieldset>
         }
     </div>
@@ -185,75 +183,56 @@
                     });
                 }
             })
-        });
 
-        $(function () {
-            $("#Deadline1").datepicker();
-            $("#Deadline1").datepicker("option", "dateFormat", "mm/dd/yy");
+            $(".calendar").datepicker();
+            $(".calendar").datepicker("option", "showMonthAfterYear", true);
+            $(".calendar").datepicker("option", "firstDay", 1);
+            $(".calendar").datepicker("option", "defaultDate", +7);
+            $(".calendar").datepicker("option", "monthNames", ["Január", "Február", "Március", "Április", "Május", "Június", "Július", "Augusztus", "Szeptember", "Október", "November", "December"]);
+            $(".calendar").datepicker("option", "dayNamesMin", ["V", "H", "K", "Sze", "Cs", "P", "Szo"]);
 
-        });
+            $('#DeviceTypeId2').change(function() {
+                $.getJSON("/Borrow/DeviceListForDeviceType?DeviceTypeId=" + $(this).val(), null, function (data) {
+                    $("#DeviceList2").fillSelect(data);
+                });
+            });
 
-        $(function () {
-            $("#Deadline2").datepicker();
-            $("#Deadline2").datepicker("option", "dateFormat", "mm/dd/yy");
-
-        });
-
-        $(function () {
-            $("#Deadline3").datepicker();
-            $("#Deadline3").datepicker("option", "dateFormat", "mm/dd/yy");
-
-        });
-
-        $(function() {
-                 $('#DeviceTypeId2').change(function() {
-                     $.getJSON("/Borrow/DeviceListForDeviceType?DeviceTypeId=" + $('#DeviceTypeId2').val(), null, function (data) {
-                         $("#DeviceList2").fillSelect(data);
-                              });
-                    });
-        });
-
-        $(function () {
             $('#DeviceTypeId3').change(function () {
-                $.getJSON("/Borrow/DeviceListForDeviceType?DeviceTypeId=" + $('#DeviceTypeId3').val(), null, function (data) {
+                $.getJSON("/Borrow/DeviceListForDeviceType?DeviceTypeId=" + $(this).val(), null, function (data) {
                     $("#DeviceList3").fillSelect(data);
                 });
             });
-        });
-
-        $(function () {
+        
             $('#PreBorrowId').change(function () {
-                $.getJSON("/Borrow/DeviceListForPreBorrow?PreBorrowId=" + $('#PreBorrowId').val(), null, function (data) {
+                $.getJSON("/Borrow/DeviceListForPreBorrow?PreBorrowId=" + $(this).val(), null, function (data) {
                     $("#DeviceList1").fillSelect(data);
                 });
             });
         });
 
-         $.fn.clearSelect = function() {
-                  return this.each(function() {
-                      if (this.tagName == 'SELECT')
-                          this.options.length = 0;
-                });
-           } 
+        $.fn.clearSelect = function() {
+            return this.each(function() {
+                if (this.tagName == 'SELECT')
+                    this.options.length = 0;
+            });
+        }
 
-     
-
-      $.fn.fillSelect = function(data) {
-             return this.clearSelect().each(function() {
-                     if (this.tagName == 'SELECT') {
-                            var dropdownList = this;
-                              $.each(data, function(index, optionData) {
-                                      var option = new Option(optionData.Text, optionData.Value);
-                                   if ($.browser.msie) {
-                                            dropdownList.add(option);
-                                         }
-                                    else {
-                                             dropdownList.add(option, null);
-                                        }
-                                   });
-                          }
+        $.fn.fillSelect = function(data) {
+            return this.clearSelect().each(function() {
+                if (this.tagName == 'SELECT') {
+                    var dropdownList = this;
+                    $.each(data, function(index, optionData) {
+                        var option = new Option(optionData.Text, optionData.Value);
+                        if ($.browser.msie) {
+                            dropdownList.add(option);
+                        }
+                        else {
+                            dropdownList.add(option, null);
+                        }
                     });
-         }
+                }
+            });
+        }
 
     </script>
 
