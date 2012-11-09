@@ -1,0 +1,114 @@
+﻿@model PhoneRental.Models.StatisticsModel
+@{
+    ViewBag.Title = "Statisztikák";
+}
+
+<h2>Statisztikák</h2>
+<div id="tabs">
+    <ul>
+        <li><a href="#tabs-1">Legnépszerűbb készülékek</a></li>
+        <li><a href="#tabs-2">Legaktívabb felhasználók</a></li>
+        <li><a href="#tabs-3">Legtöbbet késő felhasználók</a></li>
+    </ul>
+    <div id ="tabs-1">
+        <div id="chart_div1"></div>
+    </div>
+
+    <div id ="tabs-2">
+        <div id="chart_div2"></div>
+    </div>
+
+    <div id ="tabs-3">
+        <div id="chart_div3"></div>
+    </div>
+</div>
+
+@section Styles {
+    @Styles.Render("~/Content/themes/base/jquery.ui.all")
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/jqueryui")
+    <script type="text/javascript">
+        $(function () {
+            $("#tabs").tabs();
+        });
+    </script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+
+        // Load the Visualization API and the piechart package.
+        google.load('visualization', '1.0', { 'packages': ['corechart'] });
+
+        // Set a callback to run when the Google Visualization API is loaded.
+        google.setOnLoadCallback(drawChart);
+
+        // Callback that creates and populates a data table,
+        // instantiates the pie chart, passes in the data and
+        // draws it.
+        function drawChart() {
+
+            // Create the data table.
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'Készülékek');
+            data.addColumn('number', 'Nészerűség');
+            data.addRows([@{foreach (var item in Model.DevicePopularity) {
+                <text>['@(item.Name)', @(item.Value)],</text>}<text>]);</text>
+            }
+
+            // Set chart options
+            var options = {
+                'title': 'Legnépszerűbb készülékek',
+                'width': 800,
+                'height': 600
+            };
+
+            // Instantiate and draw our chart, passing in some options.
+            var chart = new google.visualization.ColumnChart(document.getElementById('chart_div1'));
+            chart.draw(data, options);
+
+
+
+            // Create the data table.
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'Felhasználók');
+            data.addColumn('number', 'Kölcsönzések száma');
+            data.addRows([@{foreach (var item in Model.UserActivity) {
+                <text>['@(item.Name)', @(item.Value)],</text>}<text>]);</text>
+            }
+
+            // Set chart options
+            var options = {
+                'title': 'Legnaktívabb felhasználók',
+                'width': 800,
+                'height': 600
+            };
+
+            // Instantiate and draw our chart, passing in some options.
+            var chart = new google.visualization.ColumnChart(document.getElementById('chart_div2'));
+            chart.draw(data, options);
+
+
+
+            // Create the data table.
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'Felhasználók');
+            data.addColumn('number', 'Késett napok száma');
+            data.addRows([@{foreach (var item in Model.UserDelay) {
+                <text>['@(item.Name)', @(item.Value)],</text>}<text>]);</text>
+            }
+
+            // Set chart options
+            var options = {
+                'title': 'Legtöbbet késő felhasználók',
+                'width': 800,
+                'height': 600
+            };
+
+            // Instantiate and draw our chart, passing in some options.
+            var chart = new google.visualization.ColumnChart(document.getElementById('chart_div3'));
+            chart.draw(data, options);
+        }
+    </script>
+}

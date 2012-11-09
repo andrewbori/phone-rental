@@ -6,6 +6,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using PhoneRental.Models;
+using System.IO;
 
 namespace PhoneRental.Controllers
 {
@@ -129,6 +130,86 @@ namespace PhoneRental.Controllers
             db.Devices.Remove(device);
             db.SaveChanges();
             return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public JsonResult IsAaitIdNumberUnique(int? Id=0)
+        {
+            int DeviceTypeId = 0;
+            int AaitIdNumber = 0;
+            if (Id == 0)
+            {
+                using (var reader = new StreamReader(Request.InputStream))
+                {
+                    string content = reader.ReadToEnd();
+
+                    string[] parts = content.Split('&');
+                    int.TryParse(getValue(parts, "DeviceTypeId"), out DeviceTypeId);
+                    int.TryParse(getValue(parts, "AaitIdNumber"), out AaitIdNumber);
+                }
+            }
+            else
+            {
+                int.TryParse(Request.Form.Get("DeviceTypeId"), out DeviceTypeId);
+                int.TryParse(Request.Form.Get("AaitIdNumber"), out AaitIdNumber);
+            }
+
+            if (DeviceTypeId == 0 || AaitIdNumber == 0)
+            {
+                return Json(true);
+            }
+
+            bool result = !db.Devices.Where(d => d.Id != Id).Any(d => d.DeviceTypeId == DeviceTypeId && d.AaitIdNumber == AaitIdNumber);
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public JsonResult IsImeiUnique(int? Id=0)
+        {
+            string Imei = null;
+            if (Id == 0)
+            {
+                using (var reader = new StreamReader(Request.InputStream))
+                {
+                    string content = reader.ReadToEnd();
+
+                    string[] parts = content.Split('&');
+                    Imei = getValue(parts, "Imei");
+                }
+            }
+            else
+            {
+                Imei = Request.Form.Get("Imei");
+            }
+
+            if (Imei == null)
+            {
+                return Json(true);
+            }
+
+            bool result = !db.Devices.Where(d => d.Id != Id).Any(d => d.Imei == Imei);
+
+            return Json(result);
+        }
+
+        [NonAction]
+        public string getValue(string[] parts, string key)
+        {
+            foreach (string part in parts)
+            {
+                string[] pair = part.Split('=');
+                if (pair.Length == 2)
+                {
+                    if (pair[0].IndexOf(key) != -1)
+                    {
+                        return pair[1];
+                    }
+                }
+            }
+            return null;
         }
 
         protected override void Dispose(bool disposing)

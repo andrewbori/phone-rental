@@ -13,59 +13,77 @@
 {
     @Html.DropDownList("type", null, new { onchange = "$(this).parents('form').submit();" })
 }
-<table>
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.AaitIdNumber)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Imei)
-        </th>
-        <th>
-            Kölcsönözve
-        </th>
-        <th>
-            Kölcsönző adatai
-        </th>
-        <th>
-            Határidő
-        </th>
-        <th></th>
-    </tr>
-
+<table id="myTable" class="tablesorter">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.AaitIdNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Imei)
+            </th>
+            <th>
+                Kölcsönözve
+            </th>
+            <th>
+                Kölcsönző adatai
+            </th>
+            <th>
+                Határidő
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
 @foreach (var item in Model) {
-    <tr style="@((item.Borrow != null && DateTime.Compare(item.Borrow.Deadline, DateTime.Now) < 0) ? "background: red;" : " " )">
-        <td>
-            @Html.DisplayFor(modelItem => item.DeviceType.AaitIdPattern)_@Html.DisplayFor(modelItem => item.AaitIdNumber)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Imei)
-        </td>
-        <td style="text-align: center;">
-            @Html.CheckBox("IsBorrowed", item.Borrow != null, new { @readonly = "readonly", @disabled = "disabled" })
-        </td>
-        <td>
-            @if (item.Borrow != null) {
-                string avatar = PhoneRental.Controllers.AccountController.GetMD5HashData(item.Borrow.User.UserName);
-                <table class="table-user"><tr>
-                <td>
-                    <a href="javascript:showAvatar('@avatar')">
-                        <img id="imgGravatar" style="height:32px;width:32px;" alt="" src="http://www.gravatar.com/avatar/@avatar?s=32&d=mm">
-                    </a>
-                </td><td>
-                    @Html.DisplayFor(modelItem => item.Borrow.User.LastName)
-                    @Html.DisplayFor(modelItem => item.Borrow.User.FirstName) <br />
-                    @Html.DisplayFor(modelItem => item.Borrow.User.UserName)
-                </td></tr></table>
-            }
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Borrow.Deadline)
-        </td>
-        <td>
-            @Html.ActionLink("Szerkesztés", "Edit", new { id=item.Id })
-        </td>
-    </tr>
+        <tr style="@((item.Borrow != null && DateTime.Compare(item.Borrow.Deadline, DateTime.Now) < 0) ? "background: red;" : " " )">
+            <td>
+                @Html.DisplayFor(modelItem => item.DeviceType.AaitIdPattern)_@Html.DisplayFor(modelItem => item.AaitIdNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Imei)
+            </td>
+            <td style="text-align: center;">
+                @Html.CheckBox("IsBorrowed", item.Borrow != null, new { @readonly = "readonly", @disabled = "disabled" })
+            </td>
+            <td>
+                @if (item.Borrow != null) {
+                    string avatar = PhoneRental.Controllers.AccountController.GetMD5HashData(item.Borrow.User.UserName);
+                    <table class="table-user"><tr>
+                    <td>
+                        <a href="javascript:showAvatar('@avatar')">
+                            <img id="imgGravatar" style="height:32px;width:32px;" alt="" src="http://www.gravatar.com/avatar/@avatar?s=32&d=mm">
+                        </a>
+                    </td><td>
+                        @Html.DisplayFor(modelItem => item.Borrow.User.LastName)
+                        @Html.DisplayFor(modelItem => item.Borrow.User.FirstName) <br />
+                        @Html.DisplayFor(modelItem => item.Borrow.User.UserName)
+                    </td></tr></table>
+                }
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Borrow.Deadline)
+            </td>
+            <td>
+                @Html.ActionLink("Szerkesztés", "Edit", new { id=item.Id })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+@section Styles {
+    @Styles.Render("~/Content/themes/base/jquery.tablesorter")
 }
 
-</table>
+@section Scripts {
+    @Scripts.Render("~/bundles/jquerytablesorter")
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#myTable").tablesorter({
+                headers: { 2: { sorter: false }, 5: { sorter: false } },
+                sortList: [[0, 0]]
+            });
+        });
+    </script>
+}

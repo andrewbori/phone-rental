@@ -28,7 +28,7 @@
             @Html.LabelFor(model => model.AaitIdNumber)
         </div>
         <div class="editor-field editor-field-aait-nr">
-            @Html.ValueFor(model => model.DeviceType.AaitIdPattern)_@Html.EditorFor(model => model.AaitIdNumber)
+            @Html.ValueFor(model => model.DeviceType.AaitIdPattern)_<span class="AaitIdNumber">@Html.EditorFor(model => model.AaitIdNumber)</span>
             @Html.ValidationMessageFor(model => model.AaitIdNumber)
         </div>
 
@@ -44,4 +44,19 @@
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $('.AaitIdNumber').each(function (index) {
+                    $(this).find('input').attr("data-val-number", "Az AAIT azonosítónak egy számnak kell lennie!");
+                });
+
+                reinitValidation();
+            });
+
+            function reinitValidation() {
+                $("form").removeData("validator");
+                $("form").removeData("unobtrusiveValidation");
+                $.validator.unobtrusive.parse("form");
+            }
+        </script>
 }
