@@ -25,16 +25,15 @@
                             <li>@Html.ActionLink("About", "About", "Home")</li>
                             <li>@Html.ActionLink("Contact", "Contact", "Home")</li> -->
 
-                            <li>@Html.ActionLink("Készülék típusok", "Index", "DeviceType")</li>
-                            @if (Request.IsAuthenticated && HttpContext.Current.User.IsInRole("Admin")) {
-                                <li>@Html.ActionLink("Készülékek", "Index", "Device")</li>
-                            }
                             @if (Request.IsAuthenticated && HttpContext.Current.User.IsInRole("Customer")) {
-                                <li>@Html.ActionLink("Előfoglalás", "Index", "PreBorrow")</li>
+                                <li>@Html.ActionLink("Készülékek", "Index", "PreBorrow")</li>
                             }
                             @if (Request.IsAuthenticated && HttpContext.Current.User.IsInRole("Admin")) {
+                                <li>@Html.ActionLink("Készülék típusok", "Index", "DeviceType")</li>
+                                <li>@Html.ActionLink("Készülékek", "Index", "Device")</li>
                                 <li>@Html.ActionLink("Készülék kiadása", "Index", "Borrow")</li>
                                 <li>@Html.ActionLink("Felhasználók", "Index", "Role")</li>
+                                <li>@Html.ActionLink("Statisztikák", "Index", "Statistics")</li>
                             }
                         </ul>
                     </nav>
@@ -53,7 +52,7 @@
         <footer>
             <div class="content-wrapper">
                 <div class="float-left">
-                    <p>&copy; @DateTime.Now.Year - My ASP.NET MVC Application</p>
+                    <p>&copy; @DateTime.Now.Year - AAIT</p>
                 </div>
             </div>
         </footer>

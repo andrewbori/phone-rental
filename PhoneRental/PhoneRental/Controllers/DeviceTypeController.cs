@@ -9,6 +9,7 @@ using PhoneRental.Models;
 
 namespace PhoneRental.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class DeviceTypeController : Controller
     {
         private PhoneRentalContext db = new PhoneRentalContext();
@@ -131,6 +132,34 @@ namespace PhoneRental.Controllers
             db.DeviceTypes.Remove(devicetype);
             db.SaveChanges();
             return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public JsonResult IsTypeUnique(string type, Brand Brand, int? Id=0)
+        {
+            if (type == null || Brand == null)
+            {
+                return Json(true);
+            }
+
+            bool result = !db.DeviceTypes.Where(d => d.Id != Id).Any(d => d.Type == type && d.Brand.Name == Brand.Name);
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public JsonResult IsAaitIdPatternUnique(string AaitIdPattern, int? Id=0)
+        {
+            if (AaitIdPattern == null)
+            {
+                return Json(true);
+            }
+
+            bool result = !db.DeviceTypes.Where(d => d.Id != Id).Any(d => d.AaitIdPattern == AaitIdPattern);
+
+            return Json(result);
         }
 
         protected override void Dispose(bool disposing)

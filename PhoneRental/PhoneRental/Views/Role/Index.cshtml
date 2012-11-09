@@ -1,4 +1,4 @@
-﻿@model IEnumerable<PhoneRental.Models.UserProfile>
+﻿@model IEnumerable<PhoneRental.Models.RoleModel>
 
 @{
     ViewBag.Title = "Felhasználók";
@@ -6,46 +6,59 @@
 
 <h2>Felhasználók</h2>
 
-<table>
-    <tr>
-        <th><th>
-        <th>
-            Név
-        </th>
-        <th>
-            E-mail cím
-        </th>
-        <th>
-            Szerepkör
-        </th>
-        <th></th>
-    </tr>
-
-@{var i = 0;
-  List<string> roles = ViewBag.UsersRoles;
-  List<string> avatars = ViewBag.UserAvatars;
-  }
+<table id="myTable" class="tablesorter">
+    <thead>
+        <tr>
+            <th></th>
+            <th>
+                Név
+            </th>
+            <th>
+                E-mail cím
+            </th>
+            <th>
+                Szerepkör
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
 @foreach (var item in Model) {
-    <tr>
-        <td>
-            <a href="javascript:showAvatar('@avatars.ElementAt(i)')">
-                <img id="imgGravatar" style="height:48px;width:48px;" alt="" src="http://www.gravatar.com/avatar/@avatars.ElementAt(i)?s=48&d=mm">
-            </a>
-        <td>
-        <td>
-            @Html.DisplayFor(modelItem => item.LastName) @Html.DisplayFor(modelItem => item.FirstName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.UserName)
-        </td>
-        <td>
-            @roles.ElementAt(i)
-        </td>
-        <td>
-            @Html.ActionLink("Szerkesztés", "Edit", new { id=item.UserId })
-        </td>
-    </tr>
-    i++;
+        <tr>
+            <td>
+                <a href="javascript:showAvatar('@Html.DisplayFor(modelItem => item.Avatar)')">
+                    <img id="imgGravatar" style="height:48px;width:48px;" alt="" src="http://www.gravatar.com/avatar/@Html.DisplayFor(modelItem => item.Avatar)?s=48&d=mm">
+                </a>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastName) @Html.DisplayFor(modelItem => item.FirstName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Role)
+            </td>
+            <td>
+                @Html.ActionLink("Szerkesztés", "Edit", new { id=item.UserId })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+@section Styles {
+    @Styles.Render("~/Content/themes/base/jquery.tablesorter")
 }
 
-</table>
+@section Scripts {
+    @Scripts.Render("~/bundles/jquerytablesorter")
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#myTable").tablesorter({
+                headers: { 0: { sorter: false }, 4: { sorter: false } },
+                sortList: [[1, 0]]
+            });
+        });
+    </script>
+}

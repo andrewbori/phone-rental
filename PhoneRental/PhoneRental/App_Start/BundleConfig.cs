@@ -14,6 +14,9 @@ namespace PhoneRental
             bundles.Add(new ScriptBundle("~/bundles/jquerytmpl").Include(
                         "~/Scripts/jquery.tmpl.js"));
 
+            bundles.Add(new ScriptBundle("~/bundles/jquerytablesorter").Include(
+                        "~/Scripts/jquery.tablesorter.js"));
+
             bundles.Add(new ScriptBundle("~/bundles/jqueryui").Include(
                         "~/Scripts/jquery-ui-{version}.js"));
 
@@ -30,6 +33,8 @@ namespace PhoneRental
                         "~/Scripts/modernizr-*"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include("~/Content/site.css"));
+
+            bundles.Add(new StyleBundle("~/Content/themes/base/jquery.tablesorter").Include("~/Content/themes/base/jquery.tablesorter.css"));
 
             bundles.Add(new StyleBundle("~/Content/themes/base/jquery.ui.all").Include("~/Content/themes/base/jquery.ui.all.css"));
 

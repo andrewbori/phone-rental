@@ -22,23 +22,23 @@ namespace PhoneRental.Controllers
         public ActionResult Index()
         {
             var users = db.UserProfiles.OrderBy(u => u.LastName).ThenBy(u => u.FirstName).ThenBy(u => u.UserName).ToList();
-            List<string> roles = new List<string>();
-            List<string> avatars = new List<string>();
+
+            List<RoleModel> rm = new List<RoleModel>();
             foreach (var user in users) {
-                string role = "Ügyfél";
+                RoleModel roleModel = new RoleModel(user);
+                roleModel.Role = "Ügyfél";
 
                 if (Roles.IsUserInRole(user.UserName, "Admin"))
                 {
-                    role = "Adminisztrátor";
+                    roleModel.Role = "Adminisztrátor";
                 }
 
-                roles.Add(role);
-                avatars.Add(AccountController.GetMD5HashData(user.UserName));
-            }
-            ViewBag.UsersRoles = roles;
-            ViewBag.UserAvatars = avatars;
+                roleModel.Avatar = AccountController.GetMD5HashData(user.UserName);
 
-            return View(users);
+                rm.Add(roleModel);
+            }
+
+            return View(rm);
         }
 
         //
@@ -83,9 +83,11 @@ namespace PhoneRental.Controllers
             if (isAdmin && !IsAdmin)
             {
                 Roles.RemoveUserFromRole(user.UserName, "Admin");
+                Roles.AddUserToRole(user.UserName, "Customer");
             }
             else if (!isAdmin && IsAdmin)
             {
+                Roles.RemoveUserFromRole(user.UserName, "Customer");
                 Roles.AddUserToRole(user.UserName, "Admin");
             }
 
