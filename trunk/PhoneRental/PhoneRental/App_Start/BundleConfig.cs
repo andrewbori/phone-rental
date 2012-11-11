@@ -20,6 +20,9 @@ namespace PhoneRental
             bundles.Add(new ScriptBundle("~/bundles/jqueryui").Include(
                         "~/Scripts/jquery-ui-{version}.js"));
 
+            bundles.Add(new ScriptBundle("~/bundles/jqueryeasyconfirm").Include(
+                       "~/Scripts/jquery.easy-confirm-dialog.js"));
+
             bundles.Add(new ScriptBundle("~/bundles/jqueryfileupload").Include(
                         "~/Scripts/jquery.fileupload.js"));
 

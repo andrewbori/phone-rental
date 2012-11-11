@@ -51,6 +51,7 @@
                 } else
                 {
                     <p>Erre a készülékre már adott le előfoglalást!</p>
+                    @Html.ActionLink("Előfoglalás törlése","Delete", new {id=item.Id}, new{@class="confirm"});
                 }
             </td>
         </tr>
@@ -60,16 +61,27 @@
 
 @section Styles {
     @Styles.Render("~/Content/themes/base/jquery.tablesorter")
+    @Styles.Render("~/Content/themes/base/jquery.ui.all")
 }
 
 @section Scripts {
     @Scripts.Render("~/bundles/jquerytablesorter")
+    @Scripts.Render("~/bundles/jqueryui"); 
+    @Scripts.Render("~/bundles/jqueryeasyconfirm") 
     <script type="text/javascript">
         $(document).ready(function () {
             $("#myTable").tablesorter({
                 headers: { 0: { sorter: false }, 5: { sorter: false } },
                 sortList: [[1, 0]]
             });
+        });
+        $(".confirm").easyconfirm({
+            locale: {
+                title: 'BME-AUT Mobilkölcsönző előfoglalás törlésének jóváhagyása',
+                text: 'Biztos benne, hogy szeretne a kijelölt előfoglalását törölni?',
+                button: ['Nem', ' Jóváhagyás'],
+                closeText: 'bezárás'
+            }
         });
     </script>
 }
