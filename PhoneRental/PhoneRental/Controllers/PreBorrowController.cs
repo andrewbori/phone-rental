@@ -61,75 +61,6 @@ namespace PhoneRental.Controllers
         }
 
         //
-        // GET: /PreBorrow/Details/5
-
-        public ActionResult Details(int id = 0)
-        {
-            DeviceType devicetype = db.DeviceTypes.Find(id);
-            if (devicetype == null)
-            {
-                return HttpNotFound();
-            }
-            return View(devicetype);
-        }
-
-        //
-        // GET: /PreBorrow/Create
-
-        public ActionResult Create()
-        {
-            ViewBag.BrandId = new SelectList(db.Brands, "Id", "Name");
-            return View();
-        }
-
-        //
-        // POST: /PreBorrow/Create
-
-        [HttpPost]
-        public ActionResult Create(DeviceType devicetype)
-        {
-            if (ModelState.IsValid)
-            {
-                db.DeviceTypes.Add(devicetype);
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-
-            ViewBag.BrandId = new SelectList(db.Brands, "Id", "Name", devicetype.BrandId);
-            return View(devicetype);
-        }
-
-        //
-        // GET: /PreBorrow/Edit/5
-
-        public ActionResult Edit(int id = 0)
-        {
-            DeviceType devicetype = db.DeviceTypes.Find(id);
-            if (devicetype == null)
-            {
-                return HttpNotFound();
-            }
-            ViewBag.BrandId = new SelectList(db.Brands, "Id", "Name", devicetype.BrandId);
-            return View(devicetype);
-        }
-
-        //
-        // POST: /PreBorrow/Edit/5
-
-        [HttpPost]
-        public ActionResult Edit(DeviceType devicetype)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Entry(devicetype).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            ViewBag.BrandId = new SelectList(db.Brands, "Id", "Name", devicetype.BrandId);
-            return View(devicetype);
-        }
-
-        //
         // GET: /PreBorrow/Delete/5
 
         public ActionResult Delete(int id = 0)
@@ -139,20 +70,24 @@ namespace PhoneRental.Controllers
             {
                 return HttpNotFound();
             }
-            return View(devicetype);
+            try
+            {
+                var userId = db.UserProfiles.Single(
+                        p => p.UserName == HttpContext.User.Identity.Name).UserId;
+
+                var preBorrowId = db.PreBorrows.Where(pb => pb.DeviceTypeId == id && pb.UserId == userId).Select(pb => pb.Id).Single();
+                var preBorrow = db.PreBorrows.Find(preBorrowId);
+                db.PreBorrows.Remove(preBorrow);
+                db.SaveChanges();
+
+                return RedirectToAction("","PreBorrow");
+            }
+            catch (Exception e)
+            {
+                return HttpNotFound(e.Message);
+            }
         }
 
-        //
-        // POST: /PreBorrow/Delete/5
-
-        [HttpPost, ActionName("Delete")]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            DeviceType devicetype = db.DeviceTypes.Find(id);
-            db.DeviceTypes.Remove(devicetype);
-            db.SaveChanges();
-            return RedirectToAction("Index");
-        }
 
         protected override void Dispose(bool disposing)
         {
