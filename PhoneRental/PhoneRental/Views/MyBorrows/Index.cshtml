@@ -1,0 +1,153 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+
+<div id="tabs">
+    <ul>
+        <li><a href="#tabs-1">Kölcsönzések</a></li>
+        <li><a href="#tabs-2">Előfoglalások</a></li>
+    </ul>
+    <div id ="tabs-1">
+        @if (ViewBag.HasBorrowed == true)
+        {
+            <table id="borrowTable" class="tablesorter">
+                <thead>
+                    <tr>
+                        <th>
+                            Gyártó
+                        </th>
+                        <th>
+                            Típus
+                        </th>
+                        <th>
+                            IMEI szám
+                        </th>
+                        <th>
+                            AAIT azonosító
+                        </th>
+                        <th>
+                            Kölcsönzés időpontja
+                        </th>
+                        <th>
+                            Határidő
+                        </th>
+                        <th>
+                            Visszahozatal
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+            @foreach (var item in ViewBag.Borrows)
+            {
+                    <tr style="@((item.EndDate == null && DateTime.Compare(item.Deadline, DateTime.Now) < 0) ? "background: red;" : " ")">
+                        <td>
+                            @item.Device.DeviceType.Brand.Name
+                        </td>
+                        <td>
+                            @item.Device.DeviceType.Type
+                        </td>
+                        <td>
+                           @item.Device.Imei 
+                        </td>
+                        <td>
+                            @item.Device.DeviceType.AaitIdPattern _ @item.Device.AaitIdNumber
+                        </td>
+                        <td>
+                            @item.StartDate
+                        </td>
+                        <td>
+                            @item.Deadline
+                        </td>
+                        <td>
+                            @item.EndDate
+                        </td>
+                    </tr>
+            }
+                </tbody>
+            </table>
+        }
+        @if (ViewBag.HasBorrowed == false)
+        {
+            <p>Nincs egyetlen kölcsönzése sem!</p>
+        }
+    </div>
+
+    <div id ="tabs-2">
+        @if (ViewBag.HasPreBorrowed == true)
+        {
+            <table id="preBorrowTable" class="tablesorter">
+                <thead>
+                    <tr>
+                        <th>
+                            Gyártó
+                        </th>
+                        <th>
+                            Típus
+                        </th>
+                        <th>
+                            Foglalás időpontja
+                        </th>
+                        <th>
+                            Elérhetősége
+                        </th>
+                        <th>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+            @foreach (var item in ViewBag.PreBorrows)
+            {
+                    <tr>
+                        <td>
+                            @item.DeviceType.Brand.Name
+                        </td>
+                        <td>
+                            @item.DeviceType.Type
+                        </td>
+                        <td>
+                            @item.Date
+                        </td>
+                        <td>
+                            @item.DeviceType.Availability
+                        </td>
+                    </tr>
+            }
+                </tbody>
+            </table>
+        }
+        @if (ViewBag.HasPreBorrowed == false)
+        {
+            <p>Nincs egyetlen előfoglalása sem!</p>
+        }
+    </div>
+</div>
+
+@section Styles {
+    @Styles.Render("~/Content/themes/base/jquery.ui.all")
+    @Styles.Render("~/Content/themes/base/jquery.tablesorter")
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/bundles/jquerytablesorter")
+    <script type="text/javascript">
+        $(function () {
+            $("#tabs").tabs();
+        });
+
+        $(document).ready(function () {
+            $("#borrowTable").tablesorter({
+                sortList: [[0, 0]]
+            });
+        });
+
+        $(document).ready(function () {
+            $("#preBorrowTable").tablesorter({
+                headers: { 4: { sorter: false } },
+                sortList: [[0, 0]]
+            });
+        });
+
+    </script>
+}
