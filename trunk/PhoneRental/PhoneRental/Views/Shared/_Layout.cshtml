@@ -26,6 +26,7 @@
                             <li>@Html.ActionLink("Contact", "Contact", "Home")</li> -->
 
                             @if (Request.IsAuthenticated && HttpContext.Current.User.IsInRole("Customer")) {
+                                <li>@Html.ActionLink("Kölcsönzéseim", "Index", "MyBorrows")</li>
                                 <li>@Html.ActionLink("Készülékek", "Index", "PreBorrow")</li>
                             }
                             @if (Request.IsAuthenticated && HttpContext.Current.User.IsInRole("Admin")) {

@@ -168,6 +168,7 @@
     <Compile Include="Controllers\DeviceTypeController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ImageController.cs" />
+    <Compile Include="Controllers\MyBorrowsController.cs" />
     <Compile Include="Controllers\PreBorrowController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
     <Compile Include="Controllers\StatisticsController.cs" />
@@ -244,7 +245,7 @@
     <Content Include="Scripts\jquery-1.7.1.js" />
     <Content Include="Scripts\jquery-1.7.1.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
-	<Content Include="Scripts\jquery.easy-confirm-dialog.js" />
+    <Content Include="Scripts\jquery.easy-confirm-dialog.js" />
     <Content Include="Scripts\jquery-ui-1.8.20.js" />
     <Content Include="Scripts\jquery-ui-1.8.20.min.js" />
     <Content Include="Scripts\jquery.fileupload.js" />
@@ -317,7 +318,7 @@
     <Content Include="Views\Role\Index.cshtml" />
     <Content Include="Views\Role\Edit.cshtml" />
     <Content Include="Views\Statistics\Index.cshtml" />
-    <Content Include="Views\PreBorrow\Delete.cshtml" />
+    <Content Include="Views\MyBorrows\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
