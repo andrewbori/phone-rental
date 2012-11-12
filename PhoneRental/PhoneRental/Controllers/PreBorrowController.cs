@@ -7,6 +7,10 @@ using System.Web;
 using System.Web.Mvc;
 using PhoneRental.Models;
 using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Net.Mail;
+using RazorEngine;
+using System.Web.Security;
 
 namespace PhoneRental.Controllers
 {
@@ -53,6 +57,28 @@ namespace PhoneRental.Controllers
             };
             db.PreBorrows.Add(preBorrow);
             db.SaveChanges();
+
+            /* Send email to administrators */
+            var brandname = (from dt in db.DeviceTypes
+                             where dt.Id == devicetype.Id
+                             select dt.Brand.Name).First();
+            var type = (from dt in db.DeviceTypes
+                             where dt.Id == devicetype.Id
+                             select dt.Type).First();
+            var model = new PreBorrowEmail() 
+            {
+                CustomerName = db.UserProfiles.Single(
+                    p => p.UserName == HttpContext.User.Identity.Name).LastName,
+                Available = devicetype.Availability,
+                Date = DateTime.Now.ToString(),
+                PhoneType = brandname + " " + type
+                
+            };
+            string path = ControllerContext.HttpContext.Server.MapPath("~/Templates/PreBorrowEmail.cshtml");
+            string[] to = Roles.GetUsersInRole("Admin");
+
+            SendEmail.FromTemplate(path, model, typeof(PreBorrowEmail), to, "Új előfoglalás");
+
             return RedirectToAction("Index");
 
 
@@ -87,7 +113,6 @@ namespace PhoneRental.Controllers
                 return HttpNotFound(e.Message);
             }
         }
-
 
         protected override void Dispose(bool disposing)
         {

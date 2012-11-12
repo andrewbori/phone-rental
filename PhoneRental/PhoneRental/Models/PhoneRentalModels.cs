@@ -94,25 +94,28 @@ namespace PhoneRental.Models
                 int preBorrowed;
                 string retval;
                 DateTime end;
-                if (Devices.Count > 0)
+                using (var db = new PhoneRentalContext())
                 {
-                    using (var db = new PhoneRentalContext())
+                    int devicecnt = (from device in db.Devices
+                                        where (device.DeviceTypeId == Id)
+                                        select device.Id).Count();
+                    if (devicecnt > 0)
                     {
-                        borrowed = (from borrow in db.Borrows
+                     borrowed = (from borrow in db.Borrows
                                     where (borrow.Device.DeviceTypeId == Id) &
                                     (borrow.EndDate == null)
                                     select borrow.DeviceId).Count();
-                        preBorrowed = (from preb in db.PreBorrows
+                      preBorrowed = (from preb in db.PreBorrows
                                        where (preb.DeviceTypeId == Id)
                                        select preb.DeviceTypeId).Count();
 
-                        if (Devices.Count - (borrowed + preBorrowed) > 0)
+                        if (devicecnt - (borrowed + preBorrowed) > 0)
                         {
                             retval = "Azonnal elvihető";
                         }
-                        else if (preBorrowed < Devices.Count)
+                        else if (preBorrowed < devicecnt)
                         {
-                            var x = preBorrowed - (Devices.Count - borrowed);
+                            var x = preBorrowed - (devicecnt - borrowed);
                             end = (from borrow in db.Borrows
                                         where (borrow.Device.DeviceTypeId == Id)
                                         orderby borrow.Deadline
@@ -125,11 +128,11 @@ namespace PhoneRental.Models
                             retval = "Jelenleg minden készülékre van előfoglalás";
                         }
                     }
-                }
                 else
                 {
                     retval = "Nincs raktárkészlet";
                 }
+            }
                 return retval;
             }
             set
