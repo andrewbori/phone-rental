@@ -102,6 +102,7 @@ namespace PhoneRental.Controllers
             }
         }
 
+        [NonAction]
         private void SendPreBorrowEmail(DeviceType devicetype, int idPreBorrow)
         {
             var brandname = (from dt in db.DeviceTypes
@@ -122,7 +123,7 @@ namespace PhoneRental.Controllers
                 CustomerEmail = HttpContext.User.Identity.Name,
                 Available = devicetype.Availability,
                 Date = DateTime.Now.ToString(),
-                PhoneType = brandname + " " + type,
+                DeviceType = brandname + " " + type,
                 Link = link
 
             };

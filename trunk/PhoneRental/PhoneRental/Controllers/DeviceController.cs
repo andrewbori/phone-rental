@@ -57,15 +57,28 @@ namespace PhoneRental.Controllers
         {
             if (ModelState.IsValid)
             {
+                bool isValid = true;
                 foreach (Device device in devices)
                 {
-                    device.DeviceTypeId = DeviceTypeId;
-                    device.DeviceType = db.DeviceTypes.Find(DeviceTypeId);
-                    db.Devices.Add(device);
-                    device.DeviceType.Devices.Add(device);
+                    if (!isAaitIdNumberUnique(DeviceTypeId, device.AaitIdNumber) || !isImeiUnique(device.Imei))
+                    {
+                        isValid = false;
+                        break;
+                    }
                 }
-                db.SaveChanges();
-                return RedirectToAction("Index");
+
+                if (isValid)
+                {
+                    foreach (Device device in devices)
+                    {
+                        device.DeviceTypeId = DeviceTypeId;
+                        device.DeviceType = db.DeviceTypes.Find(DeviceTypeId);
+                        db.Devices.Add(device);
+                        device.DeviceType.Devices.Add(device);
+                    }
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
             }
 
             var deviceTypes = db.DeviceTypes.Select(d => new { Id = d.Id, Type = d.Brand.Name + " " + d.Type }).OrderBy(d => d.Type);
@@ -98,7 +111,9 @@ namespace PhoneRental.Controllers
         [HttpPost]
         public ActionResult Edit(Device device)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && 
+                isAaitIdNumberUnique(device.DeviceTypeId, device.AaitIdNumber, device.Id) && 
+                isImeiUnique(device.Imei, device.Id))
             {
                 db.Entry(device).State = EntityState.Modified;
                 db.SaveChanges();
@@ -133,7 +148,6 @@ namespace PhoneRental.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
         public JsonResult IsAaitIdNumberUnique(int? Id=0)
         {
             int DeviceTypeId = 0;
@@ -155,18 +169,12 @@ namespace PhoneRental.Controllers
                 int.TryParse(Request.Form.Get("AaitIdNumber"), out AaitIdNumber);
             }
 
-            if (DeviceTypeId == 0 || AaitIdNumber == 0)
-            {
-                return Json(true);
-            }
-
-            bool result = !db.Devices.Where(d => d.Id != Id).Any(d => d.DeviceTypeId == DeviceTypeId && d.AaitIdNumber == AaitIdNumber);
+            bool result = isAaitIdNumberUnique(DeviceTypeId, AaitIdNumber, Id);
 
             return Json(result);
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
         public JsonResult IsImeiUnique(int? Id=0)
         {
             string Imei = null;
@@ -185,14 +193,35 @@ namespace PhoneRental.Controllers
                 Imei = Request.Form.Get("Imei");
             }
 
+            bool result = isImeiUnique(Imei, Id);
+
+            return Json(result);
+        }
+
+        [NonAction]
+        public bool isAaitIdNumberUnique(int DeviceTypeId, int AaitIdNumber, int? Id = 0)
+        {
+            if (DeviceTypeId == 0 || AaitIdNumber == 0)
+            {
+                return true;
+            }
+
+            bool result = !db.Devices.Where(d => d.Id != Id).Any(d => d.DeviceTypeId == DeviceTypeId && d.AaitIdNumber == AaitIdNumber);
+
+            return result;
+        }
+
+        [NonAction]
+        public bool isImeiUnique(string Imei, int? Id = 0)
+        {
             if (Imei == null)
             {
-                return Json(true);
+                return true;
             }
 
             bool result = !db.Devices.Where(d => d.Id != Id).Any(d => d.Imei == Imei);
 
-            return Json(result);
+            return result;
         }
 
         [NonAction]
