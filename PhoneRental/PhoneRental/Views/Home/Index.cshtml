@@ -1,24 +1,22 @@
 ﻿@{
-    ViewBag.Title = "Home Page";
+    ViewBag.Title = "Hírek";
 }
 @section featured {
+    @if (!Request.IsAuthenticated) {
     <section class="featured">
         <div class="content-wrapper">
             <hgroup class="title">
-                <h1>@ViewBag.Title.</h1>
-                <h2>@ViewBag.Message</h2>
+                <h2>Az oldal használatához kérlek jelentkezz be!</h2>
             </hgroup>
             <p>
-                To learn more about ASP.NET MVC visit
-                <a href="http://asp.net/mvc" title="ASP.NET MVC Website">http://asp.net/mvc</a>.
-                The page features <mark>videos, tutorials, and samples</mark> to help you get the most from ASP.NET MVC.
-                If you have any questions about ASP.NET MVC visit
-                <a href="http://forums.asp.net/1146.aspx/1?MVC" title="ASP.NET MVC Forum">our forums</a>.
+
             </p>
         </div>
     </section>
+    }
 }
-<h3>Hírek:</h3>
+<h3>Üdvözöllek az AMORG mobilköcsönző oldalán!</h3>
+<h2>Hírek</h2>
     <!-- Sidebar > twitter -->
     <div id="twitter" class="boxed">
     </div>
@@ -40,8 +38,8 @@
             type: 'profile',
             rpp: 10,
             interval: 6000,
-            width: 'auto',
-            height: 200,
+            width: '400',
+            height: 300,
             theme: {
                 shell: {
                     background: '#7AC0DA',

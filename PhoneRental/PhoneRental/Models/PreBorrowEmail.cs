@@ -10,7 +10,7 @@ namespace PhoneRental.Models
         public string CustomerFirstName;
         public string CustomerLastName;
         public string CustomerEmail;
-        public string PhoneType;
+        public string DeviceType;
         public string Date;
         public string Available;
         public string Link;

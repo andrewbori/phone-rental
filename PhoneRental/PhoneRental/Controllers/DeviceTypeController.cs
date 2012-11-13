@@ -25,7 +25,6 @@ namespace PhoneRental.Controllers
 
         //
         // GET: /DeviceType/Create
-        [Authorize(Roles = "Admin")]
         public ActionResult Create()
         {
             ViewBag.Brands = db.Brands.OrderBy(b => b.Name).Select(b => b.Name);
@@ -35,10 +34,11 @@ namespace PhoneRental.Controllers
         //
         // POST: /DeviceType/Create
         [HttpPost]
-        [Authorize(Roles = "Admin")]
         public ActionResult Create(DeviceType devicetype)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && 
+                isAaitIdPatternUnique(devicetype.AaitIdPattern) && 
+                isTypeUnique(devicetype.Type, devicetype.Brand))
             {
                 try
                 {
@@ -61,7 +61,6 @@ namespace PhoneRental.Controllers
 
         //
         // GET: /DeviceType/Edit/5
-        [Authorize(Roles = "Admin")]
         public ActionResult Edit(int id = 0)
         {
             DeviceType devicetype = db.DeviceTypes.Find(id);
@@ -75,10 +74,11 @@ namespace PhoneRental.Controllers
         //
         // POST: /DeviceType/Edit/5
         [HttpPost]
-        [Authorize(Roles = "Admin")]
         public ActionResult Edit(DeviceType devicetype)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid &&
+                isAaitIdPatternUnique(devicetype.AaitIdPattern, devicetype.Id) &&
+                isTypeUnique(devicetype.Type, devicetype.Brand, devicetype.Id))
             {
                 try
                 {
@@ -111,7 +111,6 @@ namespace PhoneRental.Controllers
 
         //
         // GET: /DeviceType/Delete/5
-        [Authorize(Roles = "Admin")]
         public ActionResult Delete(int id = 0)
         {
             DeviceType devicetype = db.DeviceTypes.Find(id);
@@ -135,33 +134,48 @@ namespace PhoneRental.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
         public JsonResult IsTypeUnique(string type, Brand Brand, int? Id=0)
         {
-            if (type == null || Brand == null)
-            {
-                return Json(true);
-            }
-
-            bool result = !db.DeviceTypes.Where(d => d.Id != Id).Any(d => d.Type == type && d.Brand.Name == Brand.Name);
+            bool result = isTypeUnique(type, Brand, Id);
 
             return Json(result);
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
         public JsonResult IsAaitIdPatternUnique(string AaitIdPattern, int? Id=0)
         {
-            if (AaitIdPattern == null)
-            {
-                return Json(true);
-            }
-
-            bool result = !db.DeviceTypes.Where(d => d.Id != Id).Any(d => d.AaitIdPattern == AaitIdPattern);
+            bool result = isAaitIdPatternUnique(AaitIdPattern, Id);
 
             return Json(result);
         }
 
+        [HttpPost]
+        private bool isTypeUnique(string type, Brand Brand, int? Id = 0)
+        {
+            if (type == null || Brand == null)
+            {
+                return true;
+            }
+
+            bool result = !db.DeviceTypes.Where(d => d.Id != Id).Any(d => d.Type == type && d.Brand.Name == Brand.Name);
+
+            return result;
+        }
+
+        [NonAction]
+        private bool isAaitIdPatternUnique(string AaitIdPattern, int? Id = 0)
+        {
+            if (AaitIdPattern == null)
+            {
+                return true;
+            }
+
+            bool result = !db.DeviceTypes.Where(d => d.Id != Id).Any(d => d.AaitIdPattern == AaitIdPattern);
+
+            return result;
+        }
+
+        [NonAction]
         protected override void Dispose(bool disposing)
         {
             db.Dispose();

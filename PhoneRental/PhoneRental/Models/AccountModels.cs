@@ -29,16 +29,6 @@ namespace PhoneRental.Models
         public string LastName { get; set; }
     }
 
-    public class RegisterExternalLoginModel
-    {
-        [Required]
-        [Display(Name = "E-mail cím")]
-        [DataType(DataType.EmailAddress)]
-        public string UserName { get; set; }
-
-        public string ExternalLoginData { get; set; }
-    }
-
     public class LocalPasswordModel
     {
         [Required]
@@ -79,6 +69,7 @@ namespace PhoneRental.Models
         [Required]
         [Display(Name = "E-mail cím")]
         [DataType(DataType.EmailAddress)]
+        [RegularExpression(@"([^.@]+)(\.[^.@]+)*@([^.@]+\.)+([^.@]+)", ErrorMessage = "Érvénytelen e-mail cím!")]
         public string UserName { get; set; }
 
         [Required]
@@ -99,12 +90,5 @@ namespace PhoneRental.Models
         [Display(Name = "Jelszó megerősítése")]
         [Compare("Password", ErrorMessage = "Az jelszó és a megerősítése nem egyezik meg.")]
         public string ConfirmPassword { get; set; }
-    }
-
-    public class ExternalLogin
-    {
-        public string Provider { get; set; }
-        public string ProviderDisplayName { get; set; }
-        public string ProviderUserId { get; set; }
     }
 }
