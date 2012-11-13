@@ -48,37 +48,25 @@ namespace PhoneRental.Controllers
         [HttpPost]
         public ActionResult New(DeviceType devicetype)
         {
-            var preBorrow = new PreBorrow()
+            try
             {
-                Date = DateTime.Now,
-                DeviceTypeId = devicetype.Id,
-                UserId = db.UserProfiles.Single(
-                    p => p.UserName == HttpContext.User.Identity.Name).UserId
-            };
-            db.PreBorrows.Add(preBorrow);
-            db.SaveChanges();
+                var preBorrow = new PreBorrow()
+                {
+                    Date = DateTime.Now,
+                    DeviceTypeId = devicetype.Id,
+                    UserId = db.UserProfiles.Single(
+                        p => p.UserName == HttpContext.User.Identity.Name).UserId
+                };
+                db.PreBorrows.Add(preBorrow);
+                db.SaveChanges();
 
-            /* Send email to administrators */
-            var brandname = (from dt in db.DeviceTypes
-                             where dt.Id == devicetype.Id
-                             select dt.Brand.Name).First();
-            var type = (from dt in db.DeviceTypes
-                             where dt.Id == devicetype.Id
-                             select dt.Type).First();
-            var model = new PreBorrowEmail() 
+                /* Send email to administrators */
+                SendPreBorrowEmail(devicetype, preBorrow.Id);
+            }
+            catch (Exception e)
             {
-                CustomerName = db.UserProfiles.Single(
-                    p => p.UserName == HttpContext.User.Identity.Name).LastName,
-                Available = devicetype.Availability,
-                Date = DateTime.Now.ToString(),
-                PhoneType = brandname + " " + type
-                
-            };
-            string path = ControllerContext.HttpContext.Server.MapPath("~/Templates/PreBorrowEmail.cshtml");
-            string[] to = Roles.GetUsersInRole("Admin");
-
-            SendEmail.FromTemplate(path, model, typeof(PreBorrowEmail), to, "Új előfoglalás");
-
+                return HttpNotFound(e.Message);
+            }
             return RedirectToAction("Index");
 
 
@@ -112,6 +100,36 @@ namespace PhoneRental.Controllers
             {
                 return HttpNotFound(e.Message);
             }
+        }
+
+        private void SendPreBorrowEmail(DeviceType devicetype, int idPreBorrow)
+        {
+            var brandname = (from dt in db.DeviceTypes
+                             where dt.Id == devicetype.Id
+                             select dt.Brand.Name).First();
+            var type = (from dt in db.DeviceTypes
+                        where dt.Id == devicetype.Id
+                        select dt.Type).First();
+            var firstname = db.UserProfiles.Single(
+                    p => p.UserName == HttpContext.User.Identity.Name).FirstName;
+            var lastname = db.UserProfiles.Single(
+                    p => p.UserName == HttpContext.User.Identity.Name).LastName;
+            string link = Request.Url.Host + ":" + Request.Url.Port + @"/Borrow?PreBorrowId=" + idPreBorrow;
+            var model = new PreBorrowEmail()
+            {
+                CustomerFirstName = firstname,
+                CustomerLastName = lastname,
+                CustomerEmail = HttpContext.User.Identity.Name,
+                Available = devicetype.Availability,
+                Date = DateTime.Now.ToString(),
+                PhoneType = brandname + " " + type,
+                Link = link
+
+            };
+            string path = ControllerContext.HttpContext.Server.MapPath("~/Templates/PreBorrowEmail.cshtml");
+            string[] to = Roles.GetUsersInRole("Admin");
+
+            SendEmail.FromTemplate(path, model, typeof(PreBorrowEmail), to, "Új előfoglalás");
         }
 
         protected override void Dispose(bool disposing)

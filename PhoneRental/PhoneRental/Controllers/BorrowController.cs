@@ -21,7 +21,8 @@ namespace PhoneRental.Controllers
         //
         // GET: /Borrow/
 
-        public ActionResult Index()
+        [HttpGet]
+        public ActionResult Index(int PreBorrowId = 0)
         {
             var preBorrows = db.PreBorrows.Select(d => new
             {
@@ -30,7 +31,7 @@ namespace PhoneRental.Controllers
                     d.DeviceType.Brand.Name + " " + d.DeviceType.Type
             }).OrderBy(d => d.Name);
 
-            ViewBag.PreBorrows = new SelectList(preBorrows, "Id", "Name");
+            ViewBag.PreBorrows = new SelectList(preBorrows, "Id", "Name",PreBorrowId);
 
             var users = db.UserProfiles.Select(d => new { UserId = d.UserId, FullName = d.LastName + " " + d.FirstName + " (" + d.UserName + ")" }).OrderBy(d => d.FullName); 
             ViewBag.Users = new SelectList(users, "UserId", "FullName");
