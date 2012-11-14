@@ -201,10 +201,21 @@ namespace PhoneRental.Models
         [Display(Name = "Készülék")]
         public int DeviceId { get; set; }
         public virtual Device Device { get; set; }
+        
+        [Required]
+        [Display(Name = "Doboz kiadva")]
+        public bool IsBoxOut { get; set; }
+
+        [Required]
+        [Display(Name = "Töltő kiadva")]
+        public bool IsChargerOut { get; set; }
 
         [Required]
         [Display(Name = "Kölcsönzés kezdete")]
         public DateTime StartDate { get; set; }
+
+        [Display(Name = "Megjegyzés")]
+        public String Note { get; set; }
 
         [Required]
         [Display(Name = "Határidő")]
