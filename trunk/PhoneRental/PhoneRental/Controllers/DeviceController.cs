@@ -58,17 +58,38 @@ namespace PhoneRental.Controllers
             if (ModelState.IsValid)
             {
                 bool isValid = true;
-                foreach (Device device in devices)
+                Device[] deviceArray = devices.ToArray();
+
+                // Checking whether the devices are different or not.
+                for (int i = 0; i < deviceArray.Length && isValid; i++)
                 {
-                    if (!isAaitIdNumberUnique(DeviceTypeId, device.AaitIdNumber) || !isImeiUnique(device.Imei))
+                    for (int j = i + 1; j < deviceArray.Length; j++)
                     {
-                        isValid = false;
-                        break;
+                        if (deviceArray[i].AaitIdNumber == deviceArray[j].AaitIdNumber ||
+                            deviceArray[i].Imei == deviceArray[j].Imei)
+                        {
+                            isValid = false;
+                            break;
+                        }
                     }
                 }
 
                 if (isValid)
                 {
+                    // Checking whether the given devices are unique or not.
+                    foreach (Device device in devices)
+                    {
+                        if (!isAaitIdNumberUnique(DeviceTypeId, device.AaitIdNumber) || !isImeiUnique(device.Imei))
+                        {
+                            isValid = false;
+                            break;
+                        }
+                    }
+                }
+
+                if (isValid)
+                {
+                    // Adding the given devices.
                     foreach (Device device in devices)
                     {
                         device.DeviceTypeId = DeviceTypeId;

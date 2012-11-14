@@ -38,14 +38,14 @@
             {        
                 <tr>
                     <td>
-                        <div>@Html.HiddenFor(modelItem => devices[i].DeviceTypeId, new { @Class = "DeviceTypeId" })</div>
+                        <div>@Html.HiddenFor(modelItem => devices[i].DeviceTypeId, new { @class = "DeviceTypeId" })</div>
                         <div class="editor-field">
-                            @Html.EditorFor(modelItem => devices[i].Imei)
+                            @Html.TextBoxFor(modelItem => devices[i].Imei, new { @class = "imei-unique text-box single-line" })
                         </div>
                     </td>
                     <td>
                         <div class="editor-field editor-field-aait-nr">
-                            <span class="AaitIdPattern"></span>_<span class="AaitIdNumber">@Html.EditorFor(modelItem => devices[i].AaitIdNumber) </span>
+                            <span class="AaitIdPattern"></span>_<span class="AaitIdNumber">@Html.TextBoxFor(modelItem => devices[i].AaitIdNumber, new { @class = "aait-nr-unique text-box single-line" }) </span>
                         </div>
                     </td>
                 </tr>
@@ -77,12 +77,12 @@
         <td>
             <div><input Class="DeviceTypeId" id="devices_${Index}__DeviceTypeId" name="devices[${Index}].DeviceTypeId" type="hidden" value="${selectedVal}" /></div>
             <div class="editor-field">
-                <input class="text-box single-line" data-val="true" data-val-remote="Az megadott IMEI már létezik." data-val-remote-additionalfields="*.Imei,*.Id" data-val-remote-type="POST" data-val-remote-url="/Device/IsImeiUnique" data-val-required="Az IMEI megadása kötelező!" id="devices_${Index}__Imei" name="devices[${Index}].Imei" type="text" value="" />
+                <input class="imei-unique text-box single-line" data-val="true" data-val-remote="Az megadott IMEI már létezik." data-val-remote-additionalfields="*.Imei,*.Id" data-val-remote-type="POST" data-val-remote-url="/Device/IsImeiUnique" data-val-required="Az IMEI megadása kötelező!" id="devices_${Index}__Imei" name="devices[${Index}].Imei" type="text" value="" />
             </div>
         </td>
         <td>
             <div class="editor-field editor-field-aait-nr">
-                <span class="AaitIdPattern">${Pattern}</span>_<span class="AaitIdNumber"><input id="devices_${Index}__AaitIdNumber" class="text-box single-line input-validation-error" type="number" value="${Number}" name="devices[${Index}].AaitIdNumber" data-val-required="Az AAIT azonosító megadása kötelező!" data-val-remote-url="/Device/IsAaitIdNumberUnique" data-val-remote-type="POST" data-val-remote-additionalfields="*.AaitIdNumber,*.Id,*.DeviceTypeId" data-val-remote="A megadott AAIT azonosító már létezik." data-val-regex-pattern="[0-9]*$" data-val-regex="Az AAIT azonosítónak egy pozitív egész számnak kell lennie!" data-val-number="Az AAIT azonosítónak egy számnak kell lennie!" data-val="true"></span>
+                <span class="AaitIdPattern">${Pattern}</span>_<span class="AaitIdNumber"><input id="devices_${Index}__AaitIdNumber" class="aait-nr-unique text-box single-line" type="number" value="${Number}" name="devices[${Index}].AaitIdNumber" data-val-required="Az AAIT azonosító megadása kötelező!" data-val-remote-url="/Device/IsAaitIdNumberUnique" data-val-remote-type="POST" data-val-remote-additionalfields="*.AaitIdNumber,*.Id,*.DeviceTypeId" data-val-remote="A megadott AAIT azonosító már létezik." data-val-regex-pattern="[0-9]*$" data-val-regex="Az AAIT azonosítónak egy pozitív egész számnak kell lennie!" data-val-number="Az AAIT azonosítónak egy számnak kell lennie!" data-val="true"></span>
                                                                                          
             </div>
         </td>
@@ -118,6 +118,48 @@
             });
 
             deviceTypeChanged();
+
+            $.validator.addMethod(
+                "imei-unique",
+                function (value, element) {
+                    if (value == "") return true;
+                    
+                    for (var k = 0; k < i; k++) {
+                        var currentId = "devices_" + k + "__Imei";
+                        var current = $("#" + currentId);
+                        
+                        if (element.id != currentId) {
+                            
+                            if (value == current.val()) {
+                                return false;
+                            }
+                        }
+                    }
+                    return true;
+                },
+                "Ez az érték már egy másik mezőben is szerepel!"
+            );
+
+            $.validator.addMethod(
+                "aait-nr-unique",
+                function (value, element) {
+                    if (value == "") return true;
+
+                    for (var k = 0; k < i; k++) {
+                        var currentId = "devices_" + k + "__AaitIdNumber";
+                        var current = $("#" + currentId);
+
+                        if (element.id != currentId) {
+
+                            if (parseInt(value, 10) == parseInt(current.val(), 10)) {
+                                return false;
+                            }
+                        }
+                    }
+                    return true;
+                },
+                "Ez az érték már egy másik mezőben is szerepel!"
+            );
 
             reinitValidation();
         });
