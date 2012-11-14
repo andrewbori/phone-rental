@@ -6,17 +6,29 @@
     <title>Új előrendelés érkezett</title>
 </head>
 <body>
+    <style type="text/css">
+        h3 {margin-bottom: 5px;}
+        p {margin-top: 0px;}
+    </style>
     <div>
-        Új előfoglalás érkezett a telefonkölcsönző oldalon.<br/>
-        Az igénylő neve: @Model.CustomerLastName @Model.CustomerFirstName <br/>
-        Az igénylő email címe: @Model.CustomerEmail <br/>
-        A lefoglalt telefon típusa: @Model.DeviceType <br/>
-        A telefon elérhetősége: @Model.Available <br/>
-        A kölönzési igényt @Model.Date időponttal rögzítettük <br/>
-        A telefon kiadásához kattints a következő linkre <a href="@Model.Link">@Model.Link</a><br/>
-    </div>
-    <div>
-        BME-AAIT Amorg
+        <p>Új előfoglalás érkezett az AMORG mobilkölcsönző oldalán.</p>
+
+        <h3 style="margin-bottom: 5px;">Az igénylő adatai</h3>
+        <b>Név:</b> @Model.CustomerLastName @Model.CustomerFirstName <br />
+        <b>E-mail:</b> @Model.CustomerEmail <br />
+        
+        <h3 style="margin-bottom: 5px;">A készülék adatai</h3>
+        <b>Típus:</b> @Model.DeviceType <br />
+        <b>Elérhetőség:</b> @Model.Available <br />
+
+        <p>
+            A kölönzési igényt @Model.Date időponttal rögzítettük. <br />
+            A készülék kiadásához kattints a következő linkre: <a href="@Model.Link">@Model.Link</a>
+        </p>
+
+        <p>
+            BME-AAIT AMORG
+        </p>
     </div>
 </body>
 </html>

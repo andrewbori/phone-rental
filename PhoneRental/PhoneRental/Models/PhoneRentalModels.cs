@@ -237,7 +237,7 @@ namespace PhoneRental.Models
     }
 
 
-    #region Statistics View Models
+    #region View Models
 
     public class ChartModel
     {

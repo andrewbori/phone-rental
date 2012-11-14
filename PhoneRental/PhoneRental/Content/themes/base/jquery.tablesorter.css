@@ -1,6 +1,8 @@
 /* tables */
-table.tablesorter thead tr th {
-	font-size: 1.2em;
+table.tablesorter thead tr th, table.tablesorter tbody tr td {
+	font-size: 1.1em;
+}
+table.tablesorter tbody tr {
 }
 table.tablesorter thead tr .header {
 	background-image: url(images/bg.gif);
