@@ -134,8 +134,11 @@
             });
 
             // Handler that will override all other actions
-            var handler = function(event) {
-                    $(dialog).dialog('open');
+            var handler = function (event) {
+                $(dialog).dialog('open');
+                if (locale.onload != null) {
+                    locale.onload(target);
+                }
                     event.stopImmediatePropagation();
                     event.preventDefault();
                     return false;

@@ -57,8 +57,20 @@ namespace PhoneRental.Controllers
                     UserId = db.UserProfiles.Single(
                         p => p.UserName == HttpContext.User.Identity.Name).UserId
                 };
-                db.PreBorrows.Add(preBorrow);
-                db.SaveChanges();
+
+                var exist = (from pb in db.PreBorrows
+                             where ((pb.DeviceTypeId == preBorrow.DeviceTypeId) &&
+                             (pb.UserId == preBorrow.UserId))
+                             select pb.Id).Count();
+                if (exist == 0)
+                {
+                    db.PreBorrows.Add(preBorrow);
+                    db.SaveChanges();
+                }
+                else
+                {
+                    return HttpNotFound("Az adott azonosítójú telefon típusra a felhasználó már adott le megrendelést");
+                }
 
                 /* Send email to administrators */
                 SendPreBorrowEmail(devicetype, preBorrow.Id);
@@ -115,7 +127,7 @@ namespace PhoneRental.Controllers
                     p => p.UserName == HttpContext.User.Identity.Name).FirstName;
             var lastname = db.UserProfiles.Single(
                     p => p.UserName == HttpContext.User.Identity.Name).LastName;
-            string link = Request.Url.Host + ":" + Request.Url.Port + @"/Borrow?PreBorrowId=" + idPreBorrow;
+            string link = "http://"+Request.Url.Host + ":" + Request.Url.Port + @"/Borrow?PreBorrowId=" + idPreBorrow;
             var model = new PreBorrowEmail()
             {
                 CustomerFirstName = firstname,
