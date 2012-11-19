@@ -32,12 +32,19 @@ namespace PhoneRental.Controllers
             }).OrderBy(d => d.Name);
 
             ViewBag.PreBorrows = new SelectList(preBorrows, "Id", "Name",PreBorrowId);
+            ViewBag.StartDate = DateTime.Now.ToString("MM/dd/yyyy");
+            ViewBag.Deadline = DateTime.Now.AddDays(30).ToString("MM/dd/yyyy");
+            
 
             var users = db.UserProfiles.Select(d => new { UserId = d.UserId, FullName = d.LastName + " " + d.FirstName + " (" + d.UserName + ")" }).OrderBy(d => d.FullName); 
             ViewBag.Users = new SelectList(users, "UserId", "FullName");
 
             var deviceTypes = db.DeviceTypes.Select(d => new { Id = d.Id, Type = d.Brand.Name + " " + d.Type }).OrderBy(d => d.Type);
-            ViewBag.Devices = new SelectList(deviceTypes, "Id", "Type");
+            ViewBag.DeviceTypes = new SelectList(deviceTypes, "Id", "Type");
+
+            var devices = db.DeviceTypes.Where(d => d.Id == 0).Select(d => new { Id = d.Id, Type = d.Brand.Name + " " + d.Type }).OrderBy(d => d.Type);
+            
+            ViewBag.Devices = new SelectList(devices, "Id", "Type");
 
             var borrow = new Borrow();
             borrow.User = new UserProfile();
@@ -78,7 +85,7 @@ namespace PhoneRental.Controllers
         }
 
         [HttpPost]
-        public ActionResult NewForPreBorrow(DateTime Deadline, int DeviceId, int PreBorrowId)
+        public ActionResult NewForPreBorrow(DateTime Deadline, DateTime StartDate, int DeviceId, int PreBorrowId)
         {
             // Előfoglalás kikeresése
             PreBorrow preBorrow = db.PreBorrows.Find(PreBorrowId);
@@ -88,7 +95,7 @@ namespace PhoneRental.Controllers
             }
             var borrow = new Borrow()
             {
-                StartDate = DateTime.Now,
+                StartDate = StartDate,
                 Deadline = Deadline,
                 UserId = preBorrow.User.UserId,
                 DeviceId = DeviceId

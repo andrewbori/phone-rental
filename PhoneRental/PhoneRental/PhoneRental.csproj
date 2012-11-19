@@ -319,7 +319,10 @@
     <Content Include="Views\Role\Edit.cshtml" />
     <Content Include="Views\Statistics\Index.cshtml" />
     <Content Include="Views\MyBorrows\Index.cshtml" />
+    <None Include="Views\Borrow\IndexTab1.cshtml" />
     <Content Include="Views\Account\_ChangeUserNamePartial.cshtml" />
+    <Content Include="Views\Borrow\IndexTab2.cshtml" />
+    <Content Include="Views\Borrow\IndexTab3.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

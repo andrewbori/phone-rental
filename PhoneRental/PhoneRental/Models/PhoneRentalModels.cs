@@ -264,6 +264,53 @@ namespace PhoneRental.Models
         public IEnumerable<ChartModel> UserDelay { get; set; }
     }
 
+    public class BorrowCommon
+    {
+        [Required(ErrorMessage = "Eszköz kiválasztása kötelező!")]
+        [RegularExpression(@"[1-9]*$", ErrorMessage = "Eszköz kiválasztása kötelező!")]
+        public int DeviceId { get; set; }
+
+        [Required(ErrorMessage = "A kölcsönzés kezdeti dátumának megadása kötelező!")]
+        public DateTime StartDate { get; set; }
+
+        [Required(ErrorMessage = "A kölcsönzés lejárati dátumának megadása kötelező!")]
+        public DateTime Deadline { get; set; }
+
+        public bool IsChargerOut { get; set; }
+
+        public bool IsBoxOut { get; set; }
+
+        public string Note { get; set; }
+    }
+
+    public class BorrowForPreBorrow : BorrowCommon
+    {
+        [Required(ErrorMessage="Előfoglalás kiválasztása kötelező!")]
+        [RegularExpression(@"[1-9][0-9]*$", ErrorMessage = "Előfoglalás kiválasztása kötelező!")]
+        public int PreBorrowId { get; set; }
+    }
+
+    public class BorrowForNewUser : BorrowCommon
+    {
+        [Required(ErrorMessage="Keresztnév megadása kötelező!")]
+        public string FirstName { get; set; }
+
+        [Required(ErrorMessage="Vezetéknév megadása kötelező!")]
+        public string LastName { get; set; }
+        
+        [Required(ErrorMessage="Email cím megadása kötelező")]
+        [RegularExpression(@"([^.@]+)(\.[^.@]+)*@([^.@]+\.)+([^.@]+)", ErrorMessage = "Érvénytelen e-mail cím!")]
+        public string UserName { get; set; }
+    }
+
+    public class BorrowForExistingUser : BorrowCommon
+    {
+        [Required(ErrorMessage = "Felhasználó kiválasztása kötelező!")]
+        [RegularExpression(@"[1-9][0-9]*$", ErrorMessage = "Felhasználó kiválasztása kötelező!")]
+        public int UserId { get; set; }
+
+    }
+
     public class RoleModel
     {
         [Required]
