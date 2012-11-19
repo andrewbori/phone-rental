@@ -266,11 +266,30 @@ namespace PhoneRental.Models
 
     public class RoleModel
     {
+        [Required]
         public int UserId { get; set; }
+
+        [Required(ErrorMessage = "Az e-mail cím megadása kötelező!")]
+        [DataType(DataType.EmailAddress)]
+        [Display(Name = "E-mail cím")]
+        [RegularExpression(@"([^.@]+)(\.[^.@]+)*@([^.@]+\.)+([^.@]+)", ErrorMessage = "Érvénytelen e-mail cím!")]
+        [System.Web.Mvc.Remote("IsUserNameUnique", "Account", AdditionalFields = "UserId", ErrorMessage = "A megadott e-mail cím már létezik!", HttpMethod = "POST")]
         public string UserName { get; set; }
+
+        [Required(ErrorMessage = "Az keresztnév megadása kötelező!")]
+        [Display(Name = "Keresztnév")]
         public string FirstName { get; set; }
+
+        [Required(ErrorMessage = "Az vezetéknév megadása kötelező!")]
+        [Display(Name = "Vezetéknév")]
         public string LastName { get; set; }
+
+        [Display(Name = "Szerepkör")]
         public string Role { get; set; }
+
+        [Display(Name = "Adminisztrátori jogosultság")]
+        public bool IsAdmin { get; set; }
+
         public string Avatar { get; set; }
 
         public RoleModel(UserProfile user)
@@ -280,6 +299,8 @@ namespace PhoneRental.Models
             this.LastName = user.LastName;
             this.FirstName = user.FirstName;
         }
+
+        public RoleModel() { }
     }
 
     #endregion

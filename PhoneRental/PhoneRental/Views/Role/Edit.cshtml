@@ -1,4 +1,4 @@
-﻿@model PhoneRental.Models.UserProfile
+﻿@model PhoneRental.Models.RoleModel
 
 @{
     ViewBag.Title = "Felhasználó szerepkörének szerkesztése";
@@ -14,29 +14,29 @@
 
         @Html.HiddenFor(model => model.UserId)
 
-        <div class="editor-label">
-            @Html.LabelFor(model => model.UserName)
-        </div>
-        <div class="editor-field">
-            @Html.DisplayFor(model => model.UserName)
-        </div>
-        <div class="editor-label">
-            @Html.LabelFor(model => model.LastName, "Név")
-        </div>
-        <div class="editor-field">
-            @Html.DisplayFor(model => model.LastName) @Html.DisplayFor(model => model.FirstName)
-        </div>
-
-        <div class="editor-label">
-            Adminisztrátori jogosultság
-        </div>
-        <div class="editor-field">
-            @Html.CheckBox("IsAdmin", (Boolean) ViewBag.IsAdmin)
-        </div>
-
-        <p>
-            <input type="submit" value="Mentés" />
-        </p>
+        <ol> 
+            <li>
+                @Html.LabelFor(model => model.UserName)
+                @Html.TextBoxFor(model => model.UserName)
+                @Html.ValidationMessageFor(model => model.UserName)
+            </li>
+            <li>
+                @Html.LabelFor(model => model.LastName)
+                @Html.TextBoxFor(model => model.LastName)
+                @Html.ValidationMessageFor(model => model.LastName)
+            </li>
+            <li>
+                @Html.LabelFor(model => model.FirstName)
+                @Html.TextBoxFor(model => model.FirstName)
+                @Html.ValidationMessageFor(model => model.FirstName)
+            </li>
+            <li>
+                @Html.LabelFor(model => model.IsAdmin)
+                @Html.CheckBoxFor(model => model.IsAdmin)
+            </li>
+        </ol>
+        
+        <input type="submit" value="Mentés" />
     </fieldset>
 }
 

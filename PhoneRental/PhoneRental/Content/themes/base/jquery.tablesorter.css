@@ -3,6 +3,16 @@ table.tablesorter thead tr th, table.tablesorter tbody tr td {
 	font-size: 1.1em;
 }
 table.tablesorter tbody tr {
+    border-top: 1px solid #D3DCE0;
+}
+table.tablesorter thead tr th {
+    text-align: center;
+    border: 1px solid #D3DCE0;
+    background-color: #7AC0DA;
+}
+table.tablesorter tbody tr td {
+    padding-top: 12px;
+    padding-bottom: 12px;
 }
 table.tablesorter thead tr .header {
 	background-image: url(images/bg.gif);
@@ -17,5 +27,6 @@ table.tablesorter thead tr .headerSortDown {
 	background-image: url(images/desc.gif);
 }
 table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSortUp {
-background-color: #7AC0DA;
+    background-color: #EFEEEF;
+    color: #af0637;
 }
