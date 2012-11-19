@@ -19,6 +19,8 @@ namespace PhoneRental.Controllers
     [InitializeSimpleMembership]
     public class AccountController : Controller
     {
+        private PhoneRentalContext db = new PhoneRentalContext();
+
         //
         // GET: /Account/Login
 
@@ -134,13 +136,26 @@ namespace PhoneRental.Controllers
         {
             ViewBag.AvatarHash = GetMD5HashData(User.Identity.Name);
             ViewBag.StatusMessage =
-                message == ManageMessageId.ChangePasswordSuccess ? "A jelszavad sikeresen megváltozott."
-                : message == ManageMessageId.SetPasswordSuccess ? "Your password has been set."
+                message == ManageMessageId.SaveUserProfileSuccess ? "A felhasználói adatok sikeresen módosultak."
+                : message == ManageMessageId.ChangePasswordSuccess ? "A jelszavad sikeresen módosult."
+                : message == ManageMessageId.SetPasswordSuccess ? "A jelszavad el lett küldve."
                 : message == ManageMessageId.RemoveLoginSuccess ? "The external login was removed."
                 : "";
             ViewBag.HasLocalPassword = OAuthWebSecurity.HasLocalAccount(WebSecurity.GetUserId(User.Identity.Name));
             ViewBag.ReturnUrl = Url.Action("Manage");
-            return View();
+
+            var user = db.UserProfiles.SingleOrDefault(u => u.UserId == WebSecurity.CurrentUserId);
+
+            UserProfileModel model = new UserProfileModel {
+                UserNameModel = new ChangeUserNameModel {
+                    UserId = WebSecurity.CurrentUserId,
+                    UserName = WebSecurity.CurrentUserName,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName
+                },
+                PasswordModel = new LocalPasswordModel()
+            };
+            return View(model);
         }
 
         //
@@ -174,7 +189,7 @@ namespace PhoneRental.Controllers
                     }
                     else
                     {
-                        ModelState.AddModelError("", "The current password is incorrect or the new password is invalid.");
+                        ModelState.AddModelError("", "A jelszó helytelen vagy az új jelszó érvénytelen.");
                     }
                 }
             }
@@ -199,6 +214,31 @@ namespace PhoneRental.Controllers
                     {
                         ModelState.AddModelError("", e);
                     }
+                }
+            }
+
+            // If we got this far, something failed, redisplay form
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Manage2(ChangeUserNameModel model)
+        {
+            bool hasLocalAccount = OAuthWebSecurity.HasLocalAccount(WebSecurity.GetUserId(User.Identity.Name));
+            ViewBag.HasLocalPassword = hasLocalAccount;
+            ViewBag.ReturnUrl = Url.Action("Manage");
+            if (hasLocalAccount)
+            {
+                if (ModelState.IsValid)
+                {
+                    UserProfile user = db.UserProfiles.SingleOrDefault(u => u.UserName == User.Identity.Name);
+                    user.UserName = model.UserName;
+                    db.Entry(user).State = System.Data.EntityState.Modified;
+                    db.SaveChanges();
+                    WebSecurity.Logout();
+
+                    return RedirectToAction("Manage", new { Message = ManageMessageId.SaveUserProfileSuccess });
                 }
             }
 
@@ -243,6 +283,7 @@ namespace PhoneRental.Controllers
 
         public enum ManageMessageId
         {
+            SaveUserProfileSuccess,
             ChangePasswordSuccess,
             SetPasswordSuccess,
             RemoveLoginSuccess,
@@ -263,6 +304,28 @@ namespace PhoneRental.Controllers
             {
                 OAuthWebSecurity.RequestAuthentication(Provider, ReturnUrl);
             }
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public JsonResult IsUserNameUnique(string UserName, int? UserId = 0)
+        {
+            bool result = isUserNameUnique(UserName, UserId);
+
+            return Json(result);
+        }
+
+        [HttpPost]
+        private bool isUserNameUnique(string UserName, int? UserId = 0)
+        {
+            if (UserName == null)
+            {
+                return true;
+            }
+
+            bool result = !db.UserProfiles.Where(u => u.UserId != UserId).Any(u => u.UserName == UserName);
+
+            return result;
         }
 
         private static string ErrorCodeToString(MembershipCreateStatus createStatus)

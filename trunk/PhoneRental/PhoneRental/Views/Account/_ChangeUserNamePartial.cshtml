@@ -1,0 +1,29 @@
+﻿@model PhoneRental.Models.ChangeUserNameModel
+
+<h3>Felhasználói adatok</h3>
+
+@using (Html.BeginForm("Manage2", "Account")) {
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary()
+
+    <fieldset>
+        <legend>User profile form</legend>
+        <ol> 
+            <li>
+                @Html.HiddenFor(m => m.UserId)
+                @Html.LabelFor(m => m.UserName)
+                @Html.TextBoxFor(m => m.UserName)
+                @Html.ValidationMessageFor(m => m.UserName)
+            </li>
+            <li>
+                @Html.LabelFor(m => m.LastName)
+                @Html.TextBoxFor(m => m.LastName, new { @readonly = "readonly" })
+            </li>
+            <li>
+                @Html.LabelFor(m => m.FirstName)
+                @Html.TextBoxFor(m => m.FirstName, new { @readonly = "readonly" })
+            </li>
+        </ol>
+        <input type="submit" value="Mentés" />
+    </fieldset>
+}

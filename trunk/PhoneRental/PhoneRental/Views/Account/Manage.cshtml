@@ -1,15 +1,13 @@
-﻿@model PhoneRental.Models.LocalPasswordModel
+﻿@model PhoneRental.Models.UserProfileModel
 @{
     ViewBag.Title = "Felhasználói profil";
 }
 
 <hgroup class="title">
-    <h1>@ViewBag.Title.</h1>
+    <h1>@ViewBag.Title</h1>
 </hgroup>
 
 <p class="message-success">@ViewBag.StatusMessage</p>
-
-<p>A következő felhasználóként vagy bejelentkezve: <strong>@User.Identity.Name</strong>.</p>
 
 <p>
     <a href="javascript:showAvatar('@ViewBag.AvatarHash')">
@@ -17,14 +15,9 @@
     </a>
 </p>
 
-@if (ViewBag.HasLocalPassword)
-{
-    @Html.Partial("_ChangePasswordPartial")
-}
-else
-{ 
-    @Html.Partial("_SetPasswordPartial")
-}
+@Html.Partial("_ChangeUserNamePartial", Model.UserNameModel)
+@Html.Partial("_ChangePasswordPartial", Model.PasswordModel)
+
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")

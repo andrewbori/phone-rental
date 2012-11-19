@@ -60,7 +60,7 @@ mark {
 
 h1, h2, h3,
 h4, h5, h6 {
-    color: #000;
+    color: #af0637;
     margin-bottom: 0;
     padding-bottom: 0;
 }
@@ -658,11 +658,15 @@ tr.pager td {
 .table-user {
     margin: 0;
 }
-    .table-user td {
-        padding: 0;
-        padding-right: 0.25em;
-        vertical-align:top;
+    .table-user tbody tr {
+        border: 0px;
     }
+
+        .table-user tbody tr td {
+            padding: 0;
+            padding-right: 0.25em;
+            vertical-align:top;
+        }
 
 
 /********************

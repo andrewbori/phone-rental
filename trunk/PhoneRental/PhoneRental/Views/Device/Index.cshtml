@@ -26,7 +26,7 @@
                 Kölcsönözve
             </th>
             <th>
-                Kölcsönző adatai
+                Kölcsönzés részletei
             </th>
             <th>
                 Határidő
@@ -49,16 +49,21 @@
             <td>
                 @if (item.Borrow != null) {
                     string avatar = PhoneRental.Controllers.AccountController.GetMD5HashData(item.Borrow.User.UserName);
-                    <table class="table-user"><tr>
-                    <td>
+                    <table class="table-user"><tr style="border: 0;">
+                    <td style="padding: 0;">
                         <a href="javascript:showAvatar('@avatar')">
                             <img id="imgGravatar" style="height:32px;width:32px;" alt="" src="http://www.gravatar.com/avatar/@avatar?s=32&d=mm">
                         </a>
-                    </td><td>
+                    </td>
+                    <td style="padding: 0;">
                         @Html.DisplayFor(modelItem => item.Borrow.User.LastName)
                         @Html.DisplayFor(modelItem => item.Borrow.User.FirstName) <br />
-                        @Html.DisplayFor(modelItem => item.Borrow.User.UserName)
+                        @Html.DisplayFor(modelItem => item.Borrow.User.UserName) <br />
                     </td></tr></table>
+                    @Html.CheckBoxFor(modelItem => item.Borrow.IsChargerOut, new { @readonly = "readonly", @disabled = "disabled" }) <text>Töltő kiadva</text>
+                    @Html.CheckBoxFor(modelItem => item.Borrow.IsBoxOut, new { @readonly = "readonly", @disabled = "disabled" }) <text>Doboz kiadva</text>
+                    <br />
+                    @Html.DisplayFor(modelItem => item.Borrow.Note)
                 }
             </td>
             <td>

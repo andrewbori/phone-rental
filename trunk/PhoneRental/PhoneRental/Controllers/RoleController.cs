@@ -57,41 +57,68 @@ namespace PhoneRental.Controllers
             {
                 isAdmin = true;
             }
-            ViewBag.IsAdmin = isAdmin;
 
-            return View(userprofile);
+            RoleModel model = new RoleModel(userprofile);
+            model.IsAdmin = isAdmin;
+
+            return View(model);
         }
 
         //
         // POST: /Role/Edit/5
 
         [HttpPost]
-        public ActionResult Edit(int UserId, Boolean IsAdmin)
-        {            
-            UserProfile user = db.UserProfiles.Find(UserId);
-            if (user == null)
+        public ActionResult Edit(RoleModel model)
+        {
+            if (ModelState.IsValid)
             {
-                return HttpNotFound();
+                UserProfile user = db.UserProfiles.Find(model.UserId);
+                if (user == null)
+                {
+                    return HttpNotFound();
+                }
+
+                // Set new role
+                Boolean isAdmin = false;
+                if (Roles.IsUserInRole(user.UserName, "Admin"))
+                {
+                    isAdmin = true;
+                }
+
+                if (isAdmin && !model.IsAdmin)
+                {
+                    Roles.RemoveUserFromRole(user.UserName, "Admin");
+                    Roles.AddUserToRole(user.UserName, "Customer");
+                }
+                else if (!isAdmin && model.IsAdmin)
+                {
+                    Roles.RemoveUserFromRole(user.UserName, "Customer");
+                    Roles.AddUserToRole(user.UserName, "Admin");
+                }
+
+                // Set UserProfile
+                if (!user.UserName.Equals(model.UserName) || !user.FirstName.Equals(model.FirstName) || !user.LastName.Equals(model.LastName))
+                {
+                    bool isMyUserNameChanged = false;
+                    if ((user.UserId == WebSecurity.CurrentUserId) && !user.UserName.Equals(model.UserName)) isMyUserNameChanged = true;
+
+                    user.UserName = model.UserName;
+                    user.FirstName = model.FirstName;
+                    user.LastName = model.LastName;
+
+                    db.Entry(user).State = EntityState.Modified;
+                    db.SaveChanges();
+
+                    if (isMyUserNameChanged)
+                    {
+                        WebSecurity.Logout();
+                    }
+                }
+
+                return RedirectToAction("Index");
             }
 
-            Boolean isAdmin = false;
-            if (Roles.IsUserInRole(user.UserName, "Admin"))
-            {
-                isAdmin = true;
-            }
-
-            if (isAdmin && !IsAdmin)
-            {
-                Roles.RemoveUserFromRole(user.UserName, "Admin");
-                Roles.AddUserToRole(user.UserName, "Customer");
-            }
-            else if (!isAdmin && IsAdmin)
-            {
-                Roles.RemoveUserFromRole(user.UserName, "Customer");
-                Roles.AddUserToRole(user.UserName, "Admin");
-            }
-
-            return RedirectToAction("Index");
+            return View(model);
         }
     }
 }
