@@ -13,215 +13,14 @@
         <li><a href="#tabs-2">Regisztrált felhasználó</a></li>
         <li><a href="#tabs-3">Új felhasználó</a></li>
     </ul>
-    <div id ="tabs-1">
-        @using (Html.BeginForm("NewForPreBorrow", "Borrow", FormMethod.Post, new { Id = "form1" }))
-        {
-            @Html.ValidationSummary(true)
-            <fieldset>
-                <legend>Borrow</legend>
+ 
+    @Html.Partial("IndexTab1", new PhoneRental.Models.BorrowForPreBorrow())
+    @Html.Partial("IndexTab2", new PhoneRental.Models.BorrowForExistingUser())
+    @Html.Partial("IndexTab3", new PhoneRental.Models.BorrowForNewUser())
 
-                <div class="editor-label">
-                    Előfoglalás
-                </div>
 
-                <div class="editor-field">
-                    @Html.DropDownList("PreBorrowId", (SelectList)ViewBag.PreBorrows, string.Empty)
-                </div>
-                
-                <div class="editor-label">
-                    Eszköz
-                </div>
 
-                <select id="DeviceList1" name="DeviceId"></select>
 
-                <div class="editor-label">
-                    Határidő
-                </div>
-
-                <div class="editor-field">
-                    @Html.TextBoxFor(model => model.Deadline, new { Id = "Deadline1", Class = "calendar", Name = "Deadline" })
-                    @Html.ValidationMessageFor(model => model.Deadline)
-                </div>
-
-                <div class="editor-label">
-                    @Html.CheckBoxFor(model => model.IsChargerOut)
-                    @Html.ValidationMessageFor(model => model.IsChargerOut)
-                    Töltő kiadva
-                </div>
-
-                <div class="editor-label">
-                    @Html.CheckBoxFor(model => model.IsBoxOut)
-                    @Html.ValidationMessageFor(model => model.IsBoxOut)
-                    Doboz kiadva
-                </div>
-
-                <div class="editor-label">
-                    Megjegyzés
-                </div>
-
-                <div class="editor-field">
-                    @Html.TextAreaFor(model => model.Note, new { cols="10", rows="3" })
-                    @Html.ValidationMessageFor(model => model.Note)
-                </div>
-
-                <p>
-                    <input type="submit" value="Tovább" />
-                </p>
-            </fieldset>
-        }
-    </div>
-
-    <div id="tabs-2">
-        @using (Html.BeginForm("NewForUser", "Borrow", FormMethod.Post, new { Id="form2"}))
-        {
-            @Html.ValidationSummary(true)
-
-            <fieldset>
-                <legend>Borrow</legend>
-
-                 <div class="editor-label">
-                    Felhasználó
-                </div>
-
-                <div class="editor-field">
-                    @Html.DropDownList("UserId", (SelectList)ViewBag.Users, string.Empty)
-                </div>
-
-                <div class="editor-label">
-                    Készülék típus
-                </div>
-
-                <div class="editor-field">
-                    @Html.DropDownList("DeviceTypeId2", (SelectList)ViewBag.Devices, string.Empty)
-                </div>
-
-                <div class="editor-label">
-                     Készülék
-                </div>
-
-                <select id="DeviceList2" name="DeviceId"></select>
-
-                <div class="editor-label">
-                     Határidő
-                </div>
-                <div class="editor-field">
-                    @Html.TextBoxFor(model => model.Deadline, new { Id = "Deadline2", Class = "calendar", Name = "Deadline" })
-                    @Html.ValidationMessageFor(model => model.Deadline)
-                </div>
-
-                                <div class="editor-label">
-                    @Html.CheckBoxFor(model => model.IsChargerOut)
-                    @Html.ValidationMessageFor(model => model.IsChargerOut)
-                    Töltő kiadva
-                </div>
-
-                <div class="editor-label">
-                    @Html.CheckBoxFor(model => model.IsBoxOut)
-                    @Html.ValidationMessageFor(model => model.IsBoxOut)
-                    Doboz kiadva
-                </div>
-
-                <div class="editor-label">
-                    Megjegyzés
-                </div>
-
-                <div class="editor-field">
-                    @Html.TextAreaFor(model => model.Note, new { cols="10", rows="3" })
-                    @Html.ValidationMessageFor(model => model.Note)
-                </div>
-
-                <p>
-                    <input type="submit" value="Tovább" />
-                </p>
-            </fieldset>
-        }
-
-    </div>
-
-    <div id="tabs-3">
-        @using (Html.BeginForm("New", "Borrow", FormMethod.Post, new { Id = "form3" }))
-        {
-            @Html.ValidationSummary(true)
-
-            <fieldset>
-                <legend>Borrow</legend>
-                
-                <div class="editor-label">
-                     Vezetéknév
-                </div>
-                                
-                <div class="editor-field">
-                    @Html.TextBoxFor(model => model.User.LastName)
-                    @Html.ValidationMessageFor(model => model.User.LastName)
-                </div>
-
-                <div class="editor-label">
-                     Keresztnév
-                </div>
-
-                <div class="editor-field">
-                    @Html.TextBoxFor(model => model.User.FirstName)
-                    @Html.ValidationMessageFor(model => model.User.FirstName)
-                </div>
-
-                <div class="editor-label">
-                     E-mail cím
-                </div>
-
-                <div class="editor-field">
-                    @Html.TextBoxFor(model => model.User.UserName)
-                    @Html.ValidationMessageFor(model => model.User.UserName)
-                </div>
-
-                <div class="editor-label">
-                    Készülék típusa
-                </div>
-
-                <div class="editor-field">
-                    @Html.DropDownList("DeviceTypeId3", (SelectList)ViewBag.Devices, string.Empty)
-                </div>
-
-                <div class="editor-label">
-                     Készülék
-                </div>
-
-                <select id="DeviceList3" name="DeviceId"></select>
-
-                <div class="editor-label">
-                     Határidő
-                </div>
-                <div class="editor-field">
-                    @Html.TextBoxFor(model => model.Deadline, new { Id = "Deadline3", Class = "calendar", Name = "Deadline" })
-                    @Html.ValidationMessageFor(model => model.Deadline)
-                </div>
-
-                                <div class="editor-label">
-                    @Html.CheckBoxFor(model => model.IsChargerOut)
-                    @Html.ValidationMessageFor(model => model.IsChargerOut)
-                    Töltő kiadva
-                </div>
-
-                <div class="editor-label">
-                    @Html.CheckBoxFor(model => model.IsBoxOut)
-                    @Html.ValidationMessageFor(model => model.IsBoxOut)
-                    Doboz kiadva
-                </div>
-
-                <div class="editor-label">
-                    Megjegyzés
-                </div>
-
-                <div class="editor-field">
-                    @Html.TextAreaFor(model => model.Note, new { cols="10", rows="3" })
-                    @Html.ValidationMessageFor(model => model.Note)
-                </div>
-
-                <p>
-                    <input type="submit" value="Tovább" />
-                </p>
-           </fieldset>
-        }
-    </div>
 </div>
 
 @section Styles {
@@ -245,6 +44,12 @@
                     $('#form3').each(function () {
                         this.reset();
                     });
+                    $('#StartDate1').val('@ViewBag.StartDate');
+                    $('#Deadline1').val('@ViewBag.Deadline');
+                    $('#StartDate2').val('@ViewBag.StartDate');
+                    $('#Deadline2').val('@ViewBag.Deadline');
+                    $('#StartDate3').val('@ViewBag.StartDate');
+                    $('#Deadline3').val('@ViewBag.Deadline');
                 }
             })
 
@@ -254,6 +59,9 @@
             $(".calendar").datepicker("option", "defaultDate", +7);
             $(".calendar").datepicker("option", "monthNames", ["Január", "Február", "Március", "Április", "Május", "Június", "Július", "Augusztus", "Szeptember", "Október", "November", "December"]);
             $(".calendar").datepicker("option", "dayNamesMin", ["V", "H", "K", "Sze", "Cs", "P", "Szo"]);
+
+            $('#StartDate1').val('@ViewBag.StartDate');
+            $('#Deadline1').val('@ViewBag.Deadline');
 
             $('#DeviceTypeId2').change(function() {
                 $.getJSON("/Borrow/DeviceListForDeviceType?DeviceTypeId=" + $(this).val(), null, function (data) {

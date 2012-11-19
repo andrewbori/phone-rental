@@ -1,0 +1,80 @@
+﻿@model PhoneRental.Models.BorrowForExistingUser
+    <div id="tabs-2">
+        @using (Html.BeginForm("NewForUser", "Borrow", FormMethod.Post, new { Id="form2"}))
+        {
+            @Html.ValidationSummary(true)
+
+            <fieldset>
+                <legend>Borrow</legend>
+
+                 <div class="editor-label">
+                    Felhasználó
+                </div>
+
+                <div class="editor-field">
+                    @Html.DropDownList("UserId", (SelectList)ViewBag.Users, string.Empty)
+                    @Html.ValidationMessageFor(model => model.UserId)
+                </div>
+
+                <div class="editor-label">
+                    Készülék típus
+                </div>
+
+                <div class="editor-field">
+                    @Html.DropDownList("DeviceTypeId", (SelectList)ViewBag.DeviceTypes, string.Empty, new { id = "DeviceTypeId2" })
+                </div>
+
+                <div class="editor-label">
+                     Készülék
+                </div>
+
+                <div class="editor-field">
+                    @Html.DropDownList("DeviceId", (SelectList)ViewBag.Devices, string.Empty, new { id="DeviceList2"})
+                    @Html.ValidationMessageFor(model => model.DeviceId) 
+                </div>
+
+                <div class="editor-label">
+                    Kiadás időpontja
+                </div>
+
+                <div class="editor-field">
+                    @Html.TextBoxFor(model => model.StartDate, new { Id = "StartDate2", Class = "calendar", Name = "StartDate" })
+                    @Html.ValidationMessageFor(model => model.StartDate)
+                </div>
+
+                <div class="editor-label">
+                     Határidő
+                </div>
+                <div class="editor-field">
+                    @Html.TextBoxFor(model => model.Deadline, new { Id = "Deadline2", Class = "calendar", Name = "Deadline" })
+                    @Html.ValidationMessageFor(model => model.Deadline)
+                </div>
+
+                <div class="editor-label">
+                    @Html.CheckBoxFor(model => model.IsChargerOut)
+                    @Html.ValidationMessageFor(model => model.IsChargerOut)
+                    Töltő kiadva
+                </div>
+
+                <div class="editor-label">
+                    @Html.CheckBoxFor(model => model.IsBoxOut)
+                    @Html.ValidationMessageFor(model => model.IsBoxOut)
+                    Doboz kiadva
+                </div>
+
+                <div class="editor-label">
+                    Megjegyzés
+                </div>
+
+                <div class="editor-field">
+                    @Html.TextAreaFor(model => model.Note, new { cols="10", rows="3" })
+                    @Html.ValidationMessageFor(model => model.Note)
+                </div>
+
+                <p>
+                    <input type="submit" value="Tovább" />
+                </p>
+            </fieldset>
+        }
+
+    </div>
