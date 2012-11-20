@@ -255,9 +255,7 @@ namespace PhoneRental.Controllers
             {
                 message = "ERROR";
             }
-            ViewBag.Message = "OK";
             return this.Json(new { result = message }, JsonRequestBehavior.AllowGet);
-            //return Content(message);
         }
 
         [NonAction]
