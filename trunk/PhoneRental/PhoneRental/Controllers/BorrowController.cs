@@ -230,6 +230,36 @@ namespace PhoneRental.Controllers
             return DeviceListForDeviceType(deviceTypeId);
         }
 
+        public ActionResult BringBack(int DeviceId)
+        {
+            String message;
+            if (HttpContext.Request.IsAjaxRequest())
+            {
+                try
+                {
+                    var borrows = db.Borrows.Where(p => p.DeviceId == DeviceId).Select(p => new { Id = p.Id }).ToList();
+                    foreach (var borrow in borrows)
+                    {
+                        db.Borrows.Remove(db.Borrows.Find(borrow.Id));
+                    }
+                    db.SaveChanges();
+                    message = "OK";
+                }
+                catch (Exception e)
+                {
+                    ViewBag.e = e;
+                    message = "ERROR";
+                }
+            }
+            else
+            {
+                message = "ERROR";
+            }
+            ViewBag.Message = "OK";
+            return this.Json(new { result = message }, JsonRequestBehavior.AllowGet);
+            //return Content(message);
+        }
+
         [NonAction]
         public bool isDeviceBorrowed(int DeviceId)
         {

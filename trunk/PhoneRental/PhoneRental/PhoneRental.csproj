@@ -307,7 +307,6 @@
     <Content Include="Views\DeviceType\Create.cshtml" />
     <Content Include="Views\DeviceType\Edit.cshtml" />
     <Content Include="Views\PreBorrow\Index.cshtml" />
-    <Content Include="Views\PreBorrow\New.cshtml" />
     <Content Include="Views\Device\Index.cshtml" />
     <Content Include="Views\Device\Create.cshtml" />
     <Content Include="Views\Device\Edit.cshtml" />
@@ -319,6 +318,7 @@
     <Content Include="Views\Role\Edit.cshtml" />
     <Content Include="Views\Statistics\Index.cshtml" />
     <Content Include="Views\MyBorrows\Index.cshtml" />
+    <Content Include="Views\Borrow\BringBack.cshtml" />
     <None Include="Views\Borrow\IndexTab1.cshtml" />
     <Content Include="Views\Account\_ChangeUserNamePartial.cshtml" />
     <Content Include="Views\Borrow\IndexTab2.cshtml" />
