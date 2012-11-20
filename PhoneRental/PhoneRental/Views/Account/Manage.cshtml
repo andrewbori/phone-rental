@@ -9,11 +9,19 @@
 
 <p class="message-success">@ViewBag.StatusMessage</p>
 
-<p>
-    <a href="javascript:showAvatar('@ViewBag.AvatarHash')">
-        <img id="imgGravatar" style="height:80px;width:80px;" alt="" src="http://www.gravatar.com/avatar/@ViewBag.AvatarHash?s=80&d=mm">
-    </a>
-</p>
+<table>
+    <tr>
+        <td>
+            <a href="javascript:showAvatar('@ViewBag.AvatarHash')">
+                <img id="imgGravatar" style="height:80px;width:80px;" alt="" src="http://www.gravatar.com/avatar/@ViewBag.AvatarHash?s=80&d=mm">
+            </a>
+        </td>
+        <td>
+             Ezt a képet a Gravatar.com oldalról jelenítünk meg a megadott <b>@Model.UserNameModel.UserName</b> e-mail címed alapján. <br />
+             Ha úgy érzed, hogy nem emlékeztet rád és van jobb képed, töltsd fel a <a href="http://gravatar.com" target="_blank">Gravatar oldalán</a>.
+        </td>
+    </tr>
+</table>
 
 @Html.Partial("_ChangeUserNamePartial", Model.UserNameModel)
 @Html.Partial("_ChangePasswordPartial", Model.PasswordModel)

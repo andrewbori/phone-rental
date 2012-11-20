@@ -1,10 +1,10 @@
 ﻿@model IEnumerable<PhoneRental.Models.DeviceType>
 
 @{
-    ViewBag.Title = "Készülékek";
+    ViewBag.Title = "Kölcsönözhető Készülékek";
 }
 
-<h2>Kölcsönözhető Készülékek</h2>
+<h2>Kölcsönözhető készülékek</h2>
 
 <table id="myTable" class="tablesorter">
     <thead>
@@ -50,8 +50,8 @@
                 @Html.ActionLink("Előfoglalás", "New", new { id=item.Id })
                 } else
                 {
-                    <p>Erre a készülékre már adott le előfoglalást!</p>
-                    @Html.ActionLink("Előfoglalás törlése","Delete", new {id=item.Id}, new{@class="confirm", @id="l_"+item.Id.ToString()});
+                    <p>Erre a készülékre már van előfoglalásod!</p>
+                    @Html.ActionLink("Előfoglalás törlése","Delete", new {id=item.Id}, new{@class="confirm", @id="l_"+item.Id.ToString()})
                 }
             </td>
         </tr>
@@ -75,17 +75,17 @@
                 sortList: [[1, 0]]
             });
         });
-        /*$(".confirm").click(function () { $("#confirmtext2").innerHTML = "NEW"; });*/
+        
         $(".confirm").easyconfirm({
             locale: {
                 title: 'BME-AUT Mobilkölcsönző előfoglalás törlésének jóváhagyása',
-                text: 'Biztos benne, hogy szeretne a kijelölt előfoglalását törölni?<br/><div id="confirmtext"></div>',
+                text: 'Biztos, hogy szeretnéd a kiválasztott előfoglalást törölni?<br/><div id="confirmtext"></div>',
                 button: ['Nem', ' Jóváhagyás'],
                 closeText: 'bezárás',
                 onload: function (target) {
                     var brand = $("#b" + target.id).html();
                     var type = $("#t" + target.id).html();
-                    var linkid = $("#confirmtext").html(brand+" "+type);
+                    var linkid = $("#confirmtext").html("<b>" + brand+" " + type + "</b>" );
                 }
             }
         });
