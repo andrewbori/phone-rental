@@ -46,7 +46,7 @@
             <td style="text-align: center;">
                 @Html.CheckBox("IsBorrowed", item.Borrow != null, new { @readonly = "readonly", @disabled = "disabled" })
             </td>
-            <td>
+            <td id="fb_@item.Id">
                 @if (item.Borrow != null) {
                     string avatar = PhoneRental.Controllers.AccountController.GetMD5HashData(item.Borrow.User.UserName);
                     <table class="table-user"><tr style="border: 0;">
@@ -71,24 +71,73 @@
             </td>
             <td>
                 @Html.ActionLink("Szerkesztés", "Edit", new { id=item.Id })
+                @if (item.Borrow != null)
+                {
+                <div>
+                <a href ="#" id="@item.Id" class="endborrow">Visszavétel</a>
+                </div>
+                }
             </td>
         </tr>
 }
     </tbody>
 </table>
 
+<div id="successdialog" title="Sikeres visszavétel">
+    A készülék visszavétele sikeresen megtörtént
+</div>
+<div id="faileddialog" title="Sikertelen visszavétel">
+    A készülék visszavétele sikertelen volt
+</div>
+
 @section Styles {
     @Styles.Render("~/Content/themes/base/jquery.tablesorter")
+    @Styles.Render("~/Content/themes/base/jquery.ui.all")
 }
 
 @section Scripts {
     @Scripts.Render("~/bundles/jquerytablesorter")
+    @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/bundles/jqueryeasyconfirm") 
     <script type="text/javascript">
         $(document).ready(function () {
             $("#myTable").tablesorter({
                 headers: { 2: { sorter: false }, 5: { sorter: false } },
                 sortList: [[0, 0]]
             });
+            $("#successdialog").dialog({
+                autoOpen: false,
+                buttons: { Ok: function () { $(this).dialog("close"); location.reload(); } },
+                close: function (event, ui) { location.reload();  }
+            });
+            $("#faileddialog").dialog({
+                autoOpen: false,
+                buttons: { Ok: function () { $(this).dialog("close"); } }
+            });
+            $(".endborrow").click(function () {
+                $.getJSON("/Borrow/BringBack?DeviceId=" + this.id, null, function (data) {
+                    if (data.result == "OK") {
+                        $("#successdialog").dialog("open");
+                    } else {
+                        $("#faileddialog").dialog("open");
+                    }
+                });
+
+            });
         });
+
+        $(".endborrow").easyconfirm({
+            locale: {
+                title: 'BME-AUT Mobilkölcsönző - kölcsönzött készülék visszavétele',
+                text: 'Visszaveszi a készüléket a kiválasztott felhasználótól ?<br/><div class="confirmtext"></div>',
+                button: ['Nem', ' Jóváhagyás'],
+                closeText: 'bezárás',
+                onload: function (target) {
+                    var details = $("#fb_" + target.id).html();
+                    $('.confirmtext').html(details);
+                }
+            }
+        });
+
     </script>
 }
