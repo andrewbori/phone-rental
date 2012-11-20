@@ -95,7 +95,17 @@
                 options.dialog;
 
             var buttons = {};
-            buttons[locale.button[1]] = function() {
+            buttons[locale.button[1]] = function () {
+                if (locale.checkboxid != null) {
+                    checkbox = $("#" + locale.checkboxid);
+                    isChecked = $('#'+locale.checkboxid+':checked').val() ? true : false;
+                    if (!isChecked) {
+                        if (locale.alert != null) {
+                            locale.alert(target);
+                        }
+                        return;
+                    }
+                }
                 // Unbind overriding handler and let default actions pass through
                 $target.unbind(type, handler);
 

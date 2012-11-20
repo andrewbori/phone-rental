@@ -175,6 +175,7 @@
     <Compile Include="Controllers\PreBorrowController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
     <Compile Include="Controllers\StatisticsController.cs" />
+    <Compile Include="Controllers\TermsOfUseController.cs" />
     <Compile Include="Filters\InitializeSimpleMembershipAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -318,11 +319,11 @@
     <Content Include="Views\Role\Edit.cshtml" />
     <Content Include="Views\Statistics\Index.cshtml" />
     <Content Include="Views\MyBorrows\Index.cshtml" />
-    <Content Include="Views\Borrow\BringBack.cshtml" />
     <None Include="Views\Borrow\IndexTab1.cshtml" />
     <Content Include="Views\Account\_ChangeUserNamePartial.cshtml" />
     <Content Include="Views\Borrow\IndexTab2.cshtml" />
     <Content Include="Views\Borrow\IndexTab3.cshtml" />
+    <Content Include="Views\TermsOfUse\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

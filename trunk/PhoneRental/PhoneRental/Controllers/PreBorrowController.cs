@@ -28,89 +28,88 @@ namespace PhoneRental.Controllers
             return View(devicetypes.ToList());
         }
 
-        //
-        // GET: /PreBorrow/New/5
 
-        public ActionResult New(int id = 0)
+        public ActionResult New(int DeviceTypeId)
         {
-            DeviceType devicetype = db.DeviceTypes.Find(id);
-            if (devicetype == null)
+            DeviceType devicetype;
+            if (HttpContext.Request.IsAjaxRequest())
             {
-                return HttpNotFound();
-            }
-            ViewBag.BrandId = new SelectList(db.Brands, "Id", "Name", devicetype.BrandId);
-            return View(devicetype);
-        }
-
-        //
-        // POST: /PreBorrow/Edit/5
-
-        [HttpPost]
-        public ActionResult New(DeviceType devicetype)
-        {
-            try
-            {
-                var preBorrow = new PreBorrow()
+                try
                 {
-                    Date = DateTime.Now,
-                    DeviceTypeId = devicetype.Id,
-                    UserId = db.UserProfiles.Single(
-                        p => p.UserName == HttpContext.User.Identity.Name).UserId
-                };
+                    devicetype = db.DeviceTypes.Find(DeviceTypeId);
+                    if (devicetype == null)
+                    {
+                        return this.Json(new { result = "ERROR" }, JsonRequestBehavior.AllowGet);
+                    }
+                    var preBorrow = new PreBorrow()
+                    {
+                        Date = DateTime.Now,
+                        DeviceTypeId = devicetype.Id,
+                        UserId = db.UserProfiles.Single(
+                            p => p.UserName == HttpContext.User.Identity.Name).UserId
+                    };
 
-                var exist = (from pb in db.PreBorrows
-                             where ((pb.DeviceTypeId == preBorrow.DeviceTypeId) &&
-                             (pb.UserId == preBorrow.UserId))
-                             select pb.Id).Count();
-                if (exist == 0)
-                {
-                    db.PreBorrows.Add(preBorrow);
-                    db.SaveChanges();
+                    var exist = (from pb in db.PreBorrows
+                                 where ((pb.DeviceTypeId == preBorrow.DeviceTypeId) &&
+                                 (pb.UserId == preBorrow.UserId))
+                                 select pb.Id).Count();
+                    if (exist == 0)
+                    {
+                        db.PreBorrows.Add(preBorrow);
+                        db.SaveChanges();
+                    }
+                    else
+                    {
+                        return this.Json(new { result = "ERROR" }, JsonRequestBehavior.AllowGet);
+                    }
+
+                    /* Send email to administrators */
+                    SendPreBorrowEmail(devicetype, preBorrow.Id);
+                    return this.Json(new { result = "OK" }, JsonRequestBehavior.AllowGet);
                 }
-                else
+                catch (Exception e)
                 {
-                    return HttpNotFound("Az adott azonosítójú telefon típusra a felhasználó már adott le megrendelést");
+                    ViewBag.e = e;
+                    return this.Json(new { result = "ERROR" }, JsonRequestBehavior.AllowGet);
                 }
-
-                /* Send email to administrators */
-                SendPreBorrowEmail(devicetype, preBorrow.Id);
             }
-            catch (Exception e)
+            else
             {
-                return HttpNotFound(e.Message);
+                return this.Json(new { result = "ERROR" }, JsonRequestBehavior.AllowGet);
             }
-            return RedirectToAction("Index");
-
-
-            //ViewBag.BrandId = new SelectList(db.Brands, "Id", "Name", devicetype.BrandId);
-            //return View(devicetype);
         }
 
         //
         // GET: /PreBorrow/Delete/5
 
-        public ActionResult Delete(int id = 0)
+        public ActionResult Delete(int DeviceTypeId)
         {
-            DeviceType devicetype = db.DeviceTypes.Find(id);
-            if (devicetype == null)
+            DeviceType devicetype = db.DeviceTypes.Find(DeviceTypeId);
+            if (HttpContext.Request.IsAjaxRequest())
             {
-                return HttpNotFound();
-            }
-            try
-            {
-                var userId = db.UserProfiles.Single(
-                        p => p.UserName == HttpContext.User.Identity.Name).UserId;
+                if (devicetype == null)
+                {
+                    return this.Json(new { result = "ERROR" }, JsonRequestBehavior.AllowGet);
+                }
+                try
+                {
+                    var userId = db.UserProfiles.Single(
+                            p => p.UserName == HttpContext.User.Identity.Name).UserId;
 
-                var preBorrowId = db.PreBorrows.Where(pb => pb.DeviceTypeId == id && pb.UserId == userId).Select(pb => pb.Id).Single();
-                var preBorrow = db.PreBorrows.Find(preBorrowId);
-                db.PreBorrows.Remove(preBorrow);
-                db.SaveChanges();
-
-                return RedirectToAction("","PreBorrow");
+                    var preBorrowId = db.PreBorrows.Where(pb => pb.DeviceTypeId == DeviceTypeId && pb.UserId == userId).Select(pb => pb.Id).Single();
+                    var preBorrow = db.PreBorrows.Find(preBorrowId);
+                    db.PreBorrows.Remove(preBorrow);
+                    db.SaveChanges();
+                    return this.Json(new { result = "OK" }, JsonRequestBehavior.AllowGet);
+                }
+                catch (Exception e)
+                {
+                    return this.Json(new { result = "ERROR" }, JsonRequestBehavior.AllowGet);
+                }
             }
-            catch (Exception e)
+            else
             {
-                return HttpNotFound(e.Message);
+                return this.Json(new { result = "ERROR" }, JsonRequestBehavior.AllowGet);
             }
         }
 

@@ -46,18 +46,38 @@
                 @Html.DisplayFor(modelItem => item.Availability)
             </td>
             <td>
+                <div>
                 @if (!item.HasPreBorrowedByUser) {
-                @Html.ActionLink("Előfoglalás", "New", new { id=item.Id })
+                    <a href ="#" id="n_@item.Id" class="newconfirm">Előfoglalás</a>
                 } else
                 {
                     <p>Erre a készülékre már van előfoglalásod!</p>
-                    @Html.ActionLink("Előfoglalás törlése","Delete", new {id=item.Id}, new{@class="confirm", @id="l_"+item.Id.ToString()})
+                    <a href ="#" id="d_@item.Id" class="deleteconfirm">Előfoglalás törlése</a>
                 }
+                </div>
             </td>
         </tr>
 }
     </tbody>
 </table>
+
+<div id="alertdialog" title="Figyelmeztetés!">
+    A kölcsönzés feltételeit el kell fogadnod<br/>
+    mielőtt előfoglalásodat leadod!
+</div>
+<div id="successnewdialog" title="Sikeres előfoglalás">
+    A készülék előfoglalása sikeres volt!
+</div>
+<div id="failednewdialog" title="Sikertelen előfoglalás">
+    A készülék előfoglalása sikertelen volt!
+</div>
+<div id="successdeletedialog" title="Előfoglalás sikeres törlése">
+    A készülékre leadott előfoglalás törlése sikeresen megtörtént!
+</div>
+<div id="faileddeletedialog" title="Sikertelen törlés">
+    Nem sikerült az előfoglalást törölni!
+</div>
+
 
 @section Styles {
     @Styles.Render("~/Content/themes/base/jquery.tablesorter")
@@ -74,21 +94,81 @@
                 headers: { 0: { sorter: false }, 5: { sorter: false } },
                 sortList: [[1, 0]]
             });
-        });
-        
-        $(".confirm").easyconfirm({
-            locale: {
-                title: 'BME-AUT Mobilkölcsönző előfoglalás törlésének jóváhagyása',
-                text: 'Biztos, hogy szeretnéd a kiválasztott előfoglalást törölni?<br/><div id="confirmtext"></div>',
-                button: ['Nem', ' Jóváhagyás'],
-                closeText: 'bezárás',
-                onload: function (target) {
-                    var brand = $("#b" + target.id).html();
-                    var type = $("#t" + target.id).html();
-                    var linkid = $("#confirmtext").html("<b>" + brand+" " + type + "</b>" );
+            $(".deleteconfirm").easyconfirm({
+                locale: {
+                    title: 'BME-AUT Mobilkölcsönző előfoglalás törlésének jóváhagyása',
+                    text: 'Biztos, hogy szeretnéd a kiválasztott előfoglalást törölni?<br/><div class="deletetext"></div>',
+                    button: ['Nem', ' Jóváhagyás'],
+                    closeText: 'bezárás',
+                    onload: function (target) {
+                        var id = target.id.split('d_')[1];
+                        var brand = $("#bl_" + id).html();
+                        var type = $("#tl_" + id).html();
+                        var linkid = $(".deletetext").html("<b>" + brand + " " + type + "</b>");
+                    }
                 }
-            }
-        });
-        
+            });
+            $(".newconfirm").easyconfirm({
+                locale: {
+                    title: 'Új előfoglalás jóváhagyása',
+                    text: 'Szeretnél előfoglalást leadni az alábbi eszközre?<br/><br/><div class="newtext"></div>',
+                    button: ['Nem', ' Jóváhagyás'],
+                    closeText: 'bezárás',
+                    checkboxid: 'box0',
+                    onload: function (target) {
+                        var id = target.id.split('n_')[1];
+                        var brand = $("#bl_" + id).html();
+                        var type = $("#tl_" + id).html();
+                        var linkid = $(".newtext").html("<b>" + brand + " " + type + "</b><br/><br/>" + "<input type='checkbox' id='box" + id + "'/> <i>A <a href='TermsOfUse' target='_blank'>kölcsönzés feltételeit</a> elfogadom</i>");
+                        var cboxid = "box" + id;
+                        this.checkboxid = cboxid;
+                        this.alert = function (target) {
+                            $("#alertdialog").dialog("open");
+                        }
+                    }
+                }
+            });
+            $("#alertdialog").dialog({
+                autoOpen: false,
+                buttons: { Ok: function () { $(this).dialog("close"); } }
+            });
+            $(".newconfirm").click(function () {
+                $.getJSON("/PreBorrow/New?DeviceTypeId=" + this.id.split('n_')[1], null, function (data) {
+                    if (data.result == "OK") {
+                        $("#successnewdialog").dialog("open");
+                    } else {
+                        $("#failednewdialog").dialog("open");
+                    }
+                });
+            });
+            $(".deleteconfirm").click(function () {
+                $.getJSON("/PreBorrow/Delete?DeviceTypeId=" + this.id.split('d_')[1], null, function (data) {
+                    if (data.result == "OK") {
+                        $("#successdeletedialog").dialog("open");
+                    } else {
+                        $("#faileddeletedialog").dialog("open");
+                    }
+                });
+
+            });
+            $("#successnewdialog").dialog({
+                autoOpen: false,
+                buttons: { Ok: function () { $(this).dialog("close"); location.reload(); } },
+                close: function (event, ui) { location.reload(); }
+            });
+            $("#failednewdialog").dialog({
+                autoOpen: false,
+                buttons: { Ok: function () { $(this).dialog("close"); } }
+            });
+            $("#successdeletedialog").dialog({
+                autoOpen: false,
+                buttons: { Ok: function () { $(this).dialog("close"); location.reload(); } },
+                close: function (event, ui) { location.reload(); }
+            });
+            $("#faileddeletedialog").dialog({
+                autoOpen: false,
+                buttons: { Ok: function () { $(this).dialog("close"); } }
+            });
+        });     
     </script>
 }
