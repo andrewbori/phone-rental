@@ -1,4 +1,6 @@
-﻿@{
+﻿@model PhoneRental.Models.MyBorrowModel
+
+@{
     ViewBag.Title = "Kölcsönzéseim";
 }
 
@@ -10,56 +12,51 @@
     <div id ="tabs-1">
         @if (ViewBag.HasBorrowed == true)
         {
-            <table id="borrowTable" class="tablesorter">
+            <table id="borrowTable" class="tablesorter" style="font-size: 0.85em;">
                 <thead>
                     <tr>
-                        <th>
-                            Gyártó
-                        </th>
                         <th>
                             Típus
                         </th>
                         <th>
-                            IMEI szám
+                            AAIT azonosító (IMEI)
                         </th>
                         <th>
-                            AAIT azonosító
-                        </th>
-                        <th>
-                            Kölcsönzés időpontja
+                            Kölcsönzés kezdete
                         </th>
                         <th>
                             Határidő
                         </th>
                         <th>
-                            Visszahozatal
+                            Kölcsönzés vége
+                        </th>
+                        <th>
+                            Megjegyzés
                         </th>
                     </tr>
                 </thead>
                 <tbody>
-            @foreach (var item in ViewBag.Borrows)
+            @foreach (var item in Model.Borrows)
             {
                     <tr style="@((item.EndDate == null && DateTime.Compare(item.Deadline, DateTime.Now) < 0) ? "background: red;" : " ")">
                         <td>
-                            @item.Device.DeviceType.Brand.Name
+                            @Html.DisplayFor(modelItem => @item.Device.DeviceType.Brand.Name) @Html.DisplayFor(modelItem => @item.Device.DeviceType.Type)
                         </td>
                         <td>
-                            @item.Device.DeviceType.Type
+                            @Html.DisplayFor(modelItem => item.Device.DeviceType.AaitIdPattern)_@Html.DisplayFor(modelItem => item.Device.AaitIdNumber)
+                           (@Html.DisplayFor(modelItem => item.Device.Imei))
                         </td>
                         <td>
-                           @item.Device.Imei 
+                            @Html.DisplayFor(modelItem => item.StartDate)
                         </td>
                         <td>
-                            @item.Device.DeviceType.AaitIdPattern _ @item.Device.AaitIdNumber
+                            @Html.DisplayFor(modelItem => item.Deadline)
                         </td>
                         <td>
-                            @item.StartDate
+                            @Html.DisplayFor(modelItem => item.EndDate)
                         </td>
                         <td>
-                            @item.Deadline
-                        </td>
-                        <td>
-                            @item.EndDate
+                            @Html.DisplayFor(modelItem => item.Note)
                         </td>
                     </tr>
             }
@@ -68,24 +65,21 @@
         }
         @if (ViewBag.HasBorrowed == false)
         {
-            <p>Nincs egyetlen kölcsönzése sem!</p>
+            <p>Nincs egyetlen kölcsönzésed sem!</p>
         }
     </div>
 
     <div id ="tabs-2">
         @if (ViewBag.HasPreBorrowed == true)
         {
-            <table id="preBorrowTable" class="tablesorter">
+            <table id="preBorrowTable" class="tablesorter" style="font-size: 0.9em;">
                 <thead>
                     <tr>
-                        <th>
-                            Gyártó
-                        </th>
                         <th>
                             Típus
                         </th>
                         <th>
-                            Foglalás időpontja
+                            Előfoglalás időpontja
                         </th>
                         <th>
                             Elérhetőség
@@ -95,20 +89,20 @@
                     </tr>
                 </thead>
                 <tbody>
-            @foreach (var item in ViewBag.PreBorrows)
+            @foreach (var item in Model.PreBorrows)
             {
                     <tr>
-                        <td>
-                            @item.DeviceType.Brand.Name
+                        <td id="tl_@item.Id">
+                            @Html.DisplayFor(modelItem => item.DeviceType.Brand.Name) @Html.DisplayFor(modelItem => item.DeviceType.Type)
                         </td>
                         <td>
-                            @item.DeviceType.Type
+                            @Html.DisplayFor(modelItem => item.Date)
                         </td>
                         <td>
-                            @item.Date
+                            @Html.DisplayFor(modelItem => item.DeviceType.Availability)
                         </td>
                         <td>
-                            @item.DeviceType.Availability
+                            @Html.ActionLink("Előfoglalás törlése", "Delete", "PreBorrow", new {id=item.Id}, new{@class="confirm", @id="l_"+item.Id.ToString()})
                         </td>
                     </tr>
             }
@@ -117,7 +111,7 @@
         }
         @if (ViewBag.HasPreBorrowed == false)
         {
-            <p>Nincs egyetlen előfoglalása sem!</p>
+            <p>Nincs egyetlen előfoglalásod sem!</p>
         }
     </div>
 </div>
@@ -131,6 +125,7 @@
     @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/bundles/jqueryui")
     @Scripts.Render("~/bundles/jquerytablesorter")
+    @Scripts.Render("~/bundles/jqueryeasyconfirm") 
     <script type="text/javascript">
         $(function () {
             $("#tabs").tabs();
@@ -144,9 +139,22 @@
 
         $(document).ready(function () {
             $("#preBorrowTable").tablesorter({
-                headers: { 4: { sorter: false } },
+                headers: { 3: { sorter: false } },
                 sortList: [[0, 0]]
             });
+        });
+
+        $(".confirm").easyconfirm({
+            locale: {
+                title: 'BME-AUT Mobilkölcsönző előfoglalás törlésének jóváhagyása',
+                text: 'Biztos, hogy szeretnéd a kiválasztott előfoglalást törölni?<br/><div id="confirmtext"></div>',
+                button: ['Nem', ' Jóváhagyás'],
+                closeText: 'bezárás',
+                onload: function (target) {
+                    var type = $("#t" + target.id).html();
+                    var linkid = $("#confirmtext").html("<b>" + type + "</b>");
+                }
+            }
         });
 
     </script>

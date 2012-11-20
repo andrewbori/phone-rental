@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using WebMatrix.WebData;
 
 namespace PhoneRental.Controllers
 {
@@ -17,10 +18,8 @@ namespace PhoneRental.Controllers
 
         public ActionResult Index()
         {
-            var userId = db.UserProfiles.Single(
-                        p => p.UserName == HttpContext.User.Identity.Name).UserId;
-
-            var borrows = db.Borrows.Where(b => b.UserId == userId).ToList();
+            var borrows = db.Borrows.Where(b => b.UserId == WebSecurity.CurrentUserId).
+                OrderBy(b => b.Device.DeviceType.Brand.Name).ThenBy(b => b.Device.DeviceType.Type).ThenBy(b => b.Device.AaitIdNumber).ToList();
             if (borrows.Count == 0)
             {
                 ViewBag.HasBorrowed = false;
@@ -28,9 +27,10 @@ namespace PhoneRental.Controllers
             else
             {
                 ViewBag.HasBorrowed = true;
-                ViewBag.Borrows = borrows;
             }
-            var preBorrows = db.PreBorrows.Where(pb => pb.UserId == userId).ToList();
+
+            var preBorrows = db.PreBorrows.Where(pb => pb.UserId == WebSecurity.CurrentUserId).
+                OrderBy(b => b.DeviceType.Brand.Name).ThenBy(b => b.DeviceType.Type).ToList();
             if (preBorrows.Count == 0)
             {
                 ViewBag.HasPreBorrowed = false;
@@ -38,9 +38,10 @@ namespace PhoneRental.Controllers
             else
             {
                 ViewBag.HasPreBorrowed = true;
-                ViewBag.PreBorrows = preBorrows;
             }
-            return View();
+
+            var model = new MyBorrowModel { Borrows = borrows, PreBorrows = preBorrows };
+            return View(model);
         }
 
     }

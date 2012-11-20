@@ -121,7 +121,7 @@ namespace PhoneRental.Models
                                         orderby borrow.Deadline
                                         select borrow.Deadline).ToList().ElementAt(x);
 
-                            retval = "Várhatóan: " + end.ToString();
+                            retval = "Várhatóan: " + end.ToString("yyyy-MM-dd");
                         }
                         else
                         {
@@ -212,6 +212,7 @@ namespace PhoneRental.Models
 
         [Required]
         [Display(Name = "Kölcsönzés kezdete")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime StartDate { get; set; }
 
         [Display(Name = "Megjegyzés")]
@@ -219,9 +220,11 @@ namespace PhoneRental.Models
 
         [Required]
         [Display(Name = "Határidő")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime Deadline { get; set; }
 
         [Display(Name = "Kölcsönzés vége")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public System.Nullable<DateTime> EndDate { get; set; }
     }
 
@@ -244,6 +247,7 @@ namespace PhoneRental.Models
 
         [Required]
         [Display(Name = "Előfoglalás időpontja")]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd hh:mm}")]
         public DateTime Date { get; set; }
     }
 
@@ -266,14 +270,16 @@ namespace PhoneRental.Models
 
     public class BorrowCommon
     {
-        [Required(ErrorMessage = "Eszköz kiválasztása kötelező!")]
-        [RegularExpression(@"[1-9]*$", ErrorMessage = "Eszköz kiválasztása kötelező!")]
+        [Required(ErrorMessage = "A készülék kiválasztása kötelező!")]
+        [RegularExpression(@"[1-9]*$", ErrorMessage = "Készülék kiválasztása kötelező!")]
         public int DeviceId { get; set; }
 
-        [Required(ErrorMessage = "A kölcsönzés kezdeti dátumának megadása kötelező!")]
+        [Required(ErrorMessage = "A kiadás időpontjának megadása kötelező!")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
         public DateTime StartDate { get; set; }
 
-        [Required(ErrorMessage = "A kölcsönzés lejárati dátumának megadása kötelező!")]
+        [Required(ErrorMessage = "A határidő megadása kötelező!")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd}")]
         public DateTime Deadline { get; set; }
 
         public bool IsChargerOut { get; set; }
@@ -285,28 +291,28 @@ namespace PhoneRental.Models
 
     public class BorrowForPreBorrow : BorrowCommon
     {
-        [Required(ErrorMessage="Előfoglalás kiválasztása kötelező!")]
+        [Required(ErrorMessage="Az előfoglalás kiválasztása kötelező!")]
         [RegularExpression(@"[1-9][0-9]*$", ErrorMessage = "Előfoglalás kiválasztása kötelező!")]
         public int PreBorrowId { get; set; }
     }
 
     public class BorrowForNewUser : BorrowCommon
     {
-        [Required(ErrorMessage="Keresztnév megadása kötelező!")]
+        [Required(ErrorMessage="A keresztnév megadása kötelező!")]
         public string FirstName { get; set; }
 
-        [Required(ErrorMessage="Vezetéknév megadása kötelező!")]
+        [Required(ErrorMessage="A vezetéknév megadása kötelező!")]
         public string LastName { get; set; }
         
-        [Required(ErrorMessage="Email cím megadása kötelező")]
+        [Required(ErrorMessage="Az e-mail cím megadása kötelező!")]
         [RegularExpression(@"([^.@]+)(\.[^.@]+)*@([^.@]+\.)+([^.@]+)", ErrorMessage = "Érvénytelen e-mail cím!")]
         public string UserName { get; set; }
     }
 
     public class BorrowForExistingUser : BorrowCommon
     {
-        [Required(ErrorMessage = "Felhasználó kiválasztása kötelező!")]
-        [RegularExpression(@"[1-9][0-9]*$", ErrorMessage = "Felhasználó kiválasztása kötelező!")]
+        [Required(ErrorMessage = "A felhasználó kiválasztása kötelező!")]
+        [RegularExpression(@"[1-9][0-9]*$", ErrorMessage = "A felhasználó kiválasztása kötelező!")]
         public int UserId { get; set; }
 
     }
@@ -348,6 +354,19 @@ namespace PhoneRental.Models
         }
 
         public RoleModel() { }
+    }
+
+    public class MyBorrowModel
+    {
+        public IEnumerable<PreBorrow> PreBorrows { get; set; }
+        public IEnumerable<Borrow> Borrows { get; set; }
+    }
+
+    public class DeviceSelectModel
+    {
+        public int Id { get; set; }
+        public int DeviceTypeId { get; set; }
+        public string Name { get; set; }
     }
 
     #endregion

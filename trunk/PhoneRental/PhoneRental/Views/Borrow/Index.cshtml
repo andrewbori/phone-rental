@@ -31,7 +31,7 @@
     @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/bundles/jqueryui")
     <script type="text/javascript">
-        $(function () {
+        $(document).ready(function () {
             $("#tabs").tabs();
                     $("#tabs").tabs({
                 select: function(event, ui) {
@@ -59,6 +59,8 @@
             $(".calendar").datepicker("option", "defaultDate", +7);
             $(".calendar").datepicker("option", "monthNames", ["Január", "Február", "Március", "Április", "Május", "Június", "Július", "Augusztus", "Szeptember", "Október", "November", "December"]);
             $(".calendar").datepicker("option", "dayNamesMin", ["V", "H", "K", "Sze", "Cs", "P", "Szo"]);
+            $(".calendar").datepicker("option", "dateFormat", "yy-mm-dd");
+            $(".calendar").datepicker("option", "altFormat", "yy-mm-dd");
 
             $('#StartDate1').val('@ViewBag.StartDate');
             $('#Deadline1').val('@ViewBag.Deadline');

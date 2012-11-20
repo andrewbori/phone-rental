@@ -232,11 +232,15 @@ namespace PhoneRental.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    UserProfile user = db.UserProfiles.SingleOrDefault(u => u.UserName == User.Identity.Name);
-                    user.UserName = model.UserName;
-                    db.Entry(user).State = System.Data.EntityState.Modified;
-                    db.SaveChanges();
-                    WebSecurity.Logout();
+                    bool isUserNameChanged = (model.UserName != WebSecurity.CurrentUserName) ? true : false;
+
+                    if (isUserNameChanged) {
+                        UserProfile user = db.UserProfiles.SingleOrDefault(u => u.UserName == User.Identity.Name);
+                        user.UserName = model.UserName;
+                        db.Entry(user).State = System.Data.EntityState.Modified;
+                        db.SaveChanges();
+                        WebSecurity.Logout();
+                    }
 
                     return RedirectToAction("Manage", new { Message = ManageMessageId.SaveUserProfileSuccess });
                 }
