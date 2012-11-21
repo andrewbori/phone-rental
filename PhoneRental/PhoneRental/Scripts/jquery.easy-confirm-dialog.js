@@ -140,7 +140,8 @@
                 buttons: buttons,
                 title: locale.title,
                 closeText: locale.closeText,
-                modal: true
+                modal: true,
+                close: locale.close
             });
 
             // Handler that will override all other actions

@@ -77,6 +77,11 @@
 <div id="faileddeletedialog" title="Sikertelen törlés">
     Nem sikerült az előfoglalást törölni!
 </div>
+<div id="waitdialog" title="Várakozás..." style="z-index:101;">
+    Kérem várjon a művelet befejezéséig!<br/><br/>
+    <div id="progressbar"></div>
+</div>
+<div id="shadow"></div>
 
 
 @section Styles {
@@ -90,6 +95,7 @@
     @Scripts.Render("~/bundles/jqueryeasyconfirm") 
     <script type="text/javascript">
         $(document).ready(function () {
+            $("#shadow").css("height", $(document).height()).hide();
             $("#myTable").tablesorter({
                 headers: { 0: { sorter: false }, 5: { sorter: false } },
                 sortList: [[1, 0]]
@@ -101,11 +107,13 @@
                     button: ['Nem', ' Jóváhagyás'],
                     closeText: 'bezárás',
                     onload: function (target) {
+                        $("#shadow").show();
                         var id = target.id.split('d_')[1];
                         var brand = $("#bl_" + id).html();
                         var type = $("#tl_" + id).html();
                         var linkid = $(".deletetext").html("<b>" + brand + " " + type + "</b>");
-                    }
+                    },
+                    close: function (event, ui) { $("#shadow").hide(); }
                 }
             });
             $(".newconfirm").easyconfirm({
@@ -116,6 +124,7 @@
                     closeText: 'bezárás',
                     checkboxid: 'box0',
                     onload: function (target) {
+                        $("#shadow").show();
                         var id = target.id.split('n_')[1];
                         var brand = $("#bl_" + id).html();
                         var type = $("#tl_" + id).html();
@@ -125,7 +134,8 @@
                         this.alert = function (target) {
                             $("#alertdialog").dialog("open");
                         }
-                    }
+                    },
+                    close: function (event, ui) { $("#shadow").hide(); }
                 }
             });
             $("#alertdialog").dialog({
@@ -133,7 +143,9 @@
                 buttons: { Ok: function () { $(this).dialog("close"); } }
             });
             $(".newconfirm").click(function () {
+                startProgressbar();
                 $.getJSON("/PreBorrow/New?DeviceTypeId=" + this.id.split('n_')[1], null, function (data) {
+                    stopProgressbar();
                     if (data.result == "OK") {
                         $("#successnewdialog").dialog("open");
                     } else {
@@ -142,14 +154,15 @@
                 });
             });
             $(".deleteconfirm").click(function () {
+                startProgressbar();
                 $.getJSON("/PreBorrow/Delete?DeviceTypeId=" + this.id.split('d_')[1], null, function (data) {
+                    stopProgressbar();
                     if (data.result == "OK") {
                         $("#successdeletedialog").dialog("open");
                     } else {
                         $("#faileddeletedialog").dialog("open");
                     }
                 });
-
             });
             $("#successnewdialog").dialog({
                 autoOpen: false,
@@ -158,7 +171,7 @@
             });
             $("#failednewdialog").dialog({
                 autoOpen: false,
-                buttons: { Ok: function () { $(this).dialog("close"); } }
+                buttons: { Ok: function () { $("#shadow").hide(); $(this).dialog("close"); } }
             });
             $("#successdeletedialog").dialog({
                 autoOpen: false,
@@ -167,8 +180,36 @@
             });
             $("#faileddeletedialog").dialog({
                 autoOpen: false,
+                buttons: { Ok: function () { $("#shadow").hide(); $(this).dialog("close"); } }
+            });
+            $("#alertdialog").dialog({
+                autoOpen: false,
                 buttons: { Ok: function () { $(this).dialog("close"); } }
             });
-        });     
+            $("#waitdialog").dialog({
+                autoOpen: false,
+                buttons: { Ok: function () { $(this).dialog("close"); } }
+            });
+            $("#progressbar").progressbar({
+                value: 0
+            });
+        });
+        var counter = 0;
+        var timer;
+        function startProgressbar()
+        {
+            $("#waitdialog").dialog("open");
+            counter = 0;
+            $("#progressbar").progressbar("value", 0);
+            timer = setInterval(function () {
+                counter += 5;
+                counter %= 100;
+                $("#progressbar").progressbar("value", counter);
+            }, 100);
+        }
+        function stopProgressbar() {
+            $("#waitdialog").dialog("close");
+            clearInterval(timer);
+        }
     </script>
 }
