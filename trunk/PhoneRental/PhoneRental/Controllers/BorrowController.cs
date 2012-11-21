@@ -62,102 +62,111 @@ namespace PhoneRental.Controllers
         [HttpPost]
         public ActionResult NewForPreBorrow(BorrowForPreBorrow model)
         {
-            if (ModelState.IsValid && !isDeviceBorrowed(model.DeviceId))
+            if (HttpContext.Request.IsAjaxRequest())
             {
-                // Előfoglalás kikeresése
-                PreBorrow preBorrow = db.PreBorrows.Find(model.PreBorrowId);
-                if (preBorrow == null)
+                if (ModelState.IsValid && !isDeviceBorrowed(model.DeviceId))
                 {
-                    return HttpNotFound();
+                    // Előfoglalás kikeresése
+                    PreBorrow preBorrow = db.PreBorrows.Find(model.PreBorrowId);
+                    if (preBorrow == null)
+                    {
+                        return HttpNotFound();
+                    }
+
+                    var borrow = new Borrow()
+                    {
+                        StartDate = model.StartDate,
+                        Deadline = model.Deadline,
+                        UserId = preBorrow.User.UserId,
+                        DeviceId = model.DeviceId,
+                        IsBoxOut = model.IsBoxOut,
+                        IsChargerOut = model.IsChargerOut,
+                        Note = model.Note
+                    };
+
+                    db.Borrows.Add(borrow);
+                    db.PreBorrows.Remove(preBorrow);
+                    db.SaveChanges();
+                    return this.Json(new { result = "OK" }, JsonRequestBehavior.AllowGet);
                 }
-            
-                var borrow = new Borrow()
-                {
-                    StartDate = model.StartDate,
-                    Deadline = model.Deadline,
-                    UserId = preBorrow.User.UserId,
-                    DeviceId = model.DeviceId, 
-                    IsBoxOut = model.IsBoxOut,
-                    IsChargerOut = model.IsChargerOut,
-                    Note = model.Note
-                };
-            
-                db.Borrows.Add(borrow);
-                db.PreBorrows.Remove(preBorrow);
-                db.SaveChanges();
-                return View();
             }
-            
-            return HttpNotFound();
+            return this.Json(new { result = "ERROR" }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
         public ActionResult NewForUser(BorrowForExistingUser model)
         {
-            if (ModelState.IsValid && !isDeviceBorrowed(model.DeviceId))
+            if (HttpContext.Request.IsAjaxRequest())
             {
-                // Felhasználó kikeresése
-                UserProfile user = db.UserProfiles.Find(model.UserId);
-                if (user == null)
+                if (ModelState.IsValid && !isDeviceBorrowed(model.DeviceId))
                 {
-                    return HttpNotFound();
-                }
+                    // Felhasználó kikeresése
+                    UserProfile user = db.UserProfiles.Find(model.UserId);
+                    if (user == null)
+                    {
+                        return this.Json(new { result = "ERROR" }, JsonRequestBehavior.AllowGet);
+                    }
 
-                var borrow = new Borrow()
-                {
-                    StartDate = model.StartDate,
-                    Deadline = model.Deadline,
-                    UserId = model.UserId,
-                    User = user,
-                    DeviceId = model.DeviceId,
-                    IsBoxOut = model.IsBoxOut,
-                    IsChargerOut = model.IsChargerOut,
-                    Note = model.Note
-                };
-            
-                db.Borrows.Add(borrow);
-                db.SaveChanges();
-                return View();
+                    var borrow = new Borrow()
+                    {
+                        StartDate = model.StartDate,
+                        Deadline = model.Deadline,
+                        UserId = model.UserId,
+                        User = user,
+                        DeviceId = model.DeviceId,
+                        IsBoxOut = model.IsBoxOut,
+                        IsChargerOut = model.IsChargerOut,
+                        Note = model.Note
+                    };
+
+                    db.Borrows.Add(borrow);
+                    db.SaveChanges();
+                    return this.Json(new { result = "OK" }, JsonRequestBehavior.AllowGet);
+                }
             }
 
-            return HttpNotFound();
+            return this.Json(new { result = "ERROR" }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
         public ActionResult New(BorrowForNewUser model)
         {
-            if (ModelState.IsValid && !isDeviceBorrowed(model.DeviceId))
+            if (HttpContext.Request.IsAjaxRequest())
             {
-                // Attempt to register the user
-                try
+                if (ModelState.IsValid && !isDeviceBorrowed(model.DeviceId))
                 {
-                    WebSecurity.CreateUserAndAccount(model.UserName, model.UserName, new { FirstName = model.FirstName, LastName = model.LastName });
-                    Roles.AddUserToRole(model.UserName, "Customer");
-                }
-                catch (MembershipCreateUserException e)
-                {
-                    Debug.WriteLine(e.Data);
-                }
-            
-                var userid = db.UserProfiles.Where(d => d.UserName == model.UserName).Select(d => d.UserId).Single();
+                    // Attempt to register the user
+                    try
+                    {
+                        WebSecurity.CreateUserAndAccount(model.UserName, model.UserName, new { FirstName = model.FirstName, LastName = model.LastName });
+                        Roles.AddUserToRole(model.UserName, "Customer");
+                    }
+                    catch (MembershipCreateUserException e)
+                    {
+                        Debug.WriteLine(e.Data);
+                        return this.Json(new { result = "ERROR" }, JsonRequestBehavior.AllowGet);
+                    }
 
-                var borrow = new Borrow()
-                {
-                    StartDate = model.StartDate,
-                    Deadline = model.Deadline,
-                    DeviceId = model.DeviceId,
-                    UserId = userid,
-                    IsBoxOut = model.IsBoxOut,
-                    IsChargerOut = model.IsChargerOut,
-                    Note = model.Note
-                };
-            
-                db.Borrows.Add(borrow);
-                db.SaveChanges();
-                return View();
+                    var userid = db.UserProfiles.Where(d => d.UserName == model.UserName).Select(d => d.UserId).Single();
+
+                    var borrow = new Borrow()
+                    {
+                        StartDate = model.StartDate,
+                        Deadline = model.Deadline,
+                        DeviceId = model.DeviceId,
+                        UserId = userid,
+                        IsBoxOut = model.IsBoxOut,
+                        IsChargerOut = model.IsChargerOut,
+                        Note = model.Note
+                    };
+
+                    db.Borrows.Add(borrow);
+                    db.SaveChanges();
+                    return this.Json(new { result = "OK" }, JsonRequestBehavior.AllowGet);
+                }
             }
 
-            return HttpNotFound();
+            return this.Json(new { result = "ERROR" }, JsonRequestBehavior.AllowGet);
         }
 
         [NonAction]
