@@ -30,5 +30,25 @@ namespace PhoneRental
              smtp.EnableSsl = true;
              smtp.Send(mail);
         }
+
+        public static void FromTemplate2(string templatePath, object model, Type modelType, string[] to, string subject)
+        {
+            string template = System.IO.File.ReadAllText(templatePath);
+            string body = Razor.Parse<NewUserEmail>(template, (NewUserEmail)model);
+
+            MailMessage mail = new MailMessage();
+            foreach (var t in to)
+            {
+                mail.To.Add(t);
+            }
+            mail.From = new MailAddress("noreply@webabc.hu");
+            mail.Subject = subject;
+            mail.Body = body;
+            mail.IsBodyHtml = true;
+
+            SmtpClient smtp = new SmtpClient();
+            smtp.EnableSsl = true;
+            smtp.Send(mail);
+        }
     }
 }

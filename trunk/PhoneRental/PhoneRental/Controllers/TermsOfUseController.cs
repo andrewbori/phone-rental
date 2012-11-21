@@ -14,6 +14,9 @@ namespace PhoneRental.Controllers
 
         public ActionResult Index()
         {
+            string path = ControllerContext.HttpContext.Server.MapPath("~/Templates/TermsOfUse.cshtml");
+            string template = System.IO.File.ReadAllText(path);
+            ViewBag.Template = template;
             return View();
         }
 
