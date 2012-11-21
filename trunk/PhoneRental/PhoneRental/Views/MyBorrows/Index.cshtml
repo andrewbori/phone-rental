@@ -92,7 +92,7 @@
             @foreach (var item in Model.PreBorrows)
             {
                     <tr>
-                        <td id="tl_@item.Id">
+                        <td id="tl_@item.DeviceTypeId">
                             @Html.DisplayFor(modelItem => item.DeviceType.Brand.Name) @Html.DisplayFor(modelItem => item.DeviceType.Type)
                         </td>
                         <td>
@@ -102,7 +102,7 @@
                             @Html.DisplayFor(modelItem => item.DeviceType.Availability)
                         </td>
                         <td>
-                            @Html.ActionLink("Előfoglalás törlése", "Delete", "PreBorrow", new {id=item.Id}, new{@class="confirm", @id="l_"+item.Id.ToString()})
+                            <a href ="#" id="d_@item.DeviceTypeId" class="deleteconfirm">Előfoglalás törlése</a>
                         </td>
                     </tr>
             }
@@ -115,6 +115,17 @@
         }
     </div>
 </div>
+<div id="successdeletedialog" title="Előfoglalás sikeres törlése">
+    A készülékre leadott előfoglalás törlése sikeresen megtörtént!
+</div>
+<div id="faileddeletedialog" title="Sikertelen törlés">
+    Nem sikerült az előfoglalást törölni!
+</div>
+<div id="waitdialog" title="Várakozás..." style="z-index:101;">
+    Kérem várjon a művelet befejezéséig!<br/><br/>
+    <div id="progressbar"></div>
+</div>
+<div id="shadow"></div>
 
 @section Styles {
     @Styles.Render("~/Content/themes/base/jquery.ui.all")
@@ -128,7 +139,55 @@
     @Scripts.Render("~/bundles/jqueryeasyconfirm") 
     <script type="text/javascript">
         $(function () {
+            $("#shadow").css("height", $(document).height()).hide();
+
             $("#tabs").tabs();
+
+            $("#successdeletedialog").dialog({
+                autoOpen: false,
+                buttons: { Ok: function () { $(this).dialog("close"); location.reload(); } },
+                close: function (event, ui) { location.reload(); }
+            });
+            $("#faileddeletedialog").dialog({
+                autoOpen: false,
+                buttons: { Ok: function () { $("#shadow").hide(); $(this).dialog("close"); } }
+            });
+
+            $("#waitdialog").dialog({
+                autoOpen: false,
+                buttons: { Ok: function () { $(this).dialog("close"); } }
+            });
+            $("#progressbar").progressbar({
+                value: 0
+            });
+
+            $(".deleteconfirm").easyconfirm({
+                locale: {
+                    title: 'BME-AUT Mobilkölcsönző előfoglalás törlésének jóváhagyása',
+                    text: 'Biztos, hogy szeretnéd a kiválasztott előfoglalást törölni?<br/><div class="deletetext"></div>',
+                    button: ['Nem', ' Jóváhagyás'],
+                    closeText: 'bezárás',
+                    onload: function (target) {
+                        $("#shadow").show();
+                        var id = target.id.split('d_')[1];
+                        var type = $("#tl_" + id).html();
+                        var linkid = $(".deletetext").html("<b>" + type + "</b>");
+                    },
+                    close: function (event, ui) { $("#shadow").hide(); }
+                }
+            });
+
+            $(".deleteconfirm").click(function () {
+                startProgressbar();
+                $.getJSON("/PreBorrow/Delete?DeviceTypeId=" + this.id.split('d_')[1], null, function (data) {
+                    stopProgressbar();
+                    if (data.result == "OK") {
+                        $("#successdeletedialog").dialog("open");
+                    } else {
+                        $("#faileddeletedialog").dialog("open");
+                    }
+                });
+            });
         });
 
         $(document).ready(function () {
@@ -143,19 +202,22 @@
                 sortList: [[0, 0]]
             });
         });
-
-        $(".confirm").easyconfirm({
-            locale: {
-                title: 'BME-AUT Mobilkölcsönző előfoglalás törlésének jóváhagyása',
-                text: 'Biztos, hogy szeretnéd a kiválasztott előfoglalást törölni?<br/><div id="confirmtext"></div>',
-                button: ['Nem', ' Jóváhagyás'],
-                closeText: 'bezárás',
-                onload: function (target) {
-                    var type = $("#t" + target.id).html();
-                    var linkid = $("#confirmtext").html("<b>" + type + "</b>");
-                }
-            }
-        });
+        var counter = 0;
+        var timer;
+        function startProgressbar() {
+            $("#waitdialog").dialog("open");
+            counter = 0;
+            $("#progressbar").progressbar("value", 0);
+            timer = setInterval(function () {
+                counter += 5;
+                counter %= 100;
+                $("#progressbar").progressbar("value", counter);
+            }, 100);
+        }
+        function stopProgressbar() {
+            $("#waitdialog").dialog("close");
+            clearInterval(timer);
+        }
 
     </script>
 }

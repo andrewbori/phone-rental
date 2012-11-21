@@ -847,3 +847,13 @@ tr.pager td {
     font-size: 14px;
     font-style:italic;
 }
+
+#shadow 
+{
+    background-image:url(../Images/shade1x1.png); 
+    position:absolute; 
+    left:0; 
+    top:0; 
+    width:100%; 
+    z-index:100;
+}
