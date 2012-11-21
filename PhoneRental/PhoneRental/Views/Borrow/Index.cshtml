@@ -19,9 +19,20 @@
     @Html.Partial("IndexTab3", new PhoneRental.Models.BorrowForNewUser())
 
 
-
-
 </div>
+<div id="successnewdialog" title="Sikeres előfoglalás">
+    A készülék kiadása sikeresen megtörtént!
+</div>
+<div id="failednewdialog" title="Sikertelen előfoglalás">
+    A készülék kiadása sikertelen volt!
+</div>
+<div id="waitdialog" title="Várakozás..." style="z-index:101;">
+    Kérem várjon a művelet befejezéséig!<br/><br/>
+    <div id="progressbar"></div>
+</div>
+<div id="shadow"></div>
+
+
 
 @section Styles {
     @Styles.Render("~/Content/themes/base/jquery.ui.all")
@@ -30,8 +41,10 @@
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
     @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/bundles/jqueryeasyconfirm") 
     <script type="text/javascript">
         $(document).ready(function () {
+            $("#shadow").css("height", $(document).height()).hide();
             $("#tabs").tabs();
                     $("#tabs").tabs({
                 select: function(event, ui) {
@@ -77,11 +90,171 @@
                 });
             });
         
-            $('#PreBorrowId').change(function () {
+            $('#PreBorrowId1').change(function () {
                 $.getJSON("/Borrow/DeviceListForPreBorrow?PreBorrowId=" + $(this).val(), null, function (data) {
                     $("#DeviceList1").fillSelect(data);
                 });
             });
+            $("#form1").submit(function (event) {
+                event.preventDefault();
+                if ($(this).valid()) {
+                    $("#send1").click();
+                }
+            });
+            $("#send1").easyconfirm({
+                locale: {
+                    title: 'Eszköz kiadásának jóváhagyása',
+                    text: 'Az alábbi eszközkiadást jóváhagyod?<br/><br/><div class="newtext"></div>',
+                    button: ['Nem', ' Jóváhagyás'],
+                    closeText: 'bezárás',
+                    onload: function (target) {
+                        $("#shadow").show();
+                        var preborrow = $("#PreBorrowId1 option:selected").text();
+                        var device = $("#DeviceList1 option:selected").text();
+                        var date = $("#StartDate1").val();
+                        var deadline = $("#Deadline1").val();
+                        var text = "";
+                        if ($('#IsChargerOut1').is(':checked')) {
+                            text += "<tr><td colspan='2'><i>Töltő ki lett adva</i></td></tr>";
+                        }
+                        if ($('#IsBoxOut1').is(':checked')) {
+                            text += "<tr><td colspan='2'><i>Doboz ki lett adva</i></td></tr>";
+                        }
+                        $(".newtext").html("<table><tr><td><b>Előfoglalás: </b></td><td>" + preborrow + "</td></tr>" +
+                            "<tr><td><b>Készülék: </b></td><td>" + device + "</td></tr>" +
+                            "<tr><td><b>Kiadás időpontja: </b></td><td>" + date + "</td></tr>" +
+                            "<tr><td><b>Határidő: </b></td><td>" + deadline + "</td></tr>" + text + "</table>"
+                        );
+                    },
+                    close: function (event, ui) { $("#shadow").hide(); }
+                }
+            });
+            $("#send1").click(function () {
+                var data = $("#form1").serialize();
+                    $.post("/Borrow/NewForPreBorrow", data, function (data) {
+                        if (data.result == "OK") {
+                            $("#successnewdialog").dialog("open");
+                        } else {
+                            $("#failednewdialog").dialog("open");
+                        }
+                }, "json");
+            });
+
+            $("#form2").submit(function (event) {
+                event.preventDefault();
+                if ($(this).valid()) {
+                    $("#send2").click();
+                }
+            });
+            $("#send2").easyconfirm({
+                locale: {
+                    title: 'Eszköz kiadásának jóváhagyása',
+                    text: 'Az alábbi eszközkiadást jóváhagyod?<br/><br/><div class="newtext"></div>',
+                    button: ['Nem', ' Jóváhagyás'],
+                    closeText: 'bezárás',
+                    onload: function (target) {
+                        $("#shadow").show();
+                        var user = $("#UserId2 option:selected").text();
+                        var devicetype = $("#DeviceTypeId2 option:selected").text();
+                        var device = $("#DeviceList2 option:selected").text();
+                        var date = $("#StartDate2").val();
+                        var deadline = $("#Deadline2").val();
+                        var text = "";
+                        if ($('#IsChargerOut2').is(':checked')) {
+                            text += "<tr><td colspan='2'><i>Töltő ki lett adva</i></td></tr>";
+                        }
+                        if ($('#IsBoxOut2').is(':checked')) {
+                            text += "<tr><td colspan='2'><i>Doboz ki lett adva</i></td></tr>";
+                        }
+                        $(".newtext").html("<table><tr><td><b>Felhasználó: </b></td><td>" + user + "</td></tr>" +
+                            "<tr><td><b>Készülék típus: </b></td><td>" + devicetype + "</td></tr>" +
+                            "<tr><td><b>Készülék: </b></td><td>" + device + "</td></tr>" +
+                            "<tr><td><b>Kiadás időpontja: </b></td><td>" + date + "</td></tr>" +
+                            "<tr><td><b>Határidő: </b></td><td>" + deadline + "</td></tr>" + text + "</table>"
+                        );
+                    },
+                    close: function (event, ui) { $("#shadow").hide(); }
+                }
+            });
+            $("#send2").click(function () {
+                var data = $("#form2").serialize();
+                $.post("/Borrow/NewForUser", data, function (data) {
+                    if (data.result == "OK") {
+                        $("#successnewdialog").dialog("open");
+                    } else {
+                        $("#failednewdialog").dialog("open");
+                    }
+                }, "json");
+            });
+
+            $("#form3").submit(function (event) {
+                event.preventDefault();
+                if ($(this).valid()) {
+                    $("#send3").click();
+                }
+            });
+            $("#send3").easyconfirm({
+                locale: {
+                    title: 'Eszköz kiadásának jóváhagyása',
+                    text: 'Az alábbi eszközkiadást jóváhagyod?<br/><br/><div class="newtext"></div>',
+                    button: ['Nem', ' Jóváhagyás'],
+                    closeText: 'bezárás',
+                    onload: function (target) {
+                        $("#shadow").show();
+                        var firstname = $("#FirstName3").val();
+                        var lastname = $("#LastName3").val();
+                        var username = $("#UserName3").val();
+                        var devicetype = $("#DeviceTypeId3 option:selected").text();
+                        var device = $("#DeviceList3 option:selected").text();
+                        var date = $("#StartDate3").val();
+                        var deadline = $("#Deadline3").val();
+                        var text = "";
+                        if ($('#IsChargerOut3').is(':checked')) {
+                            text += "<tr><td colspan='2'><i>Töltő ki lett adva</i></td></tr>";
+                        }
+                        if ($('#IsBoxOut3').is(':checked')) {
+                            text += "<tr><td colspan='2'><i>Doboz ki lett adva</i></td></tr>";
+                        }
+                        $(".newtext").html("<table><tr><td><b>Vezetéknév: </b></td><td>" + lastname + "</td></tr>" +
+                            "<tr><td><b>Keresztnév: </b></td><td>" + firstname + "</td></tr>" +
+                            "<tr><td><b>Felhasználónév: </b></td><td>" + username + "</td></tr>" +
+                            "<tr><td><b>Készülék típusa: </b></td><td>" + devicetype + "</td></tr>" +
+                            "<tr><td><b>Készülék: </b></td><td>" + device + "</td></tr>" +
+                            "<tr><td><b>Kiadás időpontja: </b></td><td>" + date + "</td></tr>" +
+                            "<tr><td><b>Határidő: </b></td><td>" + deadline + "</td></tr>" + text + "</table>"
+                        );
+                    },
+                    close: function (event, ui) { $("#shadow").hide(); }
+                }
+            });
+            $("#send3").click(function () {
+                var data = $("#form3").serialize();
+                $.post("/Borrow/New", data, function (data) {
+                    if (data.result == "OK") {
+                        $("#successnewdialog").dialog("open");
+                    } else {
+                        $("#failednewdialog").dialog("open");
+                    }
+                }, "json");
+            });
+
+            $("#successnewdialog").dialog({
+                autoOpen: false,
+                buttons: { Ok: function () { $(this).dialog("close"); location.reload(); } },
+                close: function (event, ui) { location.reload(); }
+            });
+            $("#failednewdialog").dialog({
+                autoOpen: false,
+                buttons: { Ok: function () { $("#shadow").hide(); $(this).dialog("close"); } }
+            });
+            $("#waitdialog").dialog({
+                autoOpen: false,
+                buttons: { Ok: function () { $(this).dialog("close"); } }
+            });
+            $("#progressbar").progressbar({
+                value: 0
+            });
+
         });
 
         $.fn.clearSelect = function() {
@@ -91,11 +264,11 @@
             });
         }
 
-        $.fn.fillSelect = function(data) {
-            return this.clearSelect().each(function() {
+        $.fn.fillSelect = function (data) {
+            return this.clearSelect().each(function () {
                 if (this.tagName == 'SELECT') {
                     var dropdownList = this;
-                    $.each(data, function(index, optionData) {
+                    $.each(data, function (index, optionData) {
                         var option = new Option(optionData.Text, optionData.Value);
                         if ($.browser.msie) {
                             dropdownList.add(option);
@@ -106,6 +279,22 @@
                     });
                 }
             });
+        }
+        var counter = 0;
+        var timer;
+        function startProgressbar() {
+            $("#waitdialog").dialog("open");
+            counter = 0;
+            $("#progressbar").progressbar("value", 0);
+            timer = setInterval(function () {
+                counter += 5;
+                counter %= 100;
+                $("#progressbar").progressbar("value", counter);
+            }, 100);
+        }
+        function stopProgressbar() {
+            $("#waitdialog").dialog("close");
+            clearInterval(timer);
         }
 
     </script>

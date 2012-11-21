@@ -89,6 +89,7 @@
 <div id="faileddialog" title="Sikertelen visszavétel">
     A készülék visszavétele sikertelen volt
 </div>
+<div id="shadow"></div>
 
 @section Styles {
     @Styles.Render("~/Content/themes/base/jquery.tablesorter")
@@ -101,6 +102,7 @@
     @Scripts.Render("~/bundles/jqueryeasyconfirm") 
     <script type="text/javascript">
         $(document).ready(function () {
+            $("#shadow").css("height", $(document).height()).hide();
             $("#myTable").tablesorter({
                 headers: { 2: { sorter: false }, 5: { sorter: false } },
                 sortList: [[0, 0]]
@@ -108,13 +110,14 @@
             $("#successdialog").dialog({
                 autoOpen: false,
                 buttons: { Ok: function () { $(this).dialog("close"); location.reload(); } },
-                close: function (event, ui) { location.reload();  }
+                close: function (event, ui) { $("#shadow").hide(); location.reload(); }
             });
             $("#faileddialog").dialog({
                 autoOpen: false,
-                buttons: { Ok: function () { $(this).dialog("close"); } }
+                buttons: { Ok: function () { $("#shadow").hide(); $(this).dialog("close"); } }
             });
             $(".endborrow").click(function () {
+                $("#shadow").show();
                 $.getJSON("/Borrow/BringBack?DeviceId=" + this.id, null, function (data) {
                     if (data.result == "OK") {
                         $("#successdialog").dialog("open");
@@ -133,9 +136,11 @@
                 button: ['Nem', ' Jóváhagyás'],
                 closeText: 'bezárás',
                 onload: function (target) {
+                    $("#shadow").show();
                     var details = $("#fb_" + target.id).html();
                     $('.confirmtext').html(details);
-                }
+                },
+                close: function (event, ui) { $("#shadow").hide(); }
             }
         });
 

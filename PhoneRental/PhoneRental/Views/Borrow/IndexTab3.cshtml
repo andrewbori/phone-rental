@@ -12,7 +12,7 @@
                 </div>
                                 
                 <div class="editor-field">
-                    @Html.TextBoxFor(model => model.LastName)
+                    @Html.TextBoxFor(model => model.LastName, new { id = "LastName3" })
                     @Html.ValidationMessageFor(model => model.LastName)
                 </div>
 
@@ -21,7 +21,7 @@
                 </div>
 
                 <div class="editor-field">
-                    @Html.TextBoxFor(model => model.FirstName)
+                    @Html.TextBoxFor(model => model.FirstName, new { id="FirstName3" })
                     @Html.ValidationMessageFor(model => model.FirstName)
                 </div>
 
@@ -30,7 +30,7 @@
                 </div>
 
                 <div class="editor-field">
-                    @Html.TextBoxFor(model => model.UserName)
+                    @Html.TextBoxFor(model => model.UserName, new { id = "UserName3" })
                     @Html.ValidationMessageFor(model => model.UserName)
                 </div>
 
@@ -69,13 +69,13 @@
                 </div>
 
                 <div class="editor-label">
-                    @Html.CheckBoxFor(model => model.IsChargerOut)
+                    @Html.CheckBoxFor(model => model.IsChargerOut, new { id = "IsChargerOut3" })
                     @Html.ValidationMessageFor(model => model.IsChargerOut)
                     Töltő kiadva
                 </div>
 
                 <div class="editor-label">
-                    @Html.CheckBoxFor(model => model.IsBoxOut)
+                    @Html.CheckBoxFor(model => model.IsBoxOut, new { id = "IsBoxOut3" })
                     @Html.ValidationMessageFor(model => model.IsBoxOut)
                     Doboz kiadva
                 </div>
@@ -90,8 +90,11 @@
                 </div>
 
                 <p>
-                    <input type="submit" value="Tovább" />
+                    <input type="submit" value="Kiadás" id="button3" />
                 </p>
            </fieldset>
         }
+    </div>
+    <div hidden="hidden">
+        <a href="#" id="send3"></a>
     </div>

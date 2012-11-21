@@ -12,7 +12,7 @@
                 </div>
 
                 <div class="editor-field">
-                    @Html.DropDownList("PreBorrowId", (SelectList)ViewBag.PreBorrows, string.Empty)
+                    @Html.DropDownList("PreBorrowId", (SelectList)ViewBag.PreBorrows, string.Empty, new { id = "PreBorrowId1" })
                     @Html.ValidationMessageFor(model => model.PreBorrowId)
                 </div>
                 
@@ -44,13 +44,13 @@
                 </div>
 
                 <div class="editor-label">
-                    @Html.CheckBoxFor(model => model.IsChargerOut)
+                    @Html.CheckBoxFor(model => model.IsChargerOut, new { id = "IsChargerOut1" })
                     @Html.ValidationMessageFor(model => model.IsChargerOut)
                     Töltő kiadva
                 </div>
 
                 <div class="editor-label">
-                    @Html.CheckBoxFor(model => model.IsBoxOut)
+                    @Html.CheckBoxFor(model => model.IsBoxOut, new { id = "IsBoxOut1" })
                     @Html.ValidationMessageFor(model => model.IsBoxOut)
                     Doboz kiadva
                 </div>
@@ -65,8 +65,11 @@
                 </div>
 
                 <p>
-                    <input type="submit" value="Tovább" />
+                    <input type="submit" value="Kiadás" id="button1" />
                 </p>
             </fieldset>
         }
+    </div>
+    <div hidden="hidden">
+        <a href="#" id="send1"></a>
     </div>
