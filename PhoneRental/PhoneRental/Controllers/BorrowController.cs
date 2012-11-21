@@ -135,13 +135,34 @@ namespace PhoneRental.Controllers
             {
                 if (ModelState.IsValid && !isDeviceBorrowed(model.DeviceId))
                 {
-                    // Attempt to register the user
+                    string password;
                     try
                     {
-                        WebSecurity.CreateUserAndAccount(model.UserName, model.UserName, new { FirstName = model.FirstName, LastName = model.LastName });
+                        password = Membership.GeneratePassword(8, 1);
+                        WebSecurity.CreateUserAndAccount(model.UserName, password, new { FirstName = model.FirstName, LastName = model.LastName });
                         Roles.AddUserToRole(model.UserName, "Customer");
                     }
                     catch (MembershipCreateUserException e)
+                    {
+                        Debug.WriteLine(e.Data);
+                        return this.Json(new { result = "ERROR" }, JsonRequestBehavior.AllowGet);
+                    }
+
+                    try
+                    {
+                        string path = ControllerContext.HttpContext.Server.MapPath("~/Templates/NewUserEmail.cshtml");
+                        string[] to = new String[1];
+                        to[0] = model.UserName;
+                        NewUserEmail emailModel = new NewUserEmail()
+                        {
+                            CustomerFirstName = model.FirstName,
+                            CustomerLastName = model.LastName,
+                            CustomerEmail = model.UserName,
+                            CustomerPassword = password
+                        };
+                        SendEmail.FromTemplate2(path, emailModel, typeof(NewUserEmail), to, "BME-AAIT AMORG telefonkölcsönző regisztráció");
+                    }
+                    catch (Exception e)
                     {
                         Debug.WriteLine(e.Data);
                         return this.Json(new { result = "ERROR" }, JsonRequestBehavior.AllowGet);

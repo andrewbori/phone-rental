@@ -369,5 +369,24 @@ namespace PhoneRental.Models
         public string Name { get; set; }
     }
 
+    public class PreBorrowEmail
+    {
+        public string CustomerFirstName;
+        public string CustomerLastName;
+        public string CustomerEmail;
+        public string DeviceType;
+        public string Date;
+        public string Available;
+        public string Link;
+    }
+
+    public class NewUserEmail
+    {
+        public string CustomerFirstName;
+        public string CustomerLastName;
+        public string CustomerEmail;
+        public string CustomerPassword;
+    }
+
     #endregion
 }

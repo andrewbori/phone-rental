@@ -182,7 +182,6 @@
     </Compile>
     <Compile Include="Models\AccountModels.cs" />
     <Compile Include="Models\PhoneRentalModels.cs" />
-    <Compile Include="Models\PreBorrowEmail.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SendEmail.cs" />
   </ItemGroup>
@@ -319,6 +318,8 @@
     <Content Include="Views\Role\Edit.cshtml" />
     <Content Include="Views\Statistics\Index.cshtml" />
     <Content Include="Views\MyBorrows\Index.cshtml" />
+    <Content Include="Templates\NewUserEmail.cshtml" />
+    <Content Include="Templates\TermsOfUse.cshtml" />
     <None Include="Views\Borrow\IndexTab1.cshtml" />
     <Content Include="Views\Account\_ChangeUserNamePartial.cshtml" />
     <Content Include="Views\Borrow\IndexTab2.cshtml" />
