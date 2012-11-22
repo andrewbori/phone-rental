@@ -24,5 +24,38 @@ namespace PhoneRental
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             AuthConfig.RegisterAuth();
         }
+
+        protected void Application_Error(object sender, EventArgs e)
+        {
+            Exception exception = Server.GetLastError();
+            Response.Clear();
+
+            HttpException httpException = exception as HttpException;
+
+            if (httpException != null)
+            {
+                string action;
+
+                switch (httpException.GetHttpCode())
+                {
+                    case 404:
+                        // Page not found
+                        action = "PageNotFound";
+                        break;
+                    case 500:
+                        // Server error
+                        action = "ServerError";
+                        break;
+                    default:
+                        action = "";
+                        break;
+                }
+
+                // Clear error on server
+                Server.ClearError();
+
+                Response.Redirect(String.Format("~/Error/{0}", action));
+            }
+        }
     }
 }
