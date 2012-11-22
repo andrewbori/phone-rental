@@ -169,6 +169,7 @@
     <Compile Include="Controllers\BorrowController.cs" />
     <Compile Include="Controllers\DeviceController.cs" />
     <Compile Include="Controllers\DeviceTypeController.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ImageController.cs" />
     <Compile Include="Controllers\MyBorrowsController.cs" />
@@ -325,6 +326,10 @@
     <Content Include="Views\Borrow\IndexTab2.cshtml" />
     <Content Include="Views\Borrow\IndexTab3.cshtml" />
     <Content Include="Views\TermsOfUse\Index.cshtml" />
+    <Content Include="Views\Error\PageNotFound.cshtml" />
+    <Content Include="_AppStart.cshtml" />
+    <Content Include="Views\Error\ServerError.cshtml" />
+    <Content Include="Views\Error\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

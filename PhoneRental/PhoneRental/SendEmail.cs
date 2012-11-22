@@ -21,7 +21,7 @@ namespace PhoneRental
              {
                  mail.To.Add(t);
              }
-             mail.From = new MailAddress("noreply@webabc.hu");
+             mail.From = new MailAddress("amorg.phonerental@gmail.com");
              mail.Subject = subject;
              mail.Body = body;
              mail.IsBodyHtml = true;
@@ -41,7 +41,7 @@ namespace PhoneRental
             {
                 mail.To.Add(t);
             }
-            mail.From = new MailAddress("noreply@webabc.hu");
+            mail.From = new MailAddress("amorg.phonerental@gmail.com");
             mail.Subject = subject;
             mail.Body = body;
             mail.IsBodyHtml = true;

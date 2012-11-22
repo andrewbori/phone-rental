@@ -271,7 +271,7 @@ namespace PhoneRental.Models
     public class BorrowCommon
     {
         [Required(ErrorMessage = "A készülék kiválasztása kötelező!")]
-        [RegularExpression(@"[1-9]*$", ErrorMessage = "Készülék kiválasztása kötelező!")]
+        [RegularExpression(@"[1-9][0-9]*$", ErrorMessage = "Készülék kiválasztása kötelező!")]
         public int DeviceId { get; set; }
 
         [Required(ErrorMessage = "A kiadás időpontjának megadása kötelező!")]

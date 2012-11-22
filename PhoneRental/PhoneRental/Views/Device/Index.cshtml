@@ -83,10 +83,10 @@
     </tbody>
 </table>
 
-<div id="successdialog" title="Sikeres visszavétel">
+<div id="successdialog" title="Sikeres visszavétel" style="display: none;">
     A készülék visszavétele sikeresen megtörtént
 </div>
-<div id="faileddialog" title="Sikertelen visszavétel">
+<div id="faileddialog" title="Sikertelen visszavétel" style="display: none;">
     A készülék visszavétele sikertelen volt
 </div>
 <div id="shadow"></div>
@@ -132,7 +132,7 @@
         $(".endborrow").easyconfirm({
             locale: {
                 title: 'BME-AUT Mobilkölcsönző - kölcsönzött készülék visszavétele',
-                text: 'Visszaveszed a készüléket a kiválasztott felhasználótól ? <br/><div class="confirmtext"></div>',
+                text: 'Visszaveszed a készüléket a kiválasztott felhasználótól? <br/><div class="confirmtext"></div>',
                 button: ['Nem', ' Jóváhagyás'],
                 closeText: 'bezárás',
                 onload: function (target) {
