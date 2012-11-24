@@ -30,6 +30,10 @@
     Kérem várjon a művelet befejezéséig!<br/><br/>
     <div id="progressbar"></div>
 </div>
+<div id="alertdialog" title="Figyelmeztetés!" style="display: none;">
+    Az ügyfélnek a kölcsönzés feltételeit el kell fogadnia<br/>
+    mielőtt a készüléket kiadod!
+</div>
 <div id="shadow"></div>
 
 
@@ -82,6 +86,11 @@
                 $.getJSON("/Borrow/DeviceListForDeviceType?DeviceTypeId=" + $(this).val(), null, function (data) {
                     $("#DeviceList2").fillSelect(data);
                 });
+            });
+            $("#alertdialog").dialog({
+                autoOpen: false,
+                buttons: { Ok: function () { $(this).dialog("close"); $("#shadow").hide(); } },
+                close: function (event, ui) { $("#shadow").hide(); }
             });
 
             $('#DeviceTypeId3').change(function () {
@@ -143,7 +152,14 @@
             $("#form2").submit(function (event) {
                 event.preventDefault();
                 if ($(this).valid()) {
-                    $("#send2").click();
+                    isChecked = $('#TermsOfUse2:checked').val() ? true : false;
+                    if (isChecked) {
+                        $("#send2").click();
+                    } else {
+                        $("#shadow").show();
+                        $("#alertdialog").dialog("open");
+
+                    }
                 }
             });
             $("#send2").easyconfirm({
@@ -190,7 +206,14 @@
             $("#form3").submit(function (event) {
                 event.preventDefault();
                 if ($(this).valid()) {
-                    $("#send3").click();
+                    isChecked = $('#TermsOfUse3:checked').val() ? true : false;
+                    if (isChecked) {
+                        $("#send3").click();
+                    } else {
+                        $("#shadow").show();
+                        $("#alertdialog").dialog("open");
+
+                    }
                 }
             });
             $("#send3").easyconfirm({

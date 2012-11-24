@@ -89,6 +89,11 @@
                     @Html.ValidationMessageFor(model => model.Note)
                 </div>
 
+               <div class="editor-label">
+                   <input type="checkbox" id="TermsOfUse3" />
+                   Az ügyfél a <a href="@Url.Action("Index","TermsOfUse")" target="_blank">kölcsönzés feltételeit</a> elfogadja.
+                </div>
+
                 <p>
                     <input type="submit" value="Kiadás" id="button3" />
                 </p>
